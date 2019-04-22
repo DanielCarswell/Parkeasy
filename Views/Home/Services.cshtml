@@ -1,0 +1,73 @@
+@{
+    ViewBag.Title = "Services";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .customcontainer {
+        background-color: white;
+        background: rgba(255,255,255,0.75);
+        padding-top: 40px;
+        
+        border: double;
+        color: black;
+    }
+</style>
+    <div class="container customcontainer">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">
+                    Servicing
+                    <small>What We Offer</small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li>
+                        @Html.ActionLink("Home", "Index", "Home")
+                    </li>
+                    <li class="active">Services</li>
+                </ol>
+            </div>
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <img src="~/Content/Images/servicing2.jpg" class="img-responsive">
+            </div>
+        </div>
+        <!-- /.row -->
+        <!-- Service Paragraphs -->
+        <div class="row">
+            <div class="col-md-8">
+                <h2 class="page-header">Car Washing</h2>
+                <p>One of our many servicing offers is car washing, this includes scrubing every inch with a soapy sponge then pressure hosing the car down.</p>
+            </div>
+            <div class="col-md-4">
+                <h2 class="page-header">Book In Now!</h2>
+                <p>Click the button below to proceed to booking.</p>
+                <a href="/Account/Login" class="btn btn-primary">Book Now</a>
+            </div>
+        </div>
+        <!-- /.row -->
+        <!-- Service Images -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="page-header">Types of Servicing</h2>
+            </div>
+            <div class="col-sm-4">
+                <img src="~/Content/Images/servicing4.jpg" class="img-responsive">
+                <h3>Car Washing</h3>
+                <p>Service one description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc placerat diam quis nisl vestibulum dignissim. In hac habitasse platea dictumst.</p>
+            </div>
+            <div class="col-sm-4">
+                <img src="~/Content/Images/servicing1.jpg" class="img-responsive">
+                <h3>Car Polishing</h3>
+                <p>Service two description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc placerat diam quis nisl vestibulum dignissim. In hac habitasse platea dictumst.</p>
+            </div>
+            <div class="col-sm-4">
+                <img src="~/Content/Images/servicing3.jpg" class="img-responsive">
+                <h3>Car Vacuuming</h3>
+                <p>Service three description. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc placerat diam quis nisl vestibulum dignissim. In hac habitasse platea dictumst.</p>
+            </div>
+        </div>
+        <!-- /.row -->
+    </div>

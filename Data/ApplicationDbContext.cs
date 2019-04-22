@@ -23,7 +23,10 @@ namespace Parkeasy.Data
             // Add your customizations after calling base.OnModelCreating(builder);
         }
 
-        public DbSet<Booking> Bookings{ get; set; }
+        public DbSet<Payment> Payments{ get; set; }
+        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Vehicle> Vehicles{ get; set; }
         public DbSet<Flight> Flights { get; set; }
+        public DbSet<Invoice> Invoices{ get; set; }
     }
 }

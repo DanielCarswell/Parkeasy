@@ -20,7 +20,7 @@ namespace Parkeasy.Models
         //[Key]
         public int Id { get; set; }
         /// <summary>
-        /// Title Getter And Setter.
+        /// Date Getter And Setter.
         /// </summary>
         [Required]
         public DateTime Date { get; set; }
@@ -30,36 +30,36 @@ namespace Parkeasy.Models
         [Required]
         public int Duration { get; set; }
 
-        //Contains M:1 Relationship with ApplicationUser. (This is the 1 side)
+        //Contains 1:M Relationship with ApplicationUser. (This is the many side)
         /// <summary>
-        /// Relationship Properties for Post With ApplicationUser.
+        /// Relationship Properties for Booking With ApplicationUser.
         /// </summary>
         [InverseProperty("AspNetUsers")]
         public string ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
 
-        //Contains M:1 Relationship with ApplicationUser. (This is the 1 side)
+        //Contains 1:1 Relationship with Flight. (This is the 1 side)
         /// <summary>
-        /// Relationship Properties for Post With ApplicationUser.
+        /// Relationship Properties for Booking With Flight.
         /// </summary>
         [InverseProperty("Flight")]
         public int FlightId { get; set; }
         public virtual Flight Flight { get; set; }
 
-        //Contains M:1 Relationship with ApplicationUser. (This is the 1 side)
+        //Contains 1:1 Relationship with Vehicle. (This is the 1 side)
         /// <summary>
-        /// Relationship Properties for Post With ApplicationUser.
+        /// Relationship Properties for Booking With Vehicle.
         /// </summary>
         [InverseProperty("Vehicle")]
         public int VehicleId { get; set; }
         public virtual Vehicle Vehicle { get; set; }
 
+        //Contains 1:1 Relationship with Payment. (This is the 1 side)
         /// <summary>
-        /// Blank Constructor, Sets Navigational Property  to new List of type  (Class).
+        /// Relationship Properties for Booking With Payment.
         /// </summary>
-        public Booking()
-        {
-             = new List<Comment>();
-        }
+        [InverseProperty("Payment")]
+        public int PaymentId { get; set; }
+        public virtual Vehicle Payment { get; set; }
     }
 }

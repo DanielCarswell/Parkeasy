@@ -1,6 +1,6 @@
 namespace Parkeasy.Models
 {
-    public class Payment
+    public class Vehicle
     {
 
     }
