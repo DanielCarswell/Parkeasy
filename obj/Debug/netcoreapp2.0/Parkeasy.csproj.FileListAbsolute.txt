@@ -10,3 +10,4 @@ C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.0\Parkeasy.AssemblyInfoI
 C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.0\Parkeasy.AssemblyInfo.cs
 C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.0\Parkeasy.dll
 C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.0\Parkeasy.pdb
+C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.0\Parkeasy.csprojResolveAssemblyReference.cache
