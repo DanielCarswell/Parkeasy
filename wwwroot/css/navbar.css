@@ -1,0 +1,19 @@
+﻿body {
+    font-family: 'Merriweather', serif;
+    margin-top: 24px !important;
+}
+
+.navbar-inverse .navbar-nav>li>a{
+    color: black !important;
+}
+
+.navbar-brand
+{
+    margin-left: 15px !important;
+    color: black !important;
+}
+
+.colouring
+{
+    color: black !important;
+}
