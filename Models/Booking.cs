@@ -16,8 +16,8 @@ namespace Parkeasy.Models
         /// <summary>
         /// Id Getter And Setter.
         /// </summary>
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        //[Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int Id { get; set; }
         /// <summary>
         /// Date Getter And Setter.

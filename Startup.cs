@@ -36,6 +36,12 @@ namespace Parkeasy
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
+            services.AddAuthentication().AddGoogle(googleOptions => 
+            {
+                googleOptions.ClientId = "396877038571-l2td3t3ng1e79boeugdnela4rr1tk898.apps.googleusercontent.com";
+                googleOptions.ClientSecret = "mgUkabIJZi6SuABUK5OaK66X";
+            });
+
             services.AddMvc();
         }
 

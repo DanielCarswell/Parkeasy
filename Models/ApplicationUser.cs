@@ -12,45 +12,45 @@ namespace Parkeasy.Models
         /// <summary>
         /// FirstName Getter And Setter.
         /// </summary>
-        public string FirstName { get; set; }
+        //public string FirstName { get; set; }
         /// <summary>
         /// LastName Getter And Setter.
         /// </summary>
-        public string LastName { get; set; }
+        //public string LastName { get; set; }
         /// <summary>
         /// Address Getter And Setter.
         /// </summary>
-        public string Address { get; set; }
+        //public string Address { get; set; }
         /// <summary>
         /// Telephone Getter And Setter.
         /// </summary>
-        public int? Telephone { get; set; }
+        //public int? Telephone { get; set; }
         /// <summary>
         /// Mobile Getter And Setter.
         /// </summary>
-        public int? Mobile { get; set; }
+        //public int? Mobile { get; set; }
         /// <summary>
         /// PostCode Getter And Setter.
         /// </summary>
-        public string PostCode { get; set; }
+        //public string PostCode { get; set; }
         /// <summary>
         /// RegisteredAt Getter And Setter.
         /// </summary>
-        public DateTime RegisteredAt { get; set; }
+        //public DateTime RegisteredAt { get; set; }
 
 
         //Contains 1:M Relationship with Booking. (This is the one side)
         /// <summary>
         /// Relationship Properties for ApplicationUser With Booking.
         /// </summary>
-        public virtual ICollection<Booking> Bookings { get; set; }
+        //public virtual ICollection<Booking> Bookings { get; set; }
 
         /// <summary>
         /// Blank Constructor, Sets Navigational Property Bookings to new List of type Booking(Class).
         /// </summary>
-        public ApplicationUser()
-        {
-            Bookings = new List<Booking>();
-        }
+        //public ApplicationUser()
+        //{
+            //Bookings = new List<Booking>();
+        //}
     }
 }
