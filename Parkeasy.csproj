@@ -5,7 +5,7 @@
     <UserSecretsId>aspnet-Parkeasy-AC5DDC66-D25E-4B9C-80C3-60ADDFCCDD96</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <None Update="app.db" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="ParkeasySystem.db" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

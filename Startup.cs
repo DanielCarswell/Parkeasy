@@ -34,6 +34,7 @@ namespace Parkeasy
                 .AddDefaultTokenProviders();
 
             // Add application services.
+            services.AddTransient<Seed>();
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddAuthentication().AddGoogle(googleOptions => 
@@ -42,11 +43,20 @@ namespace Parkeasy
                 googleOptions.ClientSecret = "mgUkabIJZi6SuABUK5OaK66X";
             });
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 5;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = false;
+            });
+
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, Seed seeder)
         {
             if (env.IsDevelopment())
             {
@@ -68,6 +78,8 @@ namespace Parkeasy
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            
+            seeder.SeedUsers();
         }
     }
 }

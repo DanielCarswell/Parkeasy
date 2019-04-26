@@ -38,22 +38,6 @@ namespace Parkeasy.Models
         public string ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
 
-        //Contains 1:1 Relationship with Flight. (This is the 1 side)
-        /// <summary>
-        /// Relationship Properties for Booking With Flight.
-        /// </summary>
-        [InverseProperty("Flight")]
-        public int FlightId { get; set; }
-        public virtual Flight Flight { get; set; }
-
-        //Contains 1:1 Relationship with Vehicle. (This is the 1 side)
-        /// <summary>
-        /// Relationship Properties for Booking With Vehicle.
-        /// </summary>
-        [InverseProperty("Vehicle")]
-        public int VehicleId { get; set; }
-        public virtual Vehicle Vehicle { get; set; }
-
         //Contains 1:1 Relationship with Payment. (This is the 1 side)
         /// <summary>
         /// Relationship Properties for Booking With Payment.

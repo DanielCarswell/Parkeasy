@@ -1,0 +1,122 @@
+[
+  {
+     "Id" : 1,
+     "UserName": "DanielCarswell@Parkeasy.com",
+     "Password": "admin123",
+     "Email": "DanielCarswell@Parkeasy.com",
+     "Mobile": "07460520955",
+     "PostCode": "ML6 QH3",
+     "Address": "4 Bonanza Road",
+     "Telephone": "01234 305232",
+     "FirstName": "Daniel",
+     "LastName": "Carswell"
+  },
+  {
+    "Id" : 2,
+    "UserName": "EuanCarswell@Parkeasy.com",
+    "Password": "manager123",
+    "Email": "EuanCarswell@Parkeasy.com",
+    "Mobile": "074352293",
+    "PostCode": "ML6 XL8",
+    "Address": "4 Library Road",
+    "Telephone": "01234 307632",
+    "FirstName": "Euan",
+    "LastName": "Carswell"
+ },
+ {
+  "Id" : 3,
+  "UserName": "AidanRooney@Parkeasy.com",
+  "Password": "staff123",
+  "Email": "AidanRooney@Parkeasy.com",
+  "Mobile": "0764220955",
+  "PostCode": "ML6 AB3",
+  "Address": "8 Alcatraz Road",
+  "Telephone": "01234 607232",
+  "FirstName": "Aidan",
+  "LastName": "Rooney"
+},
+{
+  "Id" : 4,
+  "UserName": "EwanMacPherson@Parkeasy.com",
+  "Password": "staff123",
+  "Email": "EwanMacPherson@Parkeasy.com",
+  "Mobile": "07460560355",
+  "PostCode": "ML6 KH3",
+  "Address": "43 Honest Road",
+  "Telephone": "01234 305232",
+  "FirstName": "Ewan",
+  "LastName": "MacPherson"
+},
+{
+  "Id" : 5,
+  "UserName": "MarkMcNulty@Parkeasy.com",
+  "Password": "driver123",
+  "Email": "MarkMcNulty@Parkeasy.com",
+  "Mobile": "07434520955",
+  "PostCode": "ML6 BH3",
+  "Address": "72 Bonanza Street",
+  "Telephone": "01234 305232",
+  "FirstName": "Mark",
+  "LastName": "McNulty"
+},
+{
+  "Id" : 6,
+  "UserName": "JamieLawn@Parkeasy.com",
+  "Password": "clerk123",
+  "Email": "JamieLawn@Parkeasy.com",
+  "Mobile": "07460569955",
+  "PostCode": "ML6 AH3",
+  "Address": "4 Bonanza Street",
+  "Telephone": "01234 305232",
+  "FirstName": "Jamie",
+  "LastName": "Lawn"
+},
+{
+  "Id" : 7,
+  "UserName": "EuanMcDonald@Parkeasy.com",
+  "Password": "clerk123",
+  "Email": "EuanMcDonald@Parkeasy.com",
+  "Mobile": "07460520705",
+  "PostCode": "ML6 QA3",
+  "Address": "14 Alexander Road",
+  "Telephone": "01234 305232",
+  "FirstName": "Euan",
+  "LastName": "McDonald"
+},
+{
+  "Id" : 8,
+  "UserName": "MichaelGunn@Parkeasy.com",
+  "Password": "customer123",
+  "Email": "MichaelGunn@Parkeasy.com",
+  "Mobile": "07460523455",
+  "PostCode": "ML6 QB3",
+  "Address": "43 Bonanza Crescent",
+  "Telephone": "01234 305232",
+  "FirstName": "Michael",
+  "LastName": "Gunn"
+},
+{
+  "Id" : 9,
+  "UserName": "DavidCampbell@Parkeasy.com",
+  "Password": "customer123",
+  "Email": "DavidCampbell@Parkeasy.com",
+  "Mobile": "07462320955",
+  "PostCode": "ML6 QE4",
+  "Address": "4 Bonanza Crescent",
+  "Telephone": "01234 305232",
+  "FirstName": "David",
+  "LastName": "Campbell"
+},
+{
+  "Id" : 10,
+  "UserName": "GaryFriel@Parkeasy.com",
+  "Password": "customer123",
+  "Email": "GaryFriel@Parkeasy.com",
+  "Mobile": "07550520955",
+  "PostCode": "ML6 QH4",
+  "Address": "28 Bonanza Road",
+  "Telephone": "01234 305232",
+  "FirstName": "Gary",
+  "LastName": "Friel"
+}
+]
