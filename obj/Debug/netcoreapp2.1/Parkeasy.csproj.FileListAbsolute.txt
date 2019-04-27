@@ -1,0 +1,13 @@
+C:\Users\Daniel Carswell\Parkeasy\bin\Debug\netcoreapp2.1\Parkeasy.deps.json
+C:\Users\Daniel Carswell\Parkeasy\bin\Debug\netcoreapp2.1\Parkeasy.runtimeconfig.json
+C:\Users\Daniel Carswell\Parkeasy\bin\Debug\netcoreapp2.1\Parkeasy.runtimeconfig.dev.json
+C:\Users\Daniel Carswell\Parkeasy\bin\Debug\netcoreapp2.1\Parkeasy.dll
+C:\Users\Daniel Carswell\Parkeasy\bin\Debug\netcoreapp2.1\Parkeasy.pdb
+C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.1\Parkeasy.csprojAssemblyReference.cache
+C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.1\Parkeasy.csproj.CoreCompileInputs.cache
+C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs
+C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.1\Parkeasy.AssemblyInfoInputs.cache
+C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.1\Parkeasy.AssemblyInfo.cs
+C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.1\Parkeasy.dll
+C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.1\Parkeasy.pdb
+C:\Users\Daniel Carswell\Parkeasy\bin\Debug\netcoreapp2.1\ParkeasySystem.db
