@@ -30,7 +30,9 @@ namespace Parkeasy.Models
         /// Travellers Getter and Setter.
         /// </summary>
         public int Travellers { get; set; }
-        //Navigational propertie for Vehicle and Booking Relationship.
+        /// <summary>
+        /// Navigational propertie for Vehicle and Booking Relationship.
+        /// </summary>
         public virtual Booking Booking { get; set; }
     }
 }

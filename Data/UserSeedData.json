@@ -2,7 +2,6 @@
   {
      "Id" : 1,
      "UserName": "DanielCarswell@Parkeasy.com",
-     "Password": "admin123",
      "Email": "DanielCarswell@Parkeasy.com",
      "Mobile": "07460520955",
      "PostCode": "ML6 QH3",
@@ -14,7 +13,6 @@
   {
     "Id" : 2,
     "UserName": "EuanCarswell@Parkeasy.com",
-    "Password": "manager123",
     "Email": "EuanCarswell@Parkeasy.com",
     "Mobile": "074352293",
     "PostCode": "ML6 XL8",
@@ -26,7 +24,6 @@
  {
   "Id" : 3,
   "UserName": "AidanRooney@Parkeasy.com",
-  "Password": "staff123",
   "Email": "AidanRooney@Parkeasy.com",
   "Mobile": "0764220955",
   "PostCode": "ML6 AB3",
@@ -38,7 +35,6 @@
 {
   "Id" : 4,
   "UserName": "EwanMacPherson@Parkeasy.com",
-  "Password": "staff123",
   "Email": "EwanMacPherson@Parkeasy.com",
   "Mobile": "07460560355",
   "PostCode": "ML6 KH3",
@@ -50,7 +46,6 @@
 {
   "Id" : 5,
   "UserName": "MarkMcNulty@Parkeasy.com",
-  "Password": "driver123",
   "Email": "MarkMcNulty@Parkeasy.com",
   "Mobile": "07434520955",
   "PostCode": "ML6 BH3",
@@ -62,7 +57,6 @@
 {
   "Id" : 6,
   "UserName": "JamieLawn@Parkeasy.com",
-  "Password": "clerk123",
   "Email": "JamieLawn@Parkeasy.com",
   "Mobile": "07460569955",
   "PostCode": "ML6 AH3",
@@ -74,7 +68,6 @@
 {
   "Id" : 7,
   "UserName": "EuanMcDonald@Parkeasy.com",
-  "Password": "clerk123",
   "Email": "EuanMcDonald@Parkeasy.com",
   "Mobile": "07460520705",
   "PostCode": "ML6 QA3",
@@ -86,7 +79,6 @@
 {
   "Id" : 8,
   "UserName": "MichaelGunn@Parkeasy.com",
-  "Password": "customer123",
   "Email": "MichaelGunn@Parkeasy.com",
   "Mobile": "07460523455",
   "PostCode": "ML6 QB3",
@@ -98,7 +90,6 @@
 {
   "Id" : 9,
   "UserName": "DavidCampbell@Parkeasy.com",
-  "Password": "customer123",
   "Email": "DavidCampbell@Parkeasy.com",
   "Mobile": "07462320955",
   "PostCode": "ML6 QE4",
@@ -110,7 +101,6 @@
 {
   "Id" : 10,
   "UserName": "GaryFriel@Parkeasy.com",
-  "Password": "customer123",
   "Email": "GaryFriel@Parkeasy.com",
   "Mobile": "07550520955",
   "PostCode": "ML6 QH4",
