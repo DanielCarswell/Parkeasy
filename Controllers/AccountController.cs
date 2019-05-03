@@ -13,6 +13,8 @@ using Microsoft.Extensions.Options;
 using Parkeasy.Models;
 using Parkeasy.Models.AccountViewModels;
 using Parkeasy.Services;
+using Parkeasy.Data;
+using Parkeasy.Extensions;
 
 namespace Parkeasy.Controllers
 {
@@ -24,16 +26,19 @@ namespace Parkeasy.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
+        private readonly ApplicationDbContext _context;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
-            ILogger<AccountController> logger)
+            ILogger<AccountController> logger,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _context = context;
             _logger = logger;
         }
 
@@ -457,6 +462,21 @@ namespace Parkeasy.Controllers
             {
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
+        }
+
+        #endregion
+
+        #region UserOptions
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Index()
+        {
+            /*var applicationDbContext = _context.Users;
+            return View(await applicationDbContext.ToListAsync());*/
+            var users = new List<UserViewModel>();
+            await users.GetUsers(_context);
+
+            return View(users);
         }
 
         #endregion
