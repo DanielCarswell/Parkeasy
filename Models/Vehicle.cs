@@ -17,7 +17,7 @@ namespace Parkeasy.Models
         /// <summary>
         /// Registration Getter and Setter.
         /// </summary>
-        public int Registration { get; set; }
+        public string Registration { get; set; }
         /// <summary>
         /// Model Getter and Setter.
         /// </summary>

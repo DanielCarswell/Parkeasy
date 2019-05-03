@@ -23,6 +23,9 @@ namespace Parkeasy.Data
             // Add your customizations after calling base.OnModelCreating(builder);
         }
 
+        /// <summary>
+        /// Initialises Payments Table in Database.
+        /// </summary>
         public DbSet<Payment> Payments{ get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Vehicle> Vehicles{ get; set; }

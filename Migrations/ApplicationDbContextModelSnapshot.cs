@@ -279,7 +279,7 @@ namespace Parkeasy.Migrations
 
                     b.Property<string>("Model");
 
-                    b.Property<int>("Registration");
+                    b.Property<string>("Registration");
 
                     b.Property<int>("Travellers");
 

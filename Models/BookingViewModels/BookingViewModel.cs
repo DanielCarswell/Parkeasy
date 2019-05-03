@@ -15,47 +15,7 @@ namespace Parkeasy.Models.BookingViewModels
     /// </summary>
     public class BookingViewModel
     {
-        #region FlightDetails
-        /// <summary>
-        /// DepartureNumber Getter and Setter.
-        /// </summary>
-        public string DepartureNumber { get; set; }
-        /// <summary>
-        /// ReturnNumber Getter and Setter.
-        /// </summary>
-        public string ReturnNumber { get; set; }
-        /// <summary>
-        /// DepartureDateTime Getter and Setter.
-        /// </summary>
-        public DateTime DepartureDateTime { get; set; }
-        /// <summary>
-        /// ReturnDateTime Getter and Setter.
-        /// </summary>
-        public DateTime ReturnDateTime { get; set; }
-        /// <summary>
-        /// Destination Getter and Setter.
-        /// </summary>
-        public string Destination { get; set; }
-
-        #endregion
-        #region Vehicle Details
-        /// <summary>
-        /// Registration Getter and Setter.
-        /// </summary>
-        public int Registration { get; set; }
-        /// <summary>
-        /// Model Getter and Setter.
-        /// </summary>
-        public string Model { get; set; }
-        /// <summary>
-        /// Colour Getter and Setter.
-        /// </summary>
-        public string Colour { get; set; }
-        /// <summary>
-        /// Travellers Getter and Setter.
-        /// </summary>
-        public int Travellers { get; set; }
-
-        #endregion
+        public virtual Flight Flight{ get; set; }
+        public virtual Vehicle Vehicle{ get; set; }
     }
 }

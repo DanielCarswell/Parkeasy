@@ -251,7 +251,7 @@ namespace Parkeasy.Migrations
                     Id = table.Column<int>(nullable: false),
                     Colour = table.Column<string>(nullable: true),
                     Model = table.Column<string>(nullable: true),
-                    Registration = table.Column<int>(nullable: false),
+                    Registration = table.Column<string>(nullable: true),
                     Travellers = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

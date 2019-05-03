@@ -11,7 +11,7 @@ using System;
 namespace Parkeasy.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190426204627_SqliteInitial")]
+    [Migration("20190502121228_SqliteInitial")]
     partial class SqliteInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -280,7 +280,7 @@ namespace Parkeasy.Migrations
 
                     b.Property<string>("Model");
 
-                    b.Property<int>("Registration");
+                    b.Property<string>("Registration");
 
                     b.Property<int>("Travellers");
 

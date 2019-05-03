@@ -1,0 +1,53 @@
+@model Parkeasy.Models.Vehicle
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+
+<div>
+    <h4>Vehicle</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Registration)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Model)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Model)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Colour)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Colour)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Travellers)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Travellers)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Booking)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Booking.Id)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+</body>
+</html>
