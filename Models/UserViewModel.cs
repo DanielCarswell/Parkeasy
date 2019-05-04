@@ -11,9 +11,6 @@ namespace Parkeasy.Models
 {
     public class UserViewModel
     {
-        //Private Attributes.
-        private readonly UserManager<ApplicationUser> _userManager;
-
         //Properties.
         [Display(Name = "User Id")]
         public string Id { get; set; }
@@ -32,20 +29,5 @@ namespace Parkeasy.Models
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
-
-        /*[NotMapped]
-        public string CurrentRole
-        {
-            get
-            {
-                if (_userManager == null)
-                {
-                    _userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUser>();
-
-                }
-
-                return _userManager.GetRoles(Id).FirstOrDefault();
-            }
-        }*/
     }
 }

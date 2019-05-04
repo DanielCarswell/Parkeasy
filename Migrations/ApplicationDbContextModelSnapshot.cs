@@ -195,11 +195,16 @@ namespace Parkeasy.Migrations
 
                     b.Property<string>("ApplicationUserId");
 
-                    b.Property<DateTime>("Date");
+                    b.Property<DateTime>("DepartureDate");
 
                     b.Property<int>("Duration");
 
                     b.Property<int>("PaymentId");
+
+                    b.Property<DateTime>("ReturnDate");
+
+                    b.Property<string>("Status")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -256,6 +261,8 @@ namespace Parkeasy.Migrations
 
                     b.Property<double>("Amount");
 
+                    b.Property<string>("ApplicationUserId");
+
                     b.Property<int>("CardNumber");
 
                     b.Property<string>("CardType");
@@ -267,6 +274,8 @@ namespace Parkeasy.Migrations
                     b.Property<int>("SecurityNumber");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Payment");
                 });
@@ -352,6 +361,13 @@ namespace Parkeasy.Migrations
                 {
                     b.HasOne("Parkeasy.Models.ApplicationUser")
                         .WithMany("Invoices")
+                        .HasForeignKey("ApplicationUserId");
+                });
+
+            modelBuilder.Entity("Parkeasy.Models.Payment", b =>
+                {
+                    b.HasOne("Parkeasy.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("Payments")
                         .HasForeignKey("ApplicationUserId");
                 });
 

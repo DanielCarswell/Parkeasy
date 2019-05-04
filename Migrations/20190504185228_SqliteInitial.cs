@@ -54,24 +54,6 @@ namespace Parkeasy.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Payment",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Amount = table.Column<double>(nullable: false),
-                    CardNumber = table.Column<int>(nullable: false),
-                    CardType = table.Column<string>(nullable: true),
-                    DatePaid = table.Column<DateTime>(nullable: false),
-                    ExpiryDate = table.Column<DateTime>(nullable: false),
-                    SecurityNumber = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Payment", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -184,9 +166,11 @@ namespace Parkeasy.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ApplicationUserId = table.Column<string>(nullable: true),
-                    Date = table.Column<DateTime>(nullable: false),
+                    DepartureDate = table.Column<DateTime>(nullable: false),
                     Duration = table.Column<int>(nullable: false),
-                    PaymentId = table.Column<int>(nullable: false)
+                    PaymentId = table.Column<int>(nullable: false),
+                    ReturnDate = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -216,6 +200,31 @@ namespace Parkeasy.Migrations
                     table.PrimaryKey("PK_Invoice", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Invoice_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Amount = table.Column<double>(nullable: false),
+                    ApplicationUserId = table.Column<string>(nullable: true),
+                    CardNumber = table.Column<int>(nullable: false),
+                    CardType = table.Column<string>(nullable: true),
+                    DatePaid = table.Column<DateTime>(nullable: false),
+                    ExpiryDate = table.Column<DateTime>(nullable: false),
+                    SecurityNumber = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payment_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -310,6 +319,11 @@ namespace Parkeasy.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Invoice_ApplicationUserId",
                 table: "Invoice",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payment_ApplicationUserId",
+                table: "Payment",
                 column: "ApplicationUserId");
         }
 

@@ -21,14 +21,14 @@ namespace Parkeasy.Extensions
         /// <returns>List of UserViewModel class instances</returns>
         public static async Task GetUsers(this List<UserViewModel> users, ApplicationDbContext context)
         {
-            users.AddRange( (from u in context.Users
-                                  select new UserViewModel
-                                  {
-                                      Id = u.Id,
-                                      Email = u.Email,
-                                      FirstName = u.FirstName,
-                                      LastName = u.LastName
-                                  }).OrderBy(o => o.Email).ToList());
+            users.AddRange((from u in context.Users
+                            select new UserViewModel
+                            {
+                                Id = u.Id,
+                                Email = u.Email,
+                                FirstName = u.FirstName,
+                                LastName = u.LastName
+                            }).OrderBy(o => o.Email).ToList());
         }
     }
 }

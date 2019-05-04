@@ -46,5 +46,12 @@ namespace Parkeasy.Models
         /// </summary>
         /// <value>20/05/2019 12:54:09</value>
         public DateTime DatePaid { get; set; }
+       //Contains 1:M Relationship with ApplicationUser. (This is the many side)
+        /// <summary>
+        /// Relationship Properties for Payment With ApplicationUser.
+        /// </summary>
+        [InverseProperty("AspNetUsers")]
+        public string ApplicationUserId { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
     }
 }

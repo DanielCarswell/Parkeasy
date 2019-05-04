@@ -15,6 +15,7 @@ using Parkeasy.Models.AccountViewModels;
 using Parkeasy.Services;
 using Parkeasy.Data;
 using Parkeasy.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Parkeasy.Controllers
 {
@@ -462,21 +463,6 @@ namespace Parkeasy.Controllers
             {
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
-        }
-
-        #endregion
-
-        #region UserOptions
-
-        [AllowAnonymous]
-        public async Task<IActionResult> Index()
-        {
-            /*var applicationDbContext = _context.Users;
-            return View(await applicationDbContext.ToListAsync());*/
-            var users = new List<UserViewModel>();
-            await users.GetUsers(_context);
-
-            return View(users);
         }
 
         #endregion

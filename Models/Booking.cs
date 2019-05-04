@@ -20,15 +20,27 @@ namespace Parkeasy.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         /// <summary>
-        /// Date Getter And Setter.
+        /// DepartureDate Getter And Setter.
         /// </summary>
         [Required]
-        public DateTime Date { get; set; }
+        [Display(Name = "Departure Date")]
+        public DateTime DepartureDate { get; set; }
+        /// <summary>
+        /// ReturnDate Getter And Setter.
+        /// </summary>
+        [Required]
+        [Display(Name = "Return Date")]
+        public DateTime ReturnDate{ get; set; }
         /// <summary>
         /// Duration Getter And Setter.
         /// </summary>
         [Required]
         public int Duration { get; set; }
+        /// <summary>
+        /// Status Getter And Setter.
+        /// </summary>
+        [Required]
+        public string Status { get; set; }
 
         //Contains 1:M Relationship with ApplicationUser. (This is the many side)
         /// <summary>

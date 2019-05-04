@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,5 +31,6 @@ namespace Parkeasy.Data
         public DbSet<Vehicle> Vehicles{ get; set; }
         public DbSet<Flight> Flights { get; set; }
         public DbSet<Invoice> Invoices{ get; set; }
+        public DbSet<Parkeasy.Models.UserViewModel> UserViewModel { get; set; }
     }
 }
