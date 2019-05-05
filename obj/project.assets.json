@@ -3255,6 +3255,18 @@
           "lib/netstandard1.5/StackExchange.Redis.StrongName.dll": {}
         }
       },
+      "Stripe.net/21.7.0": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/Stripe.net.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Stripe.net.dll": {}
+        }
+      },
       "System.AppContext/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -8775,6 +8787,23 @@
         "stackexchange.redis.strongname.nuspec"
       ]
     },
+    "Stripe.net/21.7.0": {
+      "sha512": "wwD94vphjk5/NIq0wEO5GnhJVFNk4yzgSCoDzLX7F0llQNVmwmuFswAfa6jw6glBD7o6+02+MlDl7pVOhOGUYg==",
+      "type": "package",
+      "path": "stripe.net/21.7.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net45/Stripe.net.dll",
+        "lib/net45/Stripe.net.xml",
+        "lib/netstandard1.2/Stripe.net.dll",
+        "lib/netstandard1.2/Stripe.net.xml",
+        "lib/netstandard2.0/Stripe.net.dll",
+        "lib/netstandard2.0/Stripe.net.xml",
+        "stripe.net.21.7.0.nupkg.sha512",
+        "stripe.net.nuspec"
+      ]
+    },
     "System.AppContext/4.3.0": {
       "sha512": "fKC+rmaLfeIzUhagxY17Q9siv/sPrjjKcfNg1Ic8IlQkZLipo8ljcaZQu4VtI4Jqbzjc2VTjzGLF6WmsRXAEgA==",
       "type": "package",
@@ -9046,7 +9075,7 @@
       ]
     },
     "System.Collections.Specialized/4.3.0": {
-      "sha512": "NoPBj0ykejqAWW4p4gGtrrL+3c84ZLSvGnHgq422ew1Rj4WKj1FA8/BCybqC111EtgcqUl6ZJNFYYS22HLgbjA==",
+      "sha512": "Epx8PoVZR0iuOnJJDzp7pWvdfMMOAvpUo95pC4ScH2mJuXkKA2Y4aR3cG9qt2klHgSons1WFh4kcGW7cSXvrxg==",
       "type": "package",
       "path": "system.collections.specialized/4.3.0",
       "files": [
@@ -13519,12 +13548,12 @@
       "Microsoft.AspNetCore.All >= 2.0.6",
       "Microsoft.EntityFrameworkCore.Tools >= 2.0.2",
       "Microsoft.NETCore.App >= 2.1.0",
-      "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 2.0.3"
+      "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 2.0.3",
+      "Stripe.net >= 21.7.0"
     ]
   },
   "packageFolders": {
     "C:\\Users\\Daniel Carswell\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
@@ -13537,13 +13566,11 @@
       "outputPath": "C:\\Users\\Daniel Carswell\\Parkeasy\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
         "C:\\Users\\Daniel Carswell\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.Fallback.config"
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.1"
@@ -13585,6 +13612,10 @@
             "suppressParent": "All",
             "target": "Package",
             "version": "[2.0.3, )"
+          },
+          "Stripe.net": {
+            "target": "Package",
+            "version": "[21.7.0, )"
           }
         },
         "imports": [

@@ -4,25 +4,31 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using Parkeasy.Data;
 using Parkeasy.Models;
 
-namespace Parkeasy.Controllers_
+namespace Parkeasy.Controllers
 {
     public class BookingController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public BookingController(ApplicationDbContext context)
+        public BookingController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Booking
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Bookings.Include(b => b.ApplicationUser);
+            var applicationDbContext = _context.Bookings.Include(b => b.ApplicationUser).Include(b => b.Payment);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -36,6 +42,7 @@ namespace Parkeasy.Controllers_
 
             var booking = await _context.Bookings
                 .Include(b => b.ApplicationUser)
+                .Include(b => b.Payment)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (booking == null)
             {
@@ -49,6 +56,7 @@ namespace Parkeasy.Controllers_
         public IActionResult Create()
         {
             ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["PaymentId"] = new SelectList(_context.Payments, "Id", "Id");
             return View();
         }
 
@@ -57,16 +65,22 @@ namespace Parkeasy.Controllers_
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DepartureDate,ReturnDate,Duration,Status,ApplicationUserId,PaymentId")] Booking booking)
+        public async Task<IActionResult> Create(Booking booking)
         {
-            if (ModelState.IsValid)
+            if (booking.DepartureDate > DateTime.Now && booking.ReturnDate > booking.DepartureDate)
+                booking.Duration = (booking.ReturnDate - booking.DepartureDate).Days;
+
+            else
             {
-                _context.Add(booking);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id", booking.ApplicationUserId);
+                ViewData["PaymentId"] = new SelectList(_context.Payments, "Id", "Id", booking.PaymentId);
+                return View(booking);
             }
-            ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id", booking.ApplicationUserId);
-            return View(booking);
+            booking.Status = "Provisional";
+
+            _context.Add(booking);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ContinueBooking), booking);
         }
 
         // GET: Booking/Edit/5
@@ -83,6 +97,7 @@ namespace Parkeasy.Controllers_
                 return NotFound();
             }
             ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id", booking.ApplicationUserId);
+            ViewData["PaymentId"] = new SelectList(_context.Payments, "Id", "Id", booking.PaymentId);
             return View(booking);
         }
 
@@ -119,6 +134,7 @@ namespace Parkeasy.Controllers_
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id", booking.ApplicationUserId);
+            ViewData["PaymentId"] = new SelectList(_context.Payments, "Id", "Id", booking.PaymentId);
             return View(booking);
         }
 
@@ -132,6 +148,7 @@ namespace Parkeasy.Controllers_
 
             var booking = await _context.Bookings
                 .Include(b => b.ApplicationUser)
+                .Include(b => b.Payment)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (booking == null)
             {
@@ -156,5 +173,18 @@ namespace Parkeasy.Controllers_
         {
             return _context.Bookings.Any(e => e.Id == id);
         }
+
+        #region PassController
+
+        public Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+        [AllowAnonymous]
+        public ActionResult ContinueBooking(Booking booking)
+        {
+            ViewData["BookingForFlight"] = booking;
+            ViewData["BookingForVehicle"] = booking;
+            return RedirectToAction(nameof(FlightsController.Create), "Flights");
+        }
+        #endregion
     }
 }

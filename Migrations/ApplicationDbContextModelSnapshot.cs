@@ -199,7 +199,7 @@ namespace Parkeasy.Migrations
 
                     b.Property<int>("Duration");
 
-                    b.Property<int>("PaymentId");
+                    b.Property<int?>("PaymentId");
 
                     b.Property<DateTime>("ReturnDate");
 
@@ -209,6 +209,8 @@ namespace Parkeasy.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("PaymentId");
 
                     b.ToTable("Booking");
                 });
@@ -280,6 +282,29 @@ namespace Parkeasy.Migrations
                     b.ToTable("Payment");
                 });
 
+            modelBuilder.Entity("Parkeasy.Models.UserViewModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Email")
+                        .IsRequired();
+
+                    b.Property<string>("FirstName")
+                        .HasMaxLength(30);
+
+                    b.Property<string>("LastName")
+                        .HasMaxLength(30);
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserViewModel");
+                });
+
             modelBuilder.Entity("Parkeasy.Models.Vehicle", b =>
                 {
                     b.Property<int?>("Id");
@@ -347,6 +372,10 @@ namespace Parkeasy.Migrations
                     b.HasOne("Parkeasy.Models.ApplicationUser", "ApplicationUser")
                         .WithMany("Bookings")
                         .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("Parkeasy.Models.Payment", "Payment")
+                        .WithMany()
+                        .HasForeignKey("PaymentId");
                 });
 
             modelBuilder.Entity("Parkeasy.Models.Flight", b =>
@@ -374,8 +403,8 @@ namespace Parkeasy.Migrations
             modelBuilder.Entity("Parkeasy.Models.Vehicle", b =>
                 {
                     b.HasOne("Parkeasy.Models.Booking", "Booking")
-                        .WithOne("Payment")
-                        .HasForeignKey("Parkeasy.Models.Vehicle", "Id")
+                        .WithMany()
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

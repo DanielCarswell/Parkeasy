@@ -55,7 +55,7 @@ namespace Parkeasy.Models
         /// Relationship Properties for Booking With Payment.
         /// </summary>
         [InverseProperty("Payment")]
-        public int PaymentId { get; set; }
-        public virtual Vehicle Payment { get; set; }
+        public int? PaymentId { get; set; }
+        public virtual Payment Payment { get; set; }
     }
 }

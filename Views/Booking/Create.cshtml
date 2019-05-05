@@ -1,9 +1,5 @@
 @model Parkeasy.Models.Booking
 
-@{
-    Layout = null;
-}
-
 <!DOCTYPE html>
 
 <html>
@@ -29,7 +25,7 @@
                 <input asp-for="ReturnDate" class="form-control" />
                 <span asp-validation-for="ReturnDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <!--<div class="form-group">
                 <label asp-for="Duration" class="control-label"></label>
                 <input asp-for="Duration" class="form-control" />
                 <span asp-validation-for="Duration" class="text-danger"></span>
@@ -49,7 +45,7 @@
                 <label asp-for="PaymentId" class="control-label"></label>
                 <input asp-for="PaymentId" class="form-control" />
                 <span asp-validation-for="PaymentId" class="text-danger"></span>
-            </div>
+            </div>-->
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>

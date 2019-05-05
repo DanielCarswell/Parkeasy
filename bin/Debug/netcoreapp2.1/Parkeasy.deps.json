@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.1",
-    "signature": "acd5104df7f794e0142e4d9411ded83fd6196226"
+    "signature": "c5b362034a90c742e6e744fe1b88670b7fa5d43a"
   },
   "compilationOptions": {
     "defines": [
@@ -27,7 +27,8 @@
           "Microsoft.AspNetCore.All": "2.0.6",
           "Microsoft.EntityFrameworkCore.Tools": "2.0.2",
           "Microsoft.NETCore.App": "2.1.0",
-          "Microsoft.VisualStudio.Web.CodeGeneration.Design": "2.0.3"
+          "Microsoft.VisualStudio.Web.CodeGeneration.Design": "2.0.3",
+          "Stripe.net": "21.7.0"
         },
         "runtime": {
           "Parkeasy.dll": {}
@@ -3320,6 +3321,20 @@
           "lib/netstandard1.5/StackExchange.Redis.StrongName.dll": {}
         }
       },
+      "Stripe.net/21.7.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "10.0.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Stripe.net.dll": {
+            "assemblyVersion": "21.7.0.0",
+            "fileVersion": "21.7.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Stripe.net.dll": {}
+        }
+      },
       "System.AppContext/4.3.0": {
         "dependencies": {
           "System.Runtime": "4.3.0"
@@ -6241,6 +6256,13 @@
       "path": "stackexchange.redis.strongname/1.2.4",
       "hashPath": "stackexchange.redis.strongname.1.2.4.nupkg.sha512"
     },
+    "Stripe.net/21.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wwD94vphjk5/NIq0wEO5GnhJVFNk4yzgSCoDzLX7F0llQNVmwmuFswAfa6jw6glBD7o6+02+MlDl7pVOhOGUYg==",
+      "path": "stripe.net/21.7.0",
+      "hashPath": "stripe.net.21.7.0.nupkg.sha512"
+    },
     "System.AppContext/4.3.0": {
       "type": "package",
       "serviceable": true,
@@ -6286,7 +6308,7 @@
     "System.Collections.Specialized/4.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-NoPBj0ykejqAWW4p4gGtrrL+3c84ZLSvGnHgq422ew1Rj4WKj1FA8/BCybqC111EtgcqUl6ZJNFYYS22HLgbjA==",
+      "sha512": "sha512-Epx8PoVZR0iuOnJJDzp7pWvdfMMOAvpUo95pC4ScH2mJuXkKA2Y4aR3cG9qt2klHgSons1WFh4kcGW7cSXvrxg==",
       "path": "system.collections.specialized/4.3.0",
       "hashPath": "system.collections.specialized.4.3.0.nupkg.sha512"
     },

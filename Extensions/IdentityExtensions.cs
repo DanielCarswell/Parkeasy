@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Identity;
 
 namespace Parkeasy.Extensions
 {
