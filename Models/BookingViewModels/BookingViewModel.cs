@@ -18,5 +18,6 @@ namespace Parkeasy.Models.BookingViewModels
         public Flight Flight{ get; set; }
         public Vehicle Vehicle{ get; set; }
         public Booking Booking{ get; set; }
+        public int Charge{ get; set; }
     }
 }

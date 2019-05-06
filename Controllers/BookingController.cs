@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Parkeasy.Data;
 using Parkeasy.Models;
 using Parkeasy.Models.BookingViewModels;
+using Stripe;
 
 namespace Parkeasy.Controllers
 {
@@ -182,7 +183,7 @@ namespace Parkeasy.Controllers
         public async Task<IActionResult> Checkout(Booking booking)
         {
             //Checks if passed in booking is null.
-            if (booking == null)
+            if (booking.Duration == 0 || booking.Id == 0) 
             {
                 //Gets instance of Booking from database that a User has started but not finished.
                 booking = GetCurrentUserBooking();
@@ -235,7 +236,8 @@ namespace Parkeasy.Controllers
             {
                 Booking = booking,
                 Flight = flight,
-                Vehicle = vehicle
+                Vehicle = vehicle,
+                Charge = (int) booking.Price * 100
             };
 
             //Returns Checkout View with bookingDetails as model.
@@ -245,9 +247,44 @@ namespace Parkeasy.Controllers
         [HttpPost, ActionName("Checkout")]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> CheckoutConfirm()
+        public async Task<IActionResult> CheckoutConfirm(string stripeEmail, string stripeToken)
         {
-            return View();
+            var booking = GetCurrentUserBooking();
+
+            //Stripe Logic
+            if(stripeToken != null)
+            {
+            var customers = new CustomerService();
+            var charges = new ChargeService();
+
+            var customer = customers.Create(new CustomerCreateOptions
+            {
+                Email = stripeEmail,
+                SourceToken = stripeToken
+            });
+
+            var charge = charges.Create(new ChargeCreateOptions
+            {
+                Amount = Convert.ToInt32(booking.Price * 100),
+                Description = "Booking Id: " + booking.Id,
+                Currency = "usd",
+                CustomerId = customer.Id
+            });
+
+            //booking.PaymentId = charge.BalanceTransactionId;
+            string Test = charge.BalanceTransactionId;
+            if(charge.Status.ToLower() == "succeeded")
+            {
+                booking.Status = "Booked";
+                _context.Update(booking);
+                await _context.SaveChangesAsync();
+            }
+            }
+            else{
+                return View();
+            }
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
         /// <summary>
@@ -261,7 +298,7 @@ namespace Parkeasy.Controllers
             var user = GetCurrentUserAsync();
 
             //Gets Id of the current logged in user.
-            var Id = user?.Id;
+            string Id = user?.Result.Id;
 
             //Gets list of all bookings.
             var allBookings = _context.Bookings.Include(b => b.ApplicationUser).Include(b => b.Payment);

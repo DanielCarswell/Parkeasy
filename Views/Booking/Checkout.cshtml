@@ -1,4 +1,8 @@
 @model Parkeasy.Models.BookingViewModels.BookingViewModel
+@using Microsoft.Extensions.Options
+
+@inject IOptions<Parkeasy.Utility.StripeSettings> Stripe
+
 
 <style>
     .right-align{
@@ -147,9 +151,25 @@
 </table>
 <br />
 <div class="form-group right-align">
-                <a asp-action="Checkout" type="button" class="btn btn-success" asp-route-id="@Model">
-                <i class="fas fa-clipboard-check"></i>    Checkout
-                </a>
+
+    <!--@{
+        var OrderTotalForStripe = Model.Booking.Price * 100;
+    }-->
+    <script
+        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+        data-key="@Stripe.Value.PublishableKey"
+        data-amount="@Model.Charge"
+        data-name="Parkeasy Car Parking"
+        data-label=" Checkout"
+        data-description="Great Prices, Smart Parking"
+        data-locale="auto"
+        data-zip-code="true"
+        data-allow-remember-me ="false"
+        data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+        >
+    </script>
+
+                
                 <a asp-action="Cancel" type="button" class="btn btn-danger" asp-route-id="@Model">
                 <i class="fas fa-trash"></i>    Cancel Full Booking
                 </a>
