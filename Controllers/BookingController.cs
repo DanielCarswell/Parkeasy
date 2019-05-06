@@ -55,11 +55,6 @@ namespace Parkeasy.Controllers
         // GET: Booking/Create
         public IActionResult Create()
         {
-            //Booking booking = new Booking
-            //{
-           //     Duration = 1234,
-            //    Status = "Hello"
-           // };
             return View();
         }
 
@@ -71,21 +66,15 @@ namespace Parkeasy.Controllers
         public async Task<IActionResult> Create(Booking booking)
         {
             if (booking.DepartureDate > DateTime.Now && booking.ReturnDate > booking.DepartureDate)
+            {
                 booking.Duration = (booking.ReturnDate - booking.DepartureDate).Days;
-
-            else
-                return View(booking);
-
-            booking.Status = "Provisional";
-
-           // if (ModelState.IsValid)
-            //{
+                booking.Status = "Provisional";
                 _context.Add(booking);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(ContinueBooking), booking);
-            //}
-
-            //return View(booking);
+            }
+            else
+                return View(booking);
         }
 
         // GET: Booking/Edit/5
@@ -179,8 +168,7 @@ namespace Parkeasy.Controllers
             return _context.Bookings.Any(e => e.Id == id);
         }
 
-        #region PassController
-
+        #region PassingControllers
         public Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         [AllowAnonymous]

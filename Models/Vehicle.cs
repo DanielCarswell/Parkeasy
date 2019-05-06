@@ -10,6 +10,11 @@ namespace Parkeasy.Models
     public class Vehicle
     {
         /// <summary>
+        /// Vehicle Blank Constructor.
+        /// </summary>
+        public Vehicle(){}
+
+        /// <summary>
         /// Id Getter And Setter.
         /// </summary>
         [ForeignKey("Booking")]

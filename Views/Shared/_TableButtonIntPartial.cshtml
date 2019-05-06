@@ -6,13 +6,13 @@
 
 <td style="width:150px;">
     <div class="btn-group" role="group">
-        <a type="button" class="btn btn-warning" href="@Url.Action("Edit/" + Model)">
-            <i class="fas fa-star"></i>
-        </a>
-        <a type="button" class="btn btn-success" href="@Url.Action("Delete/" + @Model)">
+        <a asp-action="Details" type="button" class="btn btn-success" asp-route-id="@Model">
             <i class="fas fa-list-alt"></i>
         </a>
-        <a type="button" class="btn btn-danger" href="@Url.Action("Delete/" + model)">
+        <a asp-action="Edit" type="button" class="btn btn-warning" asp-route-id="@Model">
+            <i class="fas fa-pencil-alt"></i>
+        </a>
+        <a asp-action="Delete" type="button" class="btn btn-danger" asp-route-id="@Model">
             <i class="fas fa-trash"></i>
         </a>
     </div>

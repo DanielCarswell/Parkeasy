@@ -13,10 +13,7 @@ namespace Parkeasy.Models
         /// <summary>
         /// Flight Blank Constructor.
         /// </summary>
-        public Flight()
-        {
-
-        }
+        public Flight(){}
 
         /// <summary>
         /// Id Getter And Setter.

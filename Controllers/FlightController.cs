@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Parkeasy.Data;
 using Parkeasy.Models;
 
@@ -13,10 +15,12 @@ namespace Parkeasy.Controllers
     public class FlightController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public FlightController(ApplicationDbContext context)
+        public FlightController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Flights
@@ -52,8 +56,6 @@ namespace Parkeasy.Controllers
             {
                 Booking = booking,
                 Id = booking.Id,
-                DepartureDateTime = booking.DepartureDate,
-                ReturnDateTime = booking.ReturnDate
             };
             return View(flight);
         }
@@ -65,13 +67,17 @@ namespace Parkeasy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,DepartureNumber,ReturnNumber,DepartureDateTime,ReturnDateTime,Destination")] Flight flight)
         {
+            var allBookings = _context.Bookings.Include(b => b.ApplicationUser).Include(b => b.Payment);
+            var booking = await allBookings.FirstOrDefaultAsync(b => b.Id.Equals(flight.Id));
+            
             if (ModelState.IsValid)
             {
+                flight.DepartureDateTime = booking.DepartureDate;
+                flight.ReturnDateTime = booking.DepartureDate;
                 _context.Add(flight);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ContinueBooking), flight.Booking);
             }
-            ViewData["Id"] = new SelectList(_context.Bookings, "Id", "Id", flight.Id);
             return View(flight);
         }
 
@@ -162,5 +168,15 @@ namespace Parkeasy.Controllers
         {
             return _context.Flights.Any(e => e.Id == id);
         }
+
+        #region PassingControllers
+        public Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+        [AllowAnonymous]
+        public ActionResult ContinueBooking(Booking booking)
+        {
+            return RedirectToAction(nameof(VehicleController.Create), "Vehicle", booking);
+        }
+        #endregion
     }
 }

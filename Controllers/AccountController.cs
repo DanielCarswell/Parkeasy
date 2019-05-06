@@ -466,5 +466,9 @@ namespace Parkeasy.Controllers
         }
 
         #endregion
+
+        #region Additional
+        public Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+        #endregion
     }
 }

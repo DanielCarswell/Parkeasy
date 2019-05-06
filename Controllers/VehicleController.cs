@@ -46,10 +46,14 @@ namespace Parkeasy.Controllers
         }
 
         // GET: Vehicles/Create
-        public IActionResult Create()
+        public IActionResult Create(Booking booking)
         {
-            ViewData["Id"] = new SelectList(_context.Bookings, "Id", "Id");
-            return View();
+            Vehicle vehicle = new Vehicle
+            {
+                Booking = booking,
+                Id = booking.Id,
+            };
+            return View(vehicle);
         }
 
         // POST: Vehicles/Create
@@ -58,14 +62,13 @@ namespace Parkeasy.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Registration,Model,Colour,Travellers")] Vehicle vehicle)
-        {
+        {        
             if (ModelState.IsValid)
             {
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Id"] = new SelectList(_context.Bookings, "Id", "Id", vehicle.Id);
             return View(vehicle);
         }
 

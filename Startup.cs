@@ -10,7 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Parkeasy.Data;
 using Parkeasy.Models;
+using Parkeasy.Utility;
 using Parkeasy.Services;
+using Stripe;
 
 namespace Parkeasy
 {
@@ -51,6 +53,7 @@ namespace Parkeasy
             // Add application services.
             services.AddTransient<Seed>();
             services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
 
             //Adding Google+ API External Login Authentication.
             services.AddAuthentication().AddGoogle(googleOptions => 
@@ -92,6 +95,8 @@ namespace Parkeasy
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            StripeConfiguration.SetApiKey(Configuration.GetSection("Stripe")["SecretKey"]);
 
             //Initialising StaticFiles and Authentication.
             app.UseStaticFiles();
