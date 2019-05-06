@@ -232,6 +232,7 @@ namespace Parkeasy.Migrations
                     DepartureDate = table.Column<DateTime>(nullable: false),
                     Duration = table.Column<int>(nullable: false),
                     PaymentId = table.Column<int>(nullable: true),
+                    Price = table.Column<double>(nullable: false),
                     ReturnDate = table.Column<DateTime>(nullable: false),
                     Status = table.Column<string>(nullable: false)
                 },

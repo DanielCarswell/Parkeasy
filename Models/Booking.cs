@@ -41,6 +41,8 @@ namespace Parkeasy.Models
         /// </summary>
         [Required]
         public string Status { get; set; }
+        [Required]
+        public double Price { get; set; }
 
         //Contains 1:M Relationship with ApplicationUser. (This is the many side)
         /// <summary>

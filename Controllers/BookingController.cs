@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using Parkeasy.Data;
 using Parkeasy.Models;
+using Parkeasy.Models.BookingViewModels;
 
 namespace Parkeasy.Controllers
 {
@@ -69,6 +70,7 @@ namespace Parkeasy.Controllers
             {
                 booking.Duration = (booking.ReturnDate - booking.DepartureDate).Days;
                 booking.Status = "Provisional";
+                booking.Price = 10.00 * (double)booking.Duration;
                 _context.Add(booking);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(ContinueBooking), booking);
@@ -166,6 +168,109 @@ namespace Parkeasy.Controllers
         private bool BookingExists(int id)
         {
             return _context.Bookings.Any(e => e.Id == id);
+        }
+
+        /// <summary>
+        /// Makes sure user is logged in using Authorize DataAnnotation. Has parameter of booking which will be passed
+        /// if a user starts a booking before logging in and will then use that Bookings details to create model and pass in.
+        /// Otherwise it will attempt to get a booking from database that has been started but not finished by the user
+        /// and use that to create the model, if that also does not exist it will make the user start a new booking.
+        /// </summary>
+        /// <param name="booking">Instance of Booking Class</param>
+        /// <returns>Checkout View</returns>
+        [Authorize]
+        public async Task<IActionResult> Checkout(Booking booking)
+        {
+            //Checks if passed in booking is null.
+            if (booking == null)
+            {
+                //Gets instance of Booking from database that a User has started but not finished.
+                booking = GetCurrentUserBooking();
+
+                //Checks again if booking is null after running method reference above.
+                if (booking == null)
+                    //Redirects to create a booking, if booking is still null.
+                    return RedirectToAction(nameof(Create));
+            }
+
+            //Checks if the booking does not have a User Id, this essentially means if the Booking was made
+            //Whilst not logged in, then it will assign that booking to the user.
+            if (booking.ApplicationUserId == null)
+            {
+                //Gets user asynchronously.
+                var user = await GetCurrentUserAsync();
+
+                //Sets Bookings UserId.
+                booking.ApplicationUserId = user?.Id;
+
+                //Updates booking so it now has a UserId.
+                _context.Update(booking);
+
+                //Saves changes to database.
+                await _context.SaveChangesAsync();
+            }
+
+            //Gets list of all Flights.
+            var allFlights = _context.Flights.Include(b => b.Booking);
+
+            //Checks for a flight specific to the booking.
+            var flight = await allFlights.FirstOrDefaultAsync(f => f.Id.Equals(booking.Id));
+
+            //If no flight assigned to booking redirects user to create one.
+            if (flight == null)
+                return RedirectToAction(nameof(FlightController.Create), "Flight", booking);
+
+            //Gets list of all Vehicles.
+            var allVehicles = _context.Vehicles.Include(b => b.Booking);
+
+            //Checks for a vehicle specific to the booking.
+            var vehicle = await allVehicles.FirstOrDefaultAsync(v => v.Id.Equals(booking.Id));
+
+            //If no vehicle assigned to booking redirects user to create one.
+            if (vehicle == null)
+                return RedirectToAction(nameof(VehicleController.Create), "Vehicle", booking);
+
+            //Creates instance of BookingViewModel and assigns the property classes to instances above.
+            BookingViewModel bookingDetails = new BookingViewModel
+            {
+                Booking = booking,
+                Flight = flight,
+                Vehicle = vehicle
+            };
+
+            //Returns Checkout View with bookingDetails as model.
+            return View(bookingDetails);
+        }
+
+        [HttpPost, ActionName("Checkout")]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> CheckoutConfirm()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Gets Current Logged In Users Id and attempts to find an unfinished Booking related to that user.await
+        /// And return that booking.
+        /// </summary>
+        /// <returns>Instance of Booking Class</returns>
+        public Booking GetCurrentUserBooking()
+        {
+            //Gets current logged in user.
+            var user = GetCurrentUserAsync();
+
+            //Gets Id of the current logged in user.
+            var Id = user?.Id;
+
+            //Gets list of all bookings.
+            var allBookings = _context.Bookings.Include(b => b.ApplicationUser).Include(b => b.Payment);
+
+            //Tries to find a booking specific to logged in user.
+            var dbBooking = allBookings.FirstOrDefault(b => b.ApplicationUserId.Equals(Id));
+
+            //Returns instance of Booking class.
+            return dbBooking;
         }
 
         #region PassingControllers

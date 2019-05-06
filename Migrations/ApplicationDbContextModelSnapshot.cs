@@ -201,6 +201,8 @@ namespace Parkeasy.Migrations
 
                     b.Property<int?>("PaymentId");
 
+                    b.Property<double>("Price");
+
                     b.Property<DateTime>("ReturnDate");
 
                     b.Property<string>("Status")
