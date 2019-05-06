@@ -10,11 +10,11 @@ using Parkeasy.Models;
 
 namespace Parkeasy.Controllers
 {
-    public class FlightsController : Controller
+    public class FlightController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public FlightsController(ApplicationDbContext context)
+        public FlightController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -46,10 +46,16 @@ namespace Parkeasy.Controllers
         }
 
         // GET: Flights/Create
-        public IActionResult Create()
+        public IActionResult Create(Booking booking)
         {
-            ViewData["Id"] = new SelectList(_context.Bookings, "Id", "Id");
-            return View();
+            Flight flight = new Flight
+            {
+                Booking = booking,
+                Id = booking.Id,
+                DepartureDateTime = booking.DepartureDate,
+                ReturnDateTime = booking.ReturnDate
+            };
+            return View(flight);
         }
 
         // POST: Flights/Create

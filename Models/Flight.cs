@@ -8,7 +8,16 @@ namespace Parkeasy.Models
     /// Post information with relationships.
     /// </summary>
     [Table("Flight")]
-    public class Flight{
+    public class Flight
+    {
+        /// <summary>
+        /// Flight Blank Constructor.
+        /// </summary>
+        public Flight()
+        {
+
+        }
+
         /// <summary>
         /// Id Getter And Setter.
         /// </summary>

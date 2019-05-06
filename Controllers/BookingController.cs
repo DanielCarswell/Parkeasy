@@ -55,8 +55,11 @@ namespace Parkeasy.Controllers
         // GET: Booking/Create
         public IActionResult Create()
         {
-            ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["PaymentId"] = new SelectList(_context.Payments, "Id", "Id");
+            //Booking booking = new Booking
+            //{
+           //     Duration = 1234,
+            //    Status = "Hello"
+           // };
             return View();
         }
 
@@ -71,16 +74,18 @@ namespace Parkeasy.Controllers
                 booking.Duration = (booking.ReturnDate - booking.DepartureDate).Days;
 
             else
-            {
-                ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id", booking.ApplicationUserId);
-                ViewData["PaymentId"] = new SelectList(_context.Payments, "Id", "Id", booking.PaymentId);
                 return View(booking);
-            }
+
             booking.Status = "Provisional";
 
-            _context.Add(booking);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(ContinueBooking), booking);
+           // if (ModelState.IsValid)
+            //{
+                _context.Add(booking);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(ContinueBooking), booking);
+            //}
+
+            //return View(booking);
         }
 
         // GET: Booking/Edit/5
@@ -181,9 +186,7 @@ namespace Parkeasy.Controllers
         [AllowAnonymous]
         public ActionResult ContinueBooking(Booking booking)
         {
-            ViewData["BookingForFlight"] = booking;
-            ViewData["BookingForVehicle"] = booking;
-            return RedirectToAction(nameof(FlightsController.Create), "Flights");
+            return RedirectToAction(nameof(FlightController.Create), "Flight", booking);
         }
         #endregion
     }

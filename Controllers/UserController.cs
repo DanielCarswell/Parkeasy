@@ -9,7 +9,7 @@ using Parkeasy.Data;
 using Parkeasy.Models;
 using Parkeasy.Extensions;
 
-namespace Parkeasy.Controllers_
+namespace Parkeasy.Controllers
 {
     public class UserController : Controller
     {

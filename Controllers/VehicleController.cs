@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using Parkeasy.Data;
 using Parkeasy.Models;
 
-namespace Parkeasy.Controllers_
+namespace Parkeasy.Controllers
 {
-    public class VehiclesController : Controller
+    public class VehicleController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public VehiclesController(ApplicationDbContext context)
+        public VehicleController(ApplicationDbContext context)
         {
             _context = context;
         }

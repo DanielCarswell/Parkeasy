@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Parkeasy.Data;
 using Parkeasy.Models;
 
-namespace Parkeasy.Controllers_
+namespace Parkeasy.Controllers
 {
     public class InvoiceController : Controller
     {
