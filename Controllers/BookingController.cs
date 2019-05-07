@@ -16,21 +16,36 @@ using Stripe;
 
 namespace Parkeasy.Controllers
 {
+    /// <summary>
+    /// Handles operations involving Booking data.
+    /// </summary>
     public class BookingController : Controller
     {
+        /// <summary>
+        /// Global variables for Database Context and UserManager.
+        /// </summary>
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
+        /// <summary>
+        /// Constructor for initialising global variable data.
+        /// </summary>
+        /// <param name="context">Instance of ApplicationDbContext Class.</param>
+        /// <param name="userManager">Instance of UserManager Class with ApplicationUser Type.</param>
         public BookingController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
+            //Sets globals equal to passed in instances.
             _context = context;
             _userManager = userManager;
         }
 
-        // GET: Booking
+        /// <summary>
+        /// Displays list of all Bookings.
+        /// </summary>
+        /// <returns>Index View</returns>
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Bookings.Include(b => b.ApplicationUser).Include(b => b.Payment);
+            var applicationDbContext = _context.Bookings.Include(b => b.ApplicationUser);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -44,7 +59,6 @@ namespace Parkeasy.Controllers
 
             var booking = await _context.Bookings
                 .Include(b => b.ApplicationUser)
-                .Include(b => b.Payment)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (booking == null)
             {
@@ -57,7 +71,11 @@ namespace Parkeasy.Controllers
         // GET: Booking/Create
         public IActionResult Create()
         {
-            return View();
+            var booking = GetCurrentUserBooking();
+            if(booking == null)
+                return View();
+            else
+                return RedirectToAction(nameof(Checkout));
         }
 
         // POST: Booking/Create
@@ -94,7 +112,6 @@ namespace Parkeasy.Controllers
                 return NotFound();
             }
             ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id", booking.ApplicationUserId);
-            ViewData["PaymentId"] = new SelectList(_context.Payments, "Id", "Id", booking.PaymentId);
             return View(booking);
         }
 
@@ -131,7 +148,6 @@ namespace Parkeasy.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id", booking.ApplicationUserId);
-            ViewData["PaymentId"] = new SelectList(_context.Payments, "Id", "Id", booking.PaymentId);
             return View(booking);
         }
 
@@ -145,7 +161,6 @@ namespace Parkeasy.Controllers
 
             var booking = await _context.Bookings
                 .Include(b => b.ApplicationUser)
-                .Include(b => b.Payment)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (booking == null)
             {
@@ -183,7 +198,7 @@ namespace Parkeasy.Controllers
         public async Task<IActionResult> Checkout(Booking booking)
         {
             //Checks if passed in booking is null.
-            if (booking.Duration == 0 || booking.Id == 0) 
+            if (booking.Duration == 0 || booking.Id == 0)
             {
                 //Gets instance of Booking from database that a User has started but not finished.
                 booking = GetCurrentUserBooking();
@@ -237,12 +252,13 @@ namespace Parkeasy.Controllers
                 Booking = booking,
                 Flight = flight,
                 Vehicle = vehicle,
-                Charge = (int) booking.Price * 100
+                Charge = (int)booking.Price * 100
             };
 
             //Returns Checkout View with bookingDetails as model.
             return View(bookingDetails);
         }
+
 
         [HttpPost, ActionName("Checkout")]
         [ValidateAntiForgeryToken]
@@ -250,37 +266,47 @@ namespace Parkeasy.Controllers
         public async Task<IActionResult> CheckoutConfirm(string stripeEmail, string stripeToken)
         {
             var booking = GetCurrentUserBooking();
+            Slot slot = GetAvailableSlot();
+
+            if (slot.Id == 0 || slot == null)
+                return View();
 
             //Stripe Logic
-            if(stripeToken != null)
+            if (stripeToken != null)
             {
-            var customers = new CustomerService();
-            var charges = new ChargeService();
+                var customers = new CustomerService();
+                var charges = new ChargeService();
 
-            var customer = customers.Create(new CustomerCreateOptions
-            {
-                Email = stripeEmail,
-                SourceToken = stripeToken
-            });
+                var customer = customers.Create(new CustomerCreateOptions
+                {
+                    Email = stripeEmail,
+                    SourceToken = stripeToken
+                });
 
-            var charge = charges.Create(new ChargeCreateOptions
-            {
-                Amount = Convert.ToInt32(booking.Price * 100),
-                Description = "Booking Id: " + booking.Id,
-                Currency = "usd",
-                CustomerId = customer.Id
-            });
+                var charge = charges.Create(new ChargeCreateOptions
+                {
+                    Amount = Convert.ToInt32(booking.Price * 100),
+                    Description = "Booking Id: " + booking.Id,
+                    Currency = "gbp",
+                    CustomerId = customer.Id
+                });
 
-            //booking.PaymentId = charge.BalanceTransactionId;
-            string Test = charge.BalanceTransactionId;
-            if(charge.Status.ToLower() == "succeeded")
-            {
-                booking.Status = "Booked";
-                _context.Update(booking);
-                await _context.SaveChangesAsync();
+                booking.PaymentId = charge.BalanceTransactionId;
+                if (charge.Status.ToLower() == "succeeded")
+                {
+                    slot.Status = "Reserved";
+                    slot.ToBeAvailable = booking.ReturnDate;
+                    slot.LastBookingId = booking.Id;
+
+                    booking.Status = "Booked";
+                    _context.Update(booking);
+                    _context.Update(slot);
+
+                    await _context.SaveChangesAsync();
+                }
             }
-            }
-            else{
+            else
+            {
                 return View();
             }
 
@@ -300,14 +326,38 @@ namespace Parkeasy.Controllers
             //Gets Id of the current logged in user.
             string Id = user?.Result.Id;
 
+            if(Id == null)
+                return null;
+
             //Gets list of all bookings.
-            var allBookings = _context.Bookings.Include(b => b.ApplicationUser).Include(b => b.Payment);
+            var allBookings = _context.Bookings.Include(b => b.ApplicationUser).Where(b => b.Status.Equals("Provisional"));
 
             //Tries to find a booking specific to logged in user.
             var dbBooking = allBookings.FirstOrDefault(b => b.ApplicationUserId.Equals(Id));
 
             //Returns instance of Booking class.
             return dbBooking;
+        }
+
+        /// <summary>
+        /// Gets next avaiable Slot in Car Park.
+        /// </summary>
+        /// <returns>Instance of Slot Class</returns>
+        public Slot GetAvailableSlot()
+        {
+            //Gets all Slot data from Database using ApplicationDbContext.
+            var allSlots = _context.Slots;
+
+            //Attempts to get a slot that has an available status.
+            var slot = _context.Slots.FirstOrDefault(s => s.Status.Equals("Available"));
+
+            //If slot is null, returns null.
+            if (slot == null)
+                return null;
+
+            //If slot exists, returns the Slot Instance.
+            else
+                return slot;
         }
 
         #region PassingControllers

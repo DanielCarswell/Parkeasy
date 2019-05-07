@@ -11,6 +11,11 @@ namespace Parkeasy.Models
     public class Slot
     {
         /// <summary>
+        /// Slot Blank Constructor.
+        /// </summary>
+        public Slot(){}
+
+        /// <summary>
         /// Id Getter And Setter.
         /// </summary>
         [Key]
@@ -26,5 +31,10 @@ namespace Parkeasy.Models
         /// </summary>
         /// <value>05/05/2019 00:20:00</value>
         public DateTime? ToBeAvailable { get; set; }
+        /// <summary>
+        /// LastBookingId Getter and Setter.
+        /// </summary>
+        /// <value>2</value>
+        public int? LastBookingId { get; set; }
     }
 }

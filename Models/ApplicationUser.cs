@@ -48,11 +48,6 @@ namespace Parkeasy.Models
         /// Relationship Properties for ApplicationUser With Invoice.
         /// </summary>
         public virtual ICollection<Invoice> Invoices { get; set; }
-        //Contains 1:M Relationship with Payment. (This is the 1 side)
-        /// <summary>
-        /// Relationship Properties for ApplicationUser With Payment.
-        /// </summary>
-        public virtual ICollection<Payment> Payments { get; set; }
         /// <summary>
         /// Blank Constructor, Sets Navigational Property Bookings to new List of type Booking(Class).
         /// And Navigational Property Invoices to new List of type Invoice(Class).
@@ -61,7 +56,6 @@ namespace Parkeasy.Models
         {
             Bookings = new List<Booking>();
             Invoices = new List<Invoice>();
-            Payments = new List<Payment>();
         }
     }
 }

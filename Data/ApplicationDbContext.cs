@@ -24,13 +24,24 @@ namespace Parkeasy.Data
         }
 
         /// <summary>
-        /// Initialises Payments Table in Database.
+        /// Initialises Bookings Table in Database.
         /// </summary>
-        public DbSet<Payment> Payments{ get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        /// <summary>
+        /// Initialises Vehicles Table in Database.
+        /// </summary>
         public DbSet<Vehicle> Vehicles{ get; set; }
+        /// <summary>
+        /// Initialises Flights Table in Database.
+        /// </summary>
         public DbSet<Flight> Flights { get; set; }
+        /// <summary>
+        /// Initialises Invoices Table in Database.
+        /// </summary>
         public DbSet<Invoice> Invoices{ get; set; }
-        public DbSet<Parkeasy.Models.UserViewModel> UserViewModel { get; set; }
+        /// <summary>
+        /// Initialises Slots Table in Database.
+        /// </summary>
+        public DbSet<Slot> Slots{ get; set; }
     }
 }

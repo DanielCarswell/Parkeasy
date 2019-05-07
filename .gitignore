@@ -1,3 +1,2 @@
-doc/*
-
-Parkeasy/appsettings.json
+appsettings.json
+*.db

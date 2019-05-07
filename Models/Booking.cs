@@ -43,6 +43,7 @@ namespace Parkeasy.Models
         public string Status { get; set; }
         [Required]
         public double Price { get; set; }
+        public string PaymentId{ get; set; }
 
         //Contains 1:M Relationship with ApplicationUser. (This is the many side)
         /// <summary>
@@ -51,13 +52,5 @@ namespace Parkeasy.Models
         [InverseProperty("AspNetUsers")]
         public string ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
-
-        //Contains 1:1 Relationship with Payment. (This is the 1 side)
-        /// <summary>
-        /// Relationship Properties for Booking With Payment.
-        /// </summary>
-        [InverseProperty("Payment")]
-        public int? PaymentId { get; set; }
-        public virtual Payment Payment { get; set; }
     }
 }

@@ -199,7 +199,7 @@ namespace Parkeasy.Migrations
 
                     b.Property<int>("Duration");
 
-                    b.Property<int?>("PaymentId");
+                    b.Property<string>("PaymentId");
 
                     b.Property<double>("Price");
 
@@ -211,8 +211,6 @@ namespace Parkeasy.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("PaymentId");
 
                     b.ToTable("Booking");
                 });
@@ -258,53 +256,20 @@ namespace Parkeasy.Migrations
                     b.ToTable("Invoice");
                 });
 
-            modelBuilder.Entity("Parkeasy.Models.Payment", b =>
+            modelBuilder.Entity("Parkeasy.Models.Slot", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<double>("Amount");
+                    b.Property<int?>("LastBookingId");
 
-                    b.Property<string>("ApplicationUserId");
+                    b.Property<string>("Status");
 
-                    b.Property<int>("CardNumber");
-
-                    b.Property<string>("CardType");
-
-                    b.Property<DateTime>("DatePaid");
-
-                    b.Property<DateTime>("ExpiryDate");
-
-                    b.Property<int>("SecurityNumber");
+                    b.Property<DateTime?>("ToBeAvailable");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
-
-                    b.ToTable("Payment");
-                });
-
-            modelBuilder.Entity("Parkeasy.Models.UserViewModel", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Email")
-                        .IsRequired();
-
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(30);
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(30);
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(100);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserViewModel");
+                    b.ToTable("Slot");
                 });
 
             modelBuilder.Entity("Parkeasy.Models.Vehicle", b =>
@@ -374,10 +339,6 @@ namespace Parkeasy.Migrations
                     b.HasOne("Parkeasy.Models.ApplicationUser", "ApplicationUser")
                         .WithMany("Bookings")
                         .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("Parkeasy.Models.Payment", "Payment")
-                        .WithMany()
-                        .HasForeignKey("PaymentId");
                 });
 
             modelBuilder.Entity("Parkeasy.Models.Flight", b =>
@@ -392,13 +353,6 @@ namespace Parkeasy.Migrations
                 {
                     b.HasOne("Parkeasy.Models.ApplicationUser")
                         .WithMany("Invoices")
-                        .HasForeignKey("ApplicationUserId");
-                });
-
-            modelBuilder.Entity("Parkeasy.Models.Payment", b =>
-                {
-                    b.HasOne("Parkeasy.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany("Payments")
                         .HasForeignKey("ApplicationUserId");
                 });
 

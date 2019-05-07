@@ -12,21 +12,24 @@ namespace Parkeasy.Data
     public class Seed
     {
         /// <summary>
-        /// UserManager and RoleManager global variables for seeding users.
+        /// UserManager, RoleManager global variables for seeding users, and ApplicationDbContext for 
+        /// seeding other database tables.
         /// </summary>
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _context;
 
         /// <summary>
         /// Constructor for Seed class, also populated _userManager and _roleManager global variables.
         /// </summary>
         /// <param name="userManager">Instance of UserManager with ApplicationUser parameter.</param>
         /// <param name="roleManager">Instance of RoleManager with IdentityRole parameter.</param>
-        public Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public Seed(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
             //Setting global variables.
             _userManager = userManager;
             _roleManager = roleManager;
+            _context = context;
         }
 
         /// <summary>
@@ -82,6 +85,31 @@ namespace Parkeasy.Data
                     
                     //Add 1 to i for next Iteration.
                     i++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Seeds the Slot Table with 150 Blank Slots with Available status's.
+        /// </summary>
+        public void SeedSlotData()
+        {
+            //Checks if any Slots exist already in database.
+            //Runs if statement if NO slot data exists.
+            if(!_context.Slots.Any())
+            {
+                //Creates new instance of Slot class with Status set to "Available".
+                Slot slot = new Slot
+                {
+                    Status = "Available"
+                };
+
+                //Loops 150 times adding Slots to Database as Car Park has 150 slots.
+                for(int i = 1; i <= 150; i++)
+                {
+                    slot.Id = i;
+                    _context.Slots.Add(slot);
+                    _context.SaveChanges();
                 }
             }
         }

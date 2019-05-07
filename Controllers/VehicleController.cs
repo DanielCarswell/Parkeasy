@@ -68,7 +68,7 @@ namespace Parkeasy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Registration,Model,Colour,Travellers")] Vehicle vehicle)
         {
-            var allBookings = _context.Bookings.Include(b => b.ApplicationUser).Include(b => b.Payment);
+            var allBookings = _context.Bookings.Include(b => b.ApplicationUser);
             var booking = await allBookings.FirstOrDefaultAsync(b => b.Id.Equals(vehicle.Id));
 
             if (ModelState.IsValid)

@@ -114,6 +114,7 @@ namespace Parkeasy
             //This code will have problems if database does not yet exist.
             //To solve this comment line out, Generate Migrations and database then uncomment and run code.
             seeder.SeedUsers();
+            seeder.SeedSlotData();
         }
     }
 }
