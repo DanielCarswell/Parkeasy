@@ -13,6 +13,8 @@ using Parkeasy.Data;
 using Parkeasy.Models;
 using Parkeasy.Models.BookingViewModels;
 using Stripe;
+using Parkeasy.Services;
+using System.Security.Claims;
 
 namespace Parkeasy.Controllers
 {
@@ -25,6 +27,7 @@ namespace Parkeasy.Controllers
         /// Global variables for Database Context and UserManager.
         /// </summary>
         private readonly ApplicationDbContext _context;
+        private readonly IEmailSender _emailSender;
         private readonly UserManager<ApplicationUser> _userManager;
 
         /// <summary>
@@ -32,11 +35,12 @@ namespace Parkeasy.Controllers
         /// </summary>
         /// <param name="context">Instance of ApplicationDbContext Class.</param>
         /// <param name="userManager">Instance of UserManager Class with ApplicationUser Type.</param>
-        public BookingController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public BookingController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IEmailSender emailSender)
         {
             //Sets globals equal to passed in instances.
             _context = context;
             _userManager = userManager;
+            _emailSender = emailSender;
         }
 
         /// <summary>
@@ -265,6 +269,9 @@ namespace Parkeasy.Controllers
         [Authorize]
         public async Task<IActionResult> CheckoutConfirm(string stripeEmail, string stripeToken)
         {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
             var booking = GetCurrentUserBooking();
             Slot slot = GetAvailableSlot();
 
@@ -294,6 +301,10 @@ namespace Parkeasy.Controllers
                 booking.PaymentId = charge.BalanceTransactionId;
                 if (charge.Status.ToLower() == "succeeded")
                 {
+                    await _emailSender.SendEmailAsync(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email,
+                    "Parkeasy - Booking Successful", "Your booking has been made successfully, you are assigned to Slot " + slot.Id.ToString());
+
+
                     slot.Status = "Reserved";
                     slot.ToBeAvailable = booking.ReturnDate;
                     slot.LastBookingId = booking.Id;
@@ -322,6 +333,9 @@ namespace Parkeasy.Controllers
         {
             //Gets current logged in user.
             var user = GetCurrentUserAsync();
+
+            if(user.Result == null)
+                return null;
 
             //Gets Id of the current logged in user.
             string Id = user?.Result.Id;

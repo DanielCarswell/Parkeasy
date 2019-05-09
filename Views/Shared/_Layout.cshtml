@@ -43,6 +43,42 @@
             <div class="navbar-collapse collapse">
                 
                 <ul class="nav navbar-nav">
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item dropdown text-white-50">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Content Management
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropDownMenuLink">
+                                    <a class="dropdown-item" asp-action="Index" asp-controller="Category" asp-area="Admin">Category</a>
+                                    <a class="dropdown-item" asp-action="Index" asp-controller="SubCategory" asp-area="Admin">Sub Category</a>
+                                    <a class="dropdown-item" asp-action="Index" asp-controller="MenuItem" asp-area="Admin">MenuItem</a>
+                                    <a class="dropdown-item" asp-action="Index" asp-controller="Coupon" asp-area="Admin">Coupons</a>
+                                    <a class="dropdown-item" asp-action="Index" asp-controller="User" asp-area="Admin">Users</a>
+                                    if(User.IsInRole("Manager")
+                                    {
+                                        <a class="dropdown-item" asp-action="Index" asp-controller="User" asp-area="Admin">Users</a>
+                                    }
+                                </div>
+                            </li>
+                        }
+                    @if(User.IsInRole("Admin") || User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item dropdown text-white-50">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Content Management
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropDownMenuLink">
+                                    <a class="dropdown-item" asp-action="Index" asp-controller="Category" asp-area="Admin">Category</a>
+                                    <a class="dropdown-item" asp-action="Index" asp-controller="SubCategory" asp-area="Admin">Sub Category</a>
+                                    <a class="dropdown-item" asp-action="Index" asp-controller="MenuItem" asp-area="Admin">MenuItem</a>
+                                    <a class="dropdown-item" asp-action="Index" asp-controller="Coupon" asp-area="Admin">Coupons</a>
+                                    <a class="dropdown-item" asp-action="Index" asp-controller="User" asp-area="Admin">Users</a>
+
+                                </div>
+
+                            </li>
+                    }
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>

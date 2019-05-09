@@ -53,7 +53,9 @@ namespace Parkeasy
             // Add application services.
             services.AddTransient<Seed>();
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddSingleton<IEmailSender, EmailSender>();
             services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
+            services.Configure<SendGridOptions>(Configuration);
 
             //Adding Google+ API External Login Authentication.
             services.AddAuthentication().AddGoogle(googleOptions => 

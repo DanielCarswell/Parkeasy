@@ -3125,6 +3125,19 @@
           }
         }
       },
+      "Sendgrid/9.10.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Http.Abstractions": "1.1.2",
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/SendGrid.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/SendGrid.dll": {}
+        }
+      },
       "SQLitePCLRaw.bundle_green/1.1.7": {
         "type": "package",
         "dependencies": {
@@ -8636,6 +8649,26 @@
         "version.txt"
       ]
     },
+    "Sendgrid/9.10.0": {
+      "sha512": "G8CYo0oPP/on1D3QNfU27GMLCEUIii8/nGTLGnbmrddrRaRShdxpCHWZhxr02cwZDwAsx0WBCi+IjbJ+DpQo0A==",
+      "type": "package",
+      "path": "sendgrid/9.10.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net452/SendGrid.dll",
+        "lib/net452/SendGrid.pdb",
+        "lib/net452/SendGrid.xml",
+        "lib/netstandard1.3/SendGrid.dll",
+        "lib/netstandard1.3/SendGrid.pdb",
+        "lib/netstandard1.3/SendGrid.xml",
+        "lib/netstandard2.0/SendGrid.dll",
+        "lib/netstandard2.0/SendGrid.pdb",
+        "lib/netstandard2.0/SendGrid.xml",
+        "sendgrid.9.10.0.nupkg.sha512",
+        "sendgrid.nuspec"
+      ]
+    },
     "SQLitePCLRaw.bundle_green/1.1.7": {
       "sha512": "Kw+n4CUhQ8S4YAPmpRUldO8S7c4LU7HHukJF0v5Sfggf8Ia9YVdIh0dYkMvKvS+DTX+OBORSMqPM0CGfAzFtVA==",
       "type": "package",
@@ -13552,6 +13585,7 @@
       "Microsoft.EntityFrameworkCore.Tools >= 2.0.2",
       "Microsoft.NETCore.App >= 2.1.0",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 2.0.3",
+      "Sendgrid >= 9.10.0",
       "Stripe.net >= 21.7.0"
     ]
   },
@@ -13615,6 +13649,10 @@
             "suppressParent": "All",
             "target": "Package",
             "version": "[2.0.3, )"
+          },
+          "Sendgrid": {
+            "target": "Package",
+            "version": "[9.10.0, )"
           },
           "Stripe.net": {
             "target": "Package",
