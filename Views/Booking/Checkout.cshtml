@@ -61,7 +61,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </td>         
             <td>
-                <a asp-action="Edit" type="button" class="btn btn-warning" asp-route-id="@Model">
+                <a asp-action="Edit" asp-controller="Booking" type="button" class="btn btn-warning" asp-route-id="@Model.Booking.Id">
                 <i class="fas fa-pencil-alt"></i>  Edit Booking Details
                 </a>
             </td>
@@ -98,7 +98,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </td>
             <td>
-                <a asp-action="Edit" type="button" class="btn btn-warning" asp-route-id="@Model">
+                <a asp-action="Edit" asp-controller="Flight" type="button" class="btn btn-warning" asp-route-id="@Model.Flight.Id">
                 <i class="fas fa-pencil-alt"></i>  Edit Flight Details
                 </a>
             </td>
@@ -142,7 +142,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </td>
             <td>
-                <a asp-action="Edit" type="button" class="btn btn-warning" asp-route-id="@Model">
+                <a asp-action="Edit" asp-controller="Vehicle" type="button" class="btn btn-warning" asp-route-id="@Model.Vehicle.Id">
                 <i class="fas fa-pencil-alt"></i>  Edit Vehicle Details
                 </a>
             </td>

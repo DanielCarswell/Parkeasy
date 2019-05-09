@@ -21,14 +21,14 @@ namespace Parkeasy.Models
         /// <summary>
         /// Price Getter and Setter.
         /// </summary>
-        public int Price { get; set; }
+        public double Price { get; set; }
         /// <summary>
         /// InvoiceType Getter and Setter.
         /// </summary>
-        public int InvoiceType { get; set; }
+        public string InvoiceType { get; set; }
         /// <summary>
         /// InvoiceBody Getter and Setter.
         /// </summary>
-        public int InvoiceBody { get; set; }
+        public string InvoiceBody { get; set; }
     }
 }

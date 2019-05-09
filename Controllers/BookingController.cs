@@ -263,10 +263,16 @@ namespace Parkeasy.Controllers
             return View(bookingDetails);
         }
 
-
-        [HttpPost, ActionName("Checkout")]
-        [ValidateAntiForgeryToken]
+        /// <summary>
+        /// Checks if payment was successful and if so will send an email with details, add invoice details to database
+        /// And update Booking and Slot tables on database.
+        /// </summary>
+        /// <param name="stripeEmail">String Variable</param>
+        /// <param name="stripeToken">String Variable</param>
+        /// <returns>Redirect to Homepage</returns>
         [Authorize]
+        [ValidateAntiForgeryToken]
+        [HttpPost, ActionName("Checkout")]
         public async Task<IActionResult> CheckoutConfirm(string stripeEmail, string stripeToken)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -304,6 +310,12 @@ namespace Parkeasy.Controllers
                     await _emailSender.SendEmailAsync(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email,
                     "Parkeasy - Booking Successful", "Your booking has been made successfully, you are assigned to Slot " + slot.Id.ToString());
 
+                    Parkeasy.Models.Invoice newInvoice = new Parkeasy.Models.Invoice
+                    {
+                        Price = booking.Price,
+                        InvoiceBody = "Your booking has been made successfully, you are assigned to Slot " + slot.Id.ToString(),
+                        InvoiceType = "Successful Payment"
+                    };
 
                     slot.Status = "Reserved";
                     slot.ToBeAvailable = booking.ReturnDate;
@@ -312,6 +324,7 @@ namespace Parkeasy.Controllers
                     booking.Status = "Booked";
                     _context.Update(booking);
                     _context.Update(slot);
+                    _context.Invoices.Add(newInvoice);
 
                     await _context.SaveChangesAsync();
                 }

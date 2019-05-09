@@ -4,6 +4,7 @@
         margin-top: 35px;
     }
 </style>
+
 <!DOCTYPE html>
 <head>
 <meta charset="utf-8" />
@@ -15,6 +16,8 @@
     <link href="~/css/bootstrap.css" rel="stylesheet" />
     <link href="~/css/navbar.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
+    
+
     <title>Parkeasy</title>
 
     <environment include="Development">
@@ -40,48 +43,34 @@
                 </button>
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Parkeasy</a>
             </div>
-            <div class="navbar-collapse collapse">
-                
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
-                        {
-                            <li class="nav-item dropdown text-white-50">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Content Management
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropDownMenuLink">
-                                    <a class="dropdown-item" asp-action="Index" asp-controller="Category" asp-area="Admin">Category</a>
-                                    <a class="dropdown-item" asp-action="Index" asp-controller="SubCategory" asp-area="Admin">Sub Category</a>
-                                    <a class="dropdown-item" asp-action="Index" asp-controller="MenuItem" asp-area="Admin">MenuItem</a>
-                                    <a class="dropdown-item" asp-action="Index" asp-controller="Coupon" asp-area="Admin">Coupons</a>
-                                    <a class="dropdown-item" asp-action="Index" asp-controller="User" asp-area="Admin">Users</a>
-                                    if(User.IsInRole("Manager")
-                                    {
-                                        <a class="dropdown-item" asp-action="Index" asp-controller="User" asp-area="Admin">Users</a>
-                                    }
-                                </div>
-                            </li>
-                        }
-                    @if(User.IsInRole("Admin") || User.IsInRole("Admin"))
+                    @if (User.IsInRole("Admin"))
                     {
-                        <li class="nav-item dropdown text-white-50">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Content Management
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropDownMenuLink">
-                                    <a class="dropdown-item" asp-action="Index" asp-controller="Category" asp-area="Admin">Category</a>
-                                    <a class="dropdown-item" asp-action="Index" asp-controller="SubCategory" asp-area="Admin">Sub Category</a>
-                                    <a class="dropdown-item" asp-action="Index" asp-controller="MenuItem" asp-area="Admin">MenuItem</a>
-                                    <a class="dropdown-item" asp-action="Index" asp-controller="Coupon" asp-area="Admin">Coupons</a>
-                                    <a class="dropdown-item" asp-action="Index" asp-controller="User" asp-area="Admin">Users</a>
-
-                                </div>
-
-                            </li>
+                        @Html.Partial("_AdminMenuPartial")
                     }
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    @if (User.IsInRole("Manager"))
+                    {
+                        @Html.Partial("_ManagerMenuPartial")
+                    }
+                    @if (User.IsInRole("Booking Clerk"))
+                    {
+                        @Html.Partial("_BookingClerkMenuPartial")
+                    }
+                    @if (User.IsInRole("Invoice Clerk"))
+                    {
+                        @Html.Partial("_InvoiceClerkMenuPartial")
+                    }
+                    @if (User.IsInRole("Valeting Staff"))
+                    {
+                        @Html.Partial("_ValetingStaffMenuPartial")
+                    }
+                    @if (User.IsInRole("Driver"))
+                    {
+                        @Html.Partial("_DriverMenuPartial")
+                    }
+                    <li><a href="/" style="color:#FFF;">Home</a></li>
+                    <li><a href="/Home/Contact" style="color:#FFF;">Contact</a></li>
                 </ul>
                 <a class="navbar-form navbar-left colouring">
                     @using (Html.BeginForm("SearchResults", "Home"))
@@ -105,6 +94,7 @@
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
+        <script type="text/javascript" src="~/js/AdminMenu.js"></script>
     </environment>
     <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"

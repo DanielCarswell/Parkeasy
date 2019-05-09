@@ -39,7 +39,7 @@ namespace Parkeasy.Services
             {
                 return client.SendEmailAsync(msg);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
             return null;
