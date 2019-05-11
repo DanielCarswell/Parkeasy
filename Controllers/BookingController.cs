@@ -50,18 +50,6 @@ namespace Parkeasy.Controllers
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Bookings.Include(b => b.ApplicationUser);
-            
-            return View(await applicationDbContext.ToListAsync());
-        }
-
-        /// <summary>
-        /// Displays list of Current Users Bookings.
-        /// </summary>
-        /// <returns>UserBookings View</returns>
-        public async Task<IActionResult> UserBookings()
-        {
-            var applicationDbContext = _context.Bookings.Include(b => b.ApplicationUser)
-            .Where(b => b.ApplicationUserId == GetCurrentUserAsync().Result.Id);
 
             return View(await applicationDbContext.ToListAsync());
         }
@@ -401,13 +389,41 @@ namespace Parkeasy.Controllers
         }
 
         #region PassingControllers
+        /// <summary>
+        /// Gets application user from httpContext.
+        /// </summary>
+        /// <returns>Instance of Task.Threading.ApplicationUser</returns>
         public Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
+        /// <summary>
+        /// Passes booking details to flights controller to get flight details for booking.
+        /// </summary>
+        /// <param name="booking">Instance of Booking class.</param>
+        /// <returns>Redirect to Flight/Create action.</returns>
         [AllowAnonymous]
         public ActionResult ContinueBooking(Booking booking)
         {
+            //Redirects to Create method on FlightController page and passes booking.
             return RedirectToAction(nameof(FlightController.Create), "Flight", booking);
         }
+        #endregion
+
+        #region UserMethods
+
+        /// <summary>
+        /// Displays list of Current Users Bookings.
+        /// </summary>
+        /// <returns>UserBookings View</returns>
+        public async Task<IActionResult> UserBookings()
+        {
+            //Gets all bookings for current user.
+            var applicationDbContext = _context.Bookings.Include(b => b.ApplicationUser)
+            .Where(b => b.ApplicationUserId == GetCurrentUserAsync().Result.Id);
+
+            //Passes a list of current user bookings to UserBookings View.
+            return View(await applicationDbContext.ToListAsync());
+        }
+
         #endregion
     }
 }
