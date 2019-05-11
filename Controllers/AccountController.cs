@@ -19,16 +19,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Parkeasy.Controllers
 {
+    /// <summary>
+    /// The AccountController handles user Login, Registration and Authentications such as f2a and email confirmation.
+    /// </summary>
     [Authorize]
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
+        /// <summary>
+        /// Global Variables representing class instances.
+        /// </summary>
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Overloaded AccountController Constructor.
+        /// </summary>
+        /// <param name="userManager">Instance of UserManager with ApplicationUser parameter.</param>
+        /// <param name="signInManager">Instance of SignInManager with ApplicationUser parameter.</param>
+        /// <param name="emailSender">Instance of IEmailSender.</param>
+        /// <param name="logger">Instance of ILogger with AccountController Parameter.</param>
+        /// <param name="context">Instance of ApplicationDbContext Class.</param>
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -36,6 +50,7 @@ namespace Parkeasy.Controllers
             ILogger<AccountController> logger,
             ApplicationDbContext context)
         {
+            //Setting global variables equal to parameters.
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
@@ -43,9 +58,15 @@ namespace Parkeasy.Controllers
             _logger = logger;
         }
 
+        //ErrorMessage Property/Getter and Setter.
         [TempData]
         public string ErrorMessage { get; set; }
 
+        /// <summary>
+        /// Loads Login page.
+        /// </summary>
+        /// <param name="returnUrl">String variable.</param>
+        /// <returns>LogIn View</returns>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl = null)
@@ -56,7 +77,7 @@ namespace Parkeasy.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
-
+        
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]

@@ -7,100 +7,88 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Parkeasy.Data;
 using Parkeasy.Models;
-using Parkeasy.Extensions;
 
 namespace Parkeasy.Controllers
 {
-    public class UserController : Controller
+    public class SlotController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public UserController(ApplicationDbContext context)
+        public SlotController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: User
+        // GET: Slot
         public async Task<IActionResult> Index()
         {
-            var users = new List<UserViewModel>();
-            await users.GetUsers(_context);
-
-            return View(users);
+            return View(await _context.Slots.ToListAsync());
         }
 
-        public async Task<IActionResult> CustomerIndex()
-        {
-            var users = new List<UserViewModel>();
-            await users.GetCustomers(_context);
-
-            return View(users);
-        }
-
-       /* // GET: User/Details/5
-        public async Task<IActionResult> Details(string id)
+        // GET: Slot/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var userViewModel = await _context.UserViewModel
+            var slot = await _context.Slots
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (userViewModel == null)
+            if (slot == null)
             {
                 return NotFound();
             }
 
-            return View(userViewModel);
+            return View(slot);
         }
 
-        // GET: User/Create
+        // GET: Slot/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: User/Create
+        // POST: Slot/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Email,FirstName,LastName,Password")] UserViewModel userViewModel)
+        public async Task<IActionResult> Create([Bind("Id,Status,ToBeAvailable,LastBookingId")] Slot slot)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(userViewModel);
+                _context.Add(slot);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(userViewModel);
+            return View(slot);
         }
 
-        // GET: User/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        // GET: Slot/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var userViewModel = await _context.UserViewModel.SingleOrDefaultAsync(m => m.Id == id);
-            if (userViewModel == null)
+            var slot = await _context.Slots.SingleOrDefaultAsync(m => m.Id == id);
+            if (slot == null)
             {
                 return NotFound();
             }
-            return View(userViewModel);
+            return View(slot);
         }
 
-        // POST: User/Edit/5
+        // POST: Slot/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Email,FirstName,LastName,Password")] UserViewModel userViewModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Status,ToBeAvailable,LastBookingId")] Slot slot)
         {
-            if (id != userViewModel.Id)
+            if (id != slot.Id)
             {
                 return NotFound();
             }
@@ -109,12 +97,12 @@ namespace Parkeasy.Controllers
             {
                 try
                 {
-                    _context.Update(userViewModel);
+                    _context.Update(slot);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserViewModelExists(userViewModel.Id))
+                    if (!SlotExists(slot.Id))
                     {
                         return NotFound();
                     }
@@ -125,48 +113,41 @@ namespace Parkeasy.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(userViewModel);
+            return View(slot);
         }
 
-        // GET: User/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        // GET: Slot/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var userData = await _context.Users
-                .SingleOrDefaultAsync(u => u.Id == id);
-
-            var user = new UserViewModel
-            {
-                Email = userData.Email,
-                FirstName = userData.FirstName,
-                LastName = userData.LastName
-            };
-            if (user == null)
+            var slot = await _context.Slots
+                .SingleOrDefaultAsync(m => m.Id == id);
+            if (slot == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(slot);
         }
 
-        // POST: User/Delete/5
+        // POST: Slot/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var userViewModel = await _context.UserViewModel.SingleOrDefaultAsync(m => m.Id == id);
-            _context.UserViewModel.Remove(userViewModel);
+            var slot = await _context.Slots.SingleOrDefaultAsync(m => m.Id == id);
+            _context.Slots.Remove(slot);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserViewModelExists(string id)
+        private bool SlotExists(int id)
         {
-            return _context.UserViewModel.Any(e => e.Id == id);
-        }*/
+            return _context.Slots.Any(e => e.Id == id);
+        }
     }
 }

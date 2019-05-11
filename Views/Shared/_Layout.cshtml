@@ -16,7 +16,6 @@
     <link href="~/css/bootstrap.css" rel="stylesheet" />
     <link href="~/css/navbar.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
-    
 
     <title>Parkeasy</title>
 
@@ -47,27 +46,27 @@
                 <ul class="nav navbar-nav">
                     @if (User.IsInRole("Admin"))
                     {
-                        @Html.Partial("_AdminMenuPartial")
+                        @await Html.PartialAsync("_AdminMenuPartial")
                     }
                     @if (User.IsInRole("Manager"))
                     {
-                        @Html.Partial("_ManagerMenuPartial")
+                        @await Html.PartialAsync("_ManagerMenuPartial")
                     }
                     @if (User.IsInRole("Booking Clerk"))
                     {
-                        @Html.Partial("_BookingClerkMenuPartial")
+                        @await Html.PartialAsync("_BookingClerkMenuPartial")
                     }
                     @if (User.IsInRole("Invoice Clerk"))
                     {
-                        @Html.Partial("_InvoiceClerkMenuPartial")
+                        @await Html.PartialAsync("_InvoiceClerkMenuPartial")
                     }
                     @if (User.IsInRole("Valeting Staff"))
                     {
-                        @Html.Partial("_ValetingStaffMenuPartial")
+                        @await Html.PartialAsync("_ValetingStaffMenuPartial")
                     }
                     @if (User.IsInRole("Driver"))
                     {
-                        @Html.Partial("_DriverMenuPartial")
+                        @await Html.PartialAsync("_DriverMenuPartial")
                     }
                     <li><a href="/" style="color:#FFF;">Home</a></li>
                     <li><a href="/Home/Contact" style="color:#FFF;">Contact</a></li>
@@ -94,7 +93,7 @@
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
-        <script type="text/javascript" src="~/js/AdminMenu.js"></script>
+        <script type="text/javascript" src="~/js/DataDropDown.js"></script>
     </environment>
     <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"

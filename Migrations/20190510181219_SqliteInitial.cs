@@ -207,9 +207,9 @@ namespace Parkeasy.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     ApplicationUserId = table.Column<string>(nullable: true),
                     CardPartial = table.Column<int>(nullable: false),
-                    InvoiceBody = table.Column<int>(nullable: false),
-                    InvoiceType = table.Column<int>(nullable: false),
-                    Price = table.Column<int>(nullable: false)
+                    InvoiceBody = table.Column<string>(nullable: true),
+                    InvoiceType = table.Column<string>(nullable: true),
+                    Price = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {

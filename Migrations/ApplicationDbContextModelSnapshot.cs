@@ -243,11 +243,11 @@ namespace Parkeasy.Migrations
 
                     b.Property<int>("CardPartial");
 
-                    b.Property<int>("InvoiceBody");
+                    b.Property<string>("InvoiceBody");
 
-                    b.Property<int>("InvoiceType");
+                    b.Property<string>("InvoiceType");
 
-                    b.Property<int>("Price");
+                    b.Property<double>("Price");
 
                     b.HasKey("Id");
 

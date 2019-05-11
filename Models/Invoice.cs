@@ -10,6 +10,11 @@ namespace Parkeasy.Models
     public class Invoice
     {
         /// <summary>
+        /// Invoice Class - Blank Constructor.
+        /// </summary>
+        public Invoice(){}
+
+        /// <summary>
         /// Id Getter And Setter.
         /// </summary>
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

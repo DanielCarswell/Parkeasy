@@ -53,6 +53,18 @@ namespace Parkeasy.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        /// <summary>
+        /// Displays list of Current Users Bookings.
+        /// </summary>
+        /// <returns>UserBookings View</returns>
+        public async Task<IActionResult> UserBookings()
+        {
+            var applicationDbContext = _context.Bookings.Include(b => b.ApplicationUser)
+            .Where(b => b.ApplicationUserId == GetCurrentUserAsync().Result.Id);
+
+            return View(await applicationDbContext.ToListAsync());
+        }
+
         // GET: Booking/Details/5
         public async Task<IActionResult> Details(int? id)
         {

@@ -1,0 +1,45 @@
+@model Parkeasy.Models.Slot
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+
+<div>
+    <h4>Slot</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ToBeAvailable)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ToBeAvailable)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LastBookingId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastBookingId)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+</body>
+</html>
