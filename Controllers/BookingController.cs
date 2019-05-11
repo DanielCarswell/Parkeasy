@@ -50,6 +50,7 @@ namespace Parkeasy.Controllers
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Bookings.Include(b => b.ApplicationUser);
+            
             return View(await applicationDbContext.ToListAsync());
         }
 
