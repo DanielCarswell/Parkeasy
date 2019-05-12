@@ -23,6 +23,8 @@ namespace Parkeasy.Extensions
         /// <returns>List of UserBookingViewModel Class Instances.</returns>
         public static async Task GetBookingAndSlotData(this List<UserBookingViewModel> userBookings, ApplicationDbContext context)
         {
+            //Adds UserBookingViewModel class instances to userBookings variable ordered by startdate.
+            //Gets data by joining users to their respective bookings and associated slots to those bookings.
             userBookings.AddRange((
              from u in context.Users
              join b in context.Bookings on u.Id equals b.ApplicationUserId

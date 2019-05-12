@@ -10,7 +10,9 @@
 <body>
 <br />
 <p>
+    @if(User.IsInRole("Admin")){
     <a asp-action="CreateStaff" class="btn btn-success"><span class="fas fa-plus"></span>  Create New Staff Account</a>
+    }
 </p>
 <table class="table">
     <thead>
@@ -24,7 +26,9 @@
                 <th>
                     @Html.DisplayNameFor(model => model.LastName)
                 </th>
-            <th></th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Role)
+                </th>
         </tr>
     </thead>
     <tbody>
@@ -40,8 +44,20 @@
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Role)
+            </td>
+            @if(!item.Role.Equals("Customer"))
+            {
+            <td>
                 @await Html.PartialAsync("_TableButtonPartial", item.Id)
             </td>
+            }
+            else
+            {
+                <td>
+                @await Html.PartialAsync("_NoRoleChangeTablePartial", item.Id);
+        </td>
+            }
         </tr>
 }
     </tbody>

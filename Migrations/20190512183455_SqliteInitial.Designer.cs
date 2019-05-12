@@ -11,7 +11,7 @@ using System;
 namespace Parkeasy.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190510181219_SqliteInitial")]
+    [Migration("20190512183455_SqliteInitial")]
     partial class SqliteInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -139,12 +139,18 @@ namespace Parkeasy.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<string>("CurrentQualification");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
 
+                    b.Property<string>("EmergencyContact");
+
                     b.Property<string>("FirstName");
+
+                    b.Property<string>("JobTitle");
 
                     b.Property<string>("LastName");
 

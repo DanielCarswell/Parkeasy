@@ -38,6 +38,19 @@ namespace Parkeasy.Models
         /// RegisteredAt Getter And Setter.
         /// </summary>
         public DateTime? RegisteredAt { get; set; }
+        /// <summary>
+        /// JobTitle Getter and Setter.
+        /// </summary>
+        public string JobTitle { get; set; }
+        /// <summary>
+        /// CurrentQualification Getter and Setter.
+        /// </summary>
+        public string CurrentQualification { get; set; }
+        /// <summary>
+        /// EmergencyContact Getter and Setter.
+        /// </summary>
+        /// <value></value>
+        public string EmergencyContact { get; set; }
         //Contains 1:M Relationship with Booking. (This is the one side)
         /// <summary>
         /// Relationship Properties for ApplicationUser With Booking.

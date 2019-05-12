@@ -247,7 +247,8 @@ namespace Parkeasy.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FirstName = model.FirstName,
+                 LastName = model.LastName, Address = model.Address, PostCode = model.PostCode, Telephone = model.Telephone};
                 var result = await _userManager.CreateAsync(user, model.Password);
                 _userManager.AddToRoleAsync(user, "Customer").Wait();
                 if (result.Succeeded)

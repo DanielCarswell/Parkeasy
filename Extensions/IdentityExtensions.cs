@@ -7,6 +7,7 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Identity;
+using Parkeasy.Models.AccountViewModels;
 
 namespace Parkeasy.Extensions
 {
@@ -24,12 +25,15 @@ namespace Parkeasy.Extensions
         {
             //Gets all users from the database table and returns them in a list of UserViewModel class instances.
             users.AddRange((from u in context.Users
+                            join ur in context.UserRoles on u.Id equals ur.UserId
+                            join r in context.Roles on ur.RoleId equals r.Id
                             select new UserViewModel
                             {
                                 Id = u.Id,
                                 Email = u.Email,
                                 FirstName = u.FirstName,
-                                LastName = u.LastName
+                                LastName = u.LastName,
+                                Role = r.Name
                             }).OrderBy(o => o.Email).ToList());
         }
 
@@ -56,6 +60,26 @@ namespace Parkeasy.Extensions
                                 FirstName = u.FirstName,
                                 LastName = u.LastName
                             }).OrderBy(o => o.Email).ToList());
+        }
+
+        public static ChangeRoleViewModel GetUserAndRole(ApplicationDbContext context, string id)
+        {
+            //Joins the users table to the userroles table joining user id to userrole userid, then joins
+            //userrole roleid to roles table id column. This allows us to query for specific roles with associated users.
+            //Then orders the outputs by email.
+            var user = ((from u in context.Users
+                         join ur in context.UserRoles on u.Id equals ur.UserId
+                         join r in context.Roles on ur.RoleId equals r.Id
+                         where u.Id.Equals(id)
+                         select new ChangeRoleViewModel
+                         {
+                             Id = u.Id,
+                             Role = r.Name,
+                             FirstName = u.FirstName,
+                             LastName = u.LastName
+                         }).FirstOrDefault());
+
+            return user;
         }
     }
 }

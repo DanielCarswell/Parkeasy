@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace Parkeasy.Models.AccountViewModels
 {
-    public class RegisterViewModel
+    public class StaffRegisterViewModel
     {
+        /// <summary>
+        /// Blank Constructor.
+        /// </summary>
+        public StaffRegisterViewModel(){}
         /// <summary>
         /// Email Getter and Setter.
         /// </summary>
@@ -15,7 +19,6 @@ namespace Parkeasy.Models.AccountViewModels
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
-
         /// <summary>
         /// Password Getter and Setter.
         /// </summary>
@@ -24,7 +27,6 @@ namespace Parkeasy.Models.AccountViewModels
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
-
         /// <summary>
         /// ConfirmPassword Getter and Setter.
         /// </summary>
@@ -33,7 +35,6 @@ namespace Parkeasy.Models.AccountViewModels
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-
         /// <summary>
         /// FirstName Getter And Setter.
         /// </summary>
@@ -49,20 +50,22 @@ namespace Parkeasy.Models.AccountViewModels
         [StringLength(30, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
         public string LastName { get; set; }
         /// <summary>
-        /// Address Getter And Setter.
+        /// JobTitle Getter And Setter.
         /// </summary>
         [Required]
-        public string Address { get; set; }
+        [Display(Name = "Job Title")]
+        public string Name { get; set; }
         /// <summary>
-        /// Telephone Getter And Setter.
+        /// Qualification Getter And Setter.
         /// </summary>
         [Required]
-        public string Telephone { get; set; }
+        [Display(Name = "Current Qualification")]
+        public string Qualification { get; set; }
         /// <summary>
-        /// PostCode Getter And Setter.
+        /// EmergencyContact Getter And Setter.
         /// </summary>
         [Required]
-        [Display(Name = "Post Code")]
-        public string PostCode { get; set; }
+        [Display(Name = "Emergency Contact No")]
+        public string EmergencyContact { get; set; }
     }
 }
