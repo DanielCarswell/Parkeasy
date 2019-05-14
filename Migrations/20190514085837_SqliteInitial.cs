@@ -62,6 +62,8 @@ namespace Parkeasy.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Arrived = table.Column<string>(nullable: true),
+                    DaysOverCheckout = table.Column<int>(nullable: false),
                     LastBookingId = table.Column<int>(nullable: true),
                     Status = table.Column<string>(nullable: true),
                     ToBeAvailable = table.Column<DateTime>(nullable: true)
@@ -184,6 +186,7 @@ namespace Parkeasy.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ApplicationUserId = table.Column<string>(nullable: true),
+                    BookedAt = table.Column<DateTime>(nullable: false),
                     DepartureDate = table.Column<DateTime>(nullable: false),
                     Duration = table.Column<int>(nullable: false),
                     PaymentId = table.Column<string>(nullable: true),

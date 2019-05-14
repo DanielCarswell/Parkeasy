@@ -68,6 +68,10 @@
                     {
                         @await Html.PartialAsync("_DriverMenuPartial")
                     }
+                    @if (User.IsInRole("Customer"))
+                    {
+                        @await Html.PartialAsync("_CustomerMenuPartial")
+                    }
                     <li><a href="/" style="color:#FFF;">Home</a></li>
                     <li><a href="/Home/Contact" style="color:#FFF;">Contact</a></li>
                 </ul>

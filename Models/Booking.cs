@@ -32,6 +32,10 @@ namespace Parkeasy.Models
         [Display(Name = "Return Date")]
         public DateTime ReturnDate{ get; set; }
         /// <summary>
+        /// BookedAt Getter and Setter.
+        /// </summary>
+        public DateTime BookedAt{ get; set; }
+        /// <summary>
         /// Duration Getter And Setter.
         /// </summary>
         [Required]

@@ -77,7 +77,7 @@ namespace Parkeasy.Controllers
         public IActionResult Create()
         {
             var booking = GetCurrentUserBooking();
-            if(booking == null)
+            if (booking == null)
                 return View();
             else
                 return RedirectToAction(nameof(Checkout));
@@ -305,7 +305,7 @@ namespace Parkeasy.Controllers
                     CustomerId = customer.Id
                 });
 
-                booking.PaymentId = charge.BalanceTransactionId;
+                booking.PaymentId = charge.Id;
                 if (charge.Status.ToLower() == "succeeded")
                 {
                     await _emailSender.SendEmailAsync(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email,
@@ -321,7 +321,7 @@ namespace Parkeasy.Controllers
                     slot.Status = "Reserved";
                     slot.ToBeAvailable = booking.ReturnDate;
                     slot.LastBookingId = booking.Id;
-
+                    booking.BookedAt = DateTime.Now;
                     booking.Status = "Booked";
                     _context.Update(booking);
                     _context.Update(slot);
@@ -348,13 +348,13 @@ namespace Parkeasy.Controllers
             //Gets current logged in user.
             var user = GetCurrentUserAsync();
 
-            if(user.Result == null)
+            if (user.Result == null)
                 return null;
 
             //Gets Id of the current logged in user.
             string Id = user?.Result.Id;
 
-            if(Id == null)
+            if (Id == null)
                 return null;
 
             //Gets list of all bookings.
@@ -365,6 +365,75 @@ namespace Parkeasy.Controllers
 
             //Returns instance of Booking class.
             return dbBooking;
+        }
+
+        public async Task<IActionResult> CancelBooking(int? id)
+        {
+            Booking booking = new Booking();
+
+            if (id == 0)
+            {
+                return NotFound();
+            }
+
+            booking = _context.Bookings.Find(id);
+
+            if (booking.Status == "Provisional")
+            {
+                _context.Bookings.Remove(booking);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Cancelled), booking);
+            }
+
+            if (booking.Status == "Booked")
+            {
+                if (booking.BookedAt.AddDays(2) < DateTime.Now)
+                {
+                    var options = new RefundCreateOptions
+                    {
+                        Amount = Convert.ToInt32(booking.Price * 100),
+                        Reason = RefundReasons.RequestedByCustomer,
+                        ChargeId = booking.PaymentId
+                    };
+
+                    var service = new RefundService();
+                    Refund refund = service.Create(options);
+
+                    if (refund.Status.ToLower() == "succeeded")
+                    {
+                        _context.Bookings.Remove(booking);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Cancelled), booking);
+                    }
+                }
+                else
+                {
+                    booking.Price = booking.Price * 0.5;
+                    var options = new RefundCreateOptions
+                    {
+                        Amount = Convert.ToInt32(booking.Price * 100),
+                        Reason = RefundReasons.RequestedByCustomer,
+                        ChargeId = booking.PaymentId
+                    };
+
+                    var service = new RefundService();
+                    Refund refund = service.Create(options);
+
+                    if (refund.Status.ToLower() == "succeeded")
+                    {
+                        _context.Bookings.Remove(booking);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Cancelled), booking);
+                    }
+                }
+
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Cancelled(Booking booking)
+        {
+            return View(booking);
         }
 
         /// <summary>

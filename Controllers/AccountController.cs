@@ -346,9 +346,13 @@ namespace Parkeasy.Controllers
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
+                        result = await _userManager.AddToRoleAsync(user, "Customer");
+                        if(result.Succeeded)
+                        {
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
                         return RedirectToLocal(returnUrl);
+                        }
                     }
                 }
                 AddErrors(result);

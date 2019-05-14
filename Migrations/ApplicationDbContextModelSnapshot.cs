@@ -201,6 +201,8 @@ namespace Parkeasy.Migrations
 
                     b.Property<string>("ApplicationUserId");
 
+                    b.Property<DateTime>("BookedAt");
+
                     b.Property<DateTime>("DepartureDate");
 
                     b.Property<int>("Duration");
@@ -266,6 +268,10 @@ namespace Parkeasy.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Arrived");
+
+                    b.Property<int>("DaysOverCheckout");
 
                     b.Property<int?>("LastBookingId");
 

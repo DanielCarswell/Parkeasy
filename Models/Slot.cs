@@ -36,5 +36,9 @@ namespace Parkeasy.Models
         /// </summary>
         /// <value>2</value>
         public int? LastBookingId { get; set; }
+
+        public string Arrived { get; set; }
+
+        public int DaysOverCheckout { get; set; }
     }
 }

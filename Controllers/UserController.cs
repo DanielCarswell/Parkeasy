@@ -210,7 +210,18 @@ namespace Parkeasy.Controllers
             {
                 return NotFound();
             }
-            return View(user);
+
+            EditViewModel model = new EditViewModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Address = user.Address,
+                PostCode = user.PostCode
+            };
+
+            return View(model);
         }
 
         // POST: User/Edit/5
@@ -218,17 +229,28 @@ namespace Parkeasy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, ApplicationUser user)
+        public async Task<IActionResult> Edit(EditViewModel model)
         {
-            if (id != user.Id)
+            if (model.Id == null)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                ApplicationUser user = new ApplicationUser
+                {
+                    Id = model.Id,
+                    Email = model.Email,
+                    UserName = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Address = model.Address,
+                    PostCode = model.PostCode
+                };
                 try
                 {
+
                     _context.Update(user);
                     await _context.SaveChangesAsync();
                 }
@@ -245,7 +267,7 @@ namespace Parkeasy.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            return View(model);
         }
 
         // GET: User/Details/5
@@ -277,11 +299,13 @@ namespace Parkeasy.Controllers
             var userData = await _context.Users
                 .SingleOrDefaultAsync(u => u.Id == id);
 
-            var user = new UserViewModel
+            var user = new EditViewModel
             {
                 Email = userData.Email,
                 FirstName = userData.FirstName,
-                LastName = userData.LastName
+                LastName = userData.LastName,
+                Address = userData.Address,
+                PostCode = userData.PostCode
             };
             if (user == null)
             {
