@@ -10,4 +10,4 @@ C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.1\Parkeasy.AssemblyInfoI
 C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.1\Parkeasy.AssemblyInfo.cs
 C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.1\Parkeasy.dll
 C:\Users\Daniel Carswell\Parkeasy\obj\Debug\netcoreapp2.1\Parkeasy.pdb
-C:\Users\Daniel Carswell\Parkeasy\bin\Debug\netcoreapp2.1\ParkeasySystem.db
+c:\Users\Daniel Carswell\Parkeasy\bin\Debug\netcoreapp2.1\ParkeasySystem.db

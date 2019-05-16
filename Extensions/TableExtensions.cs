@@ -28,7 +28,6 @@ namespace Parkeasy.Extensions
             userBookings.AddRange((
              from u in context.Users
              join b in context.Bookings on u.Id equals b.ApplicationUserId
-             join s in context.Slots on b.Id equals s.LastBookingId
              select new UserBookingViewModel
              {
                  Id = b.Id,
@@ -36,9 +35,9 @@ namespace Parkeasy.Extensions
                  LastName = u.LastName,
                  StartDate = b.DepartureDate,
                  EndDate = b.ReturnDate,
-                 SlotNumber = s.Id,
+                 SlotNumber = b.SlotId,
                  Paid = b.Price
              }).OrderBy(o => o.StartDate).ToList());
         }
     }
-}
+}    

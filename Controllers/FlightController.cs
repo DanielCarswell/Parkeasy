@@ -128,7 +128,7 @@ namespace Parkeasy.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(BookingController.Create), "Booking");
             }
             ViewData["Id"] = new SelectList(_context.Bookings, "Id", "Id", flight.Id);
             return View(flight);

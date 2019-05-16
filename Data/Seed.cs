@@ -113,5 +113,23 @@ namespace Parkeasy.Data
                 }
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void SeedPricing()
+        {
+            if(!_context.Pricing.Any())
+            {
+                Pricing prices = new Pricing
+                {
+                    PerDay = (double) 10,
+                    ServicingCost = (double) 15
+                };
+
+                _context.Pricing.Add(prices);
+                _context.SaveChanges();
+            }
+        }
     }
 }

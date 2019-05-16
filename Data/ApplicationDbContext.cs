@@ -43,5 +43,9 @@ namespace Parkeasy.Data
         /// Initialises Slots Table in Database.
         /// </summary>
         public DbSet<Slot> Slots{ get; set; }
+        /// <summary>
+        /// Initialises Pricing Table in Database.
+        /// </summary>
+        public DbSet<Pricing> Pricing { get; set; }
     }
 }

@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+
 
 namespace Parkeasy.Models
 {
@@ -13,7 +16,10 @@ namespace Parkeasy.Models
         /// <summary>
         /// Slot Blank Constructor.
         /// </summary>
-        public Slot(){}
+        public Slot()
+        {
+            Bookings = new List<Booking>();    
+        }
 
         /// <summary>
         /// Id Getter And Setter.
@@ -31,14 +37,9 @@ namespace Parkeasy.Models
         /// </summary>
         /// <value>05/05/2019 00:20:00</value>
         public DateTime? ToBeAvailable { get; set; }
-        /// <summary>
-        /// LastBookingId Getter and Setter.
-        /// </summary>
-        /// <value>2</value>
-        public int? LastBookingId { get; set; }
-
         public string Arrived { get; set; }
-
         public int DaysOverCheckout { get; set; }
+        public int LastBookingsId { get; set; }
+        public virtual ICollection<Booking> Bookings { get; set; }
     }
 }

@@ -57,6 +57,20 @@ namespace Parkeasy.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Pricing",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    PerDay = table.Column<double>(nullable: false),
+                    ServicingCost = table.Column<double>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pricing", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Slot",
                 columns: table => new
                 {
@@ -64,7 +78,7 @@ namespace Parkeasy.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Arrived = table.Column<string>(nullable: true),
                     DaysOverCheckout = table.Column<int>(nullable: false),
-                    LastBookingId = table.Column<int>(nullable: true),
+                    LastBookingsId = table.Column<int>(nullable: false),
                     Status = table.Column<string>(nullable: true),
                     ToBeAvailable = table.Column<DateTime>(nullable: true)
                 },
@@ -180,32 +194,6 @@ namespace Parkeasy.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Booking",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ApplicationUserId = table.Column<string>(nullable: true),
-                    BookedAt = table.Column<DateTime>(nullable: false),
-                    DepartureDate = table.Column<DateTime>(nullable: false),
-                    Duration = table.Column<int>(nullable: false),
-                    PaymentId = table.Column<string>(nullable: true),
-                    Price = table.Column<double>(nullable: false),
-                    ReturnDate = table.Column<DateTime>(nullable: false),
-                    Status = table.Column<string>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Booking", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Booking_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Invoice",
                 columns: table => new
                 {
@@ -226,6 +214,40 @@ namespace Parkeasy.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Booking",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ApplicationUserId = table.Column<string>(nullable: true),
+                    BookedAt = table.Column<DateTime>(nullable: false),
+                    DepartureDate = table.Column<DateTime>(nullable: false),
+                    Duration = table.Column<int>(nullable: false),
+                    PaymentId = table.Column<string>(nullable: true),
+                    Price = table.Column<double>(nullable: false),
+                    ReturnDate = table.Column<DateTime>(nullable: false),
+                    Servicing = table.Column<bool>(nullable: false),
+                    SlotId = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Booking", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Booking_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Booking_Slot_SlotId",
+                        column: x => x.SlotId,
+                        principalTable: "Slot",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -314,6 +336,11 @@ namespace Parkeasy.Migrations
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Booking_SlotId",
+                table: "Booking",
+                column: "SlotId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Invoice_ApplicationUserId",
                 table: "Invoice",
                 column: "ApplicationUserId");
@@ -343,7 +370,7 @@ namespace Parkeasy.Migrations
                 name: "Invoice");
 
             migrationBuilder.DropTable(
-                name: "Slot");
+                name: "Pricing");
 
             migrationBuilder.DropTable(
                 name: "Vehicle");
@@ -356,6 +383,9 @@ namespace Parkeasy.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Slot");
         }
     }
 }

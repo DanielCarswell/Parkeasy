@@ -213,12 +213,18 @@ namespace Parkeasy.Migrations
 
                     b.Property<DateTime>("ReturnDate");
 
+                    b.Property<bool>("Servicing");
+
+                    b.Property<int>("SlotId");
+
                     b.Property<string>("Status")
                         .IsRequired();
 
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("SlotId");
 
                     b.ToTable("Booking");
                 });
@@ -264,6 +270,20 @@ namespace Parkeasy.Migrations
                     b.ToTable("Invoice");
                 });
 
+            modelBuilder.Entity("Parkeasy.Models.Pricing", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double>("PerDay");
+
+                    b.Property<double>("ServicingCost");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pricing");
+                });
+
             modelBuilder.Entity("Parkeasy.Models.Slot", b =>
                 {
                     b.Property<int>("Id")
@@ -273,7 +293,7 @@ namespace Parkeasy.Migrations
 
                     b.Property<int>("DaysOverCheckout");
 
-                    b.Property<int?>("LastBookingId");
+                    b.Property<int>("LastBookingsId");
 
                     b.Property<string>("Status");
 
@@ -351,6 +371,11 @@ namespace Parkeasy.Migrations
                     b.HasOne("Parkeasy.Models.ApplicationUser", "ApplicationUser")
                         .WithMany("Bookings")
                         .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("Parkeasy.Models.Slot", "Slot")
+                        .WithMany("Bookings")
+                        .HasForeignKey("SlotId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Parkeasy.Models.Flight", b =>

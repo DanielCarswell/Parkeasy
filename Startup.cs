@@ -117,6 +117,7 @@ namespace Parkeasy
             //To solve this comment line out, Generate Migrations and database then uncomment and run code.
             seeder.SeedUsers();
             seeder.SeedSlotData();
+            seeder.SeedPricing();
         }
     }
 }

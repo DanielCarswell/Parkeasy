@@ -47,11 +47,19 @@ namespace Parkeasy.Controllers
         /// Displays list of all Bookings.
         /// </summary>
         /// <returns>Index View</returns>
+        [Authorize(Roles = "Admin,Manager,Booking Clerk")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Bookings.Include(b => b.ApplicationUser);
 
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        [Authorize(Roles = "Invoice Clerk")]
+        public async Task<IActionResult> ValetingStaffIndex()
+        {
+            var slots = _context.Slots.Include(s => s.Bookings.Where(b => b.Status == "Delayed" || b.Status == "Booked" || b.Status == "Parked"));
+            return View();
         }
 
         // GET: Booking/Details/5
@@ -90,14 +98,29 @@ namespace Parkeasy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Booking booking)
         {
+            string userId = null;
+            try{
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
+            catch(Exception){}
+            
             if (booking.DepartureDate > DateTime.Now && booking.ReturnDate > booking.DepartureDate)
             {
-                booking.Duration = (booking.ReturnDate - booking.DepartureDate).Days;
-                booking.Status = "Provisional";
-                booking.Price = 10.00 * (double)booking.Duration;
-                _context.Add(booking);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(ContinueBooking), booking);
+                int availableSlot = SlotAvailable(booking.DepartureDate, booking.ReturnDate);
+                if (availableSlot != 0)
+                {
+                    booking.ApplicationUserId = userId;
+                    booking.Duration = (booking.ReturnDate - booking.DepartureDate).Days;
+                    booking.Status = "Provisional";
+                    booking.SlotId = availableSlot;
+                    booking.Price = _context.Pricing.Last().PerDay * (double)booking.Duration;
+                    _context.Add(booking);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(ContinueBooking), booking);
+                }
+                else
+                    return View(booking);
             }
             else
                 return View(booking);
@@ -112,6 +135,15 @@ namespace Parkeasy.Controllers
             }
 
             var booking = await _context.Bookings.SingleOrDefaultAsync(m => m.Id == id);
+
+            var slotId = SlotAvailable(booking.DepartureDate, booking.ReturnDate);
+
+            if(slotId == 0)
+                return RedirectToAction(nameof(UnavailableDates));
+
+            if(slotId != booking.SlotId)
+                booking.SlotId = slotId;
+
             if (booking == null)
             {
                 return NotFound();
@@ -125,7 +157,7 @@ namespace Parkeasy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DepartureDate,ReturnDate,Duration,Status,ApplicationUserId,PaymentId")] Booking booking)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DepartureDate,ReturnDate,Duration,Status,Servicing,ApplicationUserId,PaymentId")] Booking booking)
         {
             if (id != booking.Id)
             {
@@ -136,6 +168,8 @@ namespace Parkeasy.Controllers
             {
                 try
                 {
+                    booking.Duration = (booking.ReturnDate - booking.DepartureDate).Days;
+                    booking.Price = _context.Pricing.Last().PerDay * (double)booking.Duration;
                     _context.Update(booking);
                     await _context.SaveChangesAsync();
                 }
@@ -191,6 +225,27 @@ namespace Parkeasy.Controllers
             return _context.Bookings.Any(e => e.Id == id);
         }
 
+        [Authorize(Roles = "Manager")]
+        public IActionResult ChangePrice()
+        {
+            return View(_context.Pricing.Last());
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Manager")]
+        public async Task<IActionResult> ChangePrice(Pricing prices)
+        {
+            if(prices.PerDay != 0 && prices.ServicingCost != 0)
+            {
+                _context.Pricing.Update(prices);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(prices);
+        }
+
         /// <summary>
         /// Makes sure user is logged in using Authorize DataAnnotation. Has parameter of booking which will be passed
         /// if a user starts a booking before logging in and will then use that Bookings details to create model and pass in.
@@ -199,9 +254,11 @@ namespace Parkeasy.Controllers
         /// </summary>
         /// <param name="booking">Instance of Booking Class</param>
         /// <returns>Checkout View</returns>
-        [Authorize]
+        [Authorize(Roles = "Admin,Manager,Booking Clerk,Customer")]
         public async Task<IActionResult> Checkout(Booking booking)
         {
+            double ServicingCost = 0;
+
             //Checks if passed in booking is null.
             if (booking.Duration == 0 || booking.Id == 0)
             {
@@ -251,13 +308,17 @@ namespace Parkeasy.Controllers
             if (vehicle == null)
                 return RedirectToAction(nameof(VehicleController.Create), "Vehicle", booking);
 
+            //Checks if Servicing is added to booking and adds price if so.
+            if(booking.Servicing.Equals(true))
+                ServicingCost = (double)_context.Pricing.Last().ServicingCost;
+        
             //Creates instance of BookingViewModel and assigns the property classes to instances above.
             BookingViewModel bookingDetails = new BookingViewModel
             {
                 Booking = booking,
                 Flight = flight,
                 Vehicle = vehicle,
-                Charge = (int)booking.Price * 100
+                Charge = (int)(booking.Price + ServicingCost) * 100
             };
 
             //Returns Checkout View with bookingDetails as model.
@@ -271,16 +332,16 @@ namespace Parkeasy.Controllers
         /// <param name="stripeEmail">String Variable</param>
         /// <param name="stripeToken">String Variable</param>
         /// <returns>Redirect to Homepage</returns>
-        [Authorize]
         [ValidateAntiForgeryToken]
         [HttpPost, ActionName("Checkout")]
+        [Authorize(Roles = "Admin,Manager,Booking Clerk,Customer")]
         public async Task<IActionResult> CheckoutConfirm(string stripeEmail, string stripeToken)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
             var booking = GetCurrentUserBooking();
-            Slot slot = GetAvailableSlot();
+            Slot slot = await _context.Slots.Where(s => s.Id == SlotAvailable(booking.DepartureDate, booking.ReturnDate)).FirstOrDefaultAsync();
 
             if (slot.Id == 0 || slot == null)
                 return View();
@@ -311,6 +372,10 @@ namespace Parkeasy.Controllers
                     await _emailSender.SendEmailAsync(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email,
                     "Parkeasy - Booking Successful", "Your booking has been made successfully, you are assigned to Slot " + slot.Id.ToString());
 
+                    if(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email != customer.Email)
+                        await _emailSender.SendEmailAsync(customer.Email,
+                        "Parkeasy - Booking Successful", "Your booking has been made successfully, you are assigned to Slot " + slot.Id.ToString());
+
                     Parkeasy.Models.Invoice newInvoice = new Parkeasy.Models.Invoice
                     {
                         Price = booking.Price,
@@ -320,7 +385,7 @@ namespace Parkeasy.Controllers
 
                     slot.Status = "Reserved";
                     slot.ToBeAvailable = booking.ReturnDate;
-                    slot.LastBookingId = booking.Id;
+                    slot.Bookings.Add(booking);
                     booking.BookedAt = DateTime.Now;
                     booking.Status = "Booked";
                     _context.Update(booking);
@@ -436,27 +501,6 @@ namespace Parkeasy.Controllers
             return View(booking);
         }
 
-        /// <summary>
-        /// Gets next avaiable Slot in Car Park.
-        /// </summary>
-        /// <returns>Instance of Slot Class</returns>
-        public Slot GetAvailableSlot()
-        {
-            //Gets all Slot data from Database using ApplicationDbContext.
-            var allSlots = _context.Slots;
-
-            //Attempts to get a slot that has an available status.
-            var slot = _context.Slots.FirstOrDefault(s => s.Status.Equals("Available"));
-
-            //If slot is null, returns null.
-            if (slot == null)
-                return null;
-
-            //If slot exists, returns the Slot Instance.
-            else
-                return slot;
-        }
-
         #region PassingControllers
         /// <summary>
         /// Gets application user from httpContext.
@@ -475,6 +519,65 @@ namespace Parkeasy.Controllers
             //Redirects to Create method on FlightController page and passes booking.
             return RedirectToAction(nameof(FlightController.Create), "Flight", booking);
         }
+
+        public IActionResult UnavailableDates()
+        {
+            return View();
+        }
+        #endregion
+
+        #region CheckDates
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bookingStart">DateTime Variable</param>
+        /// <param name="bookingEnd">DateTime Variable</param>
+        /// <returns>Integer Value</returns>
+        public int SlotAvailable(DateTime bookingStart, DateTime bookingEnd)
+        {
+            int days = (int)(bookingEnd - bookingStart).TotalDays;
+            var slots = _context.Slots;
+            int dayCheck = 0;
+
+            foreach (Slot s in slots)
+            {
+                if (s.Status == "Delayed")
+                    continue;
+
+                if (s.Bookings.Count == 0)
+                    s.Bookings = _context.Bookings.Where(b => b.SlotId == s.Id).ToList();
+
+                int count = s.Bookings.Count;
+                int checkCount = 0;
+
+                foreach (Booking b in s.Bookings)
+                {
+                    for (int i = 0; i <= days - 1; i++)
+                    {
+                        if (bookingStart.AddDays(i) > b.ReturnDate || bookingStart.AddDays(i) < b.DepartureDate)
+                        {
+                            dayCheck++;
+                        }
+                    }
+                    if (dayCheck == days)
+                        checkCount++;
+                    else
+                        dayCheck = 0;
+                    break;
+                }
+
+                if (checkCount == count)
+                    return s.Id;
+                else
+                {
+                    checkCount = 0;
+                    dayCheck = 0;
+                }
+            }
+
+            return 0;
+        }
         #endregion
 
         #region UserMethods
@@ -491,6 +594,50 @@ namespace Parkeasy.Controllers
 
             //Passes a list of current user bookings to UserBookings View.
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        #endregion
+
+        #region ValetingStaff
+
+        public async Task<IActionResult> DelayBooking(int? id)
+        {
+            Booking booking = _context.Bookings.Find(id);
+
+            booking.Status = "Delayed";
+            _context.Bookings.Update(booking);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ValetingStaffIndex));
+        }
+
+        public async Task<IActionResult> CompleteBooking(int? id)
+        {
+            Booking booking = _context.Bookings.Find(id);
+
+            booking.Status = "Complete";
+            _context.Bookings.Update(booking);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ValetingStaffIndex));
+        }
+
+        public async Task<IActionResult> CheckInBooking(int? id)
+        {
+            Booking booking = _context.Bookings.Find(id);
+
+            booking.Status = "Parked";
+            _context.Bookings.Update(booking);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ValetingStaffIndex));
+        }
+
+        public async Task<IActionResult> NoShowBooking(int? id)
+        {
+            Booking booking = _context.Bookings.Find(id);
+
+            booking.Status = "No Arrival";
+            _context.Bookings.Update(booking);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ValetingStaffIndex));
         }
 
         #endregion
