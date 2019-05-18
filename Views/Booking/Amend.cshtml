@@ -1,176 +1,50 @@
-@model Parkeasy.Models.BookingViewModels.BookingViewModel
-@using Microsoft.Extensions.Options
-
-@inject IOptions<Parkeasy.Utility.StripeSettings> Stripe
-
-
-<style>
-    .right-align{
-        float: right;
-        padding-right: 50px;
-    }
-</style>
+@model Parkeasy.Models.BookingViewModels.AmendViewModel
 
 <!DOCTYPE html>
 
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <title>Amend</title>
 </head>
 <body>
-<br />
-<h2>
-    <strong>Confirm Booking Details</strong>
-</h2>
-<br />
-<form asp-action="Checkout">
-<table class="table table-striped table-bordered table-condensed table-responsive table-hover">
-    <thead>
-        <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Booking.DepartureDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Booking.ReturnDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Booking.Duration)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Booking.Price)
-                </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-                @Html.DisplayFor(model => model.Booking.DepartureDate)
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </td>
-            <td>
-                @Html.DisplayFor(model => model.Booking.ReturnDate)
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </td>
-            <td>
-                @Html.DisplayFor(model => model.Booking.Duration)
-                Days
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </td>
-            <td>
-                £@Html.DisplayFor(model => model.Booking.Price).00
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </td>         
-            <td>
-                <a asp-action="Edit" asp-controller="Booking" type="button" class="btn btn-warning" asp-route-id="@Model.Booking.Id">
-                <i class="fas fa-pencil-alt"></i>  Edit Booking Details
-                </a>
-            </td>
-        </tr>
-    </tbody>
-</table>
-<br />
-<table class="table table-striped table-bordered table-condensed table-responsive table-hover">
-    <thead>
-        <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Flight.DepartureNumber)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Flight.ReturnNumber)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Flight.Destination)
-                </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-                @Html.DisplayFor(model => model.Flight.DepartureNumber)
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </td>
-            <td>
-                @Html.DisplayFor(model => model.Flight.ReturnNumber)
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </td>
-            <td>
-                @Html.DisplayFor(model => model.Flight.Destination)
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </td>
-            <td>
-                <a asp-action="Edit" asp-controller="Flight" type="button" class="btn btn-warning" asp-route-id="@Model.Flight.Id">
-                <i class="fas fa-pencil-alt"></i>  Edit Flight Details
-                </a>
-            </td>
-        </tr>
-    </tbody>
-</table>
-<br />
-<table class="table table-striped table-bordered table-condensed table-responsive table-hover">
-    <thead>
-        <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Vehicle.Registration)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Vehicle.Model)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Vehicle.Colour)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Vehicle.Travellers)
-                </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-                @Html.DisplayFor(model => model.Vehicle.Registration)
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </td>
-            <td>
-                @Html.DisplayFor(model => model.Vehicle.Model)
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </td>
-            <td>
-                @Html.DisplayFor(model => model.Vehicle.Colour)
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </td>
-            <td>
-                @Html.DisplayFor(model => model.Vehicle.Travellers)
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </td>
-            <td>
-                <a asp-action="Edit" asp-controller="Vehicle" type="button" class="btn btn-warning" asp-route-id="@Model.Vehicle.Id">
-                <i class="fas fa-pencil-alt"></i>  Edit Vehicle Details
-                </a>
-            </td>
-        </tr>
-    </tbody>
-</table>
-<br />
-<div class="form-group right-align">
 
-    <script
-        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-        data-key="@Stripe.Value.PublishableKey"
-        data-amount="ViewData["Cost"]"
-        data-name="Parkeasy Car Parking"
-        data-label=" Checkout"
-        data-description="Great Prices, Smart Parking"
-        data-locale="auto"
-        data-zip-code="true"
-        data-allow-remember-me ="false"
-        data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-        >
-    </script>
-
-                
-                <a asp-action="CancelBooking" type="button" class="btn btn-danger" asp-route-id="@Model.Booking.Id">
-                <i class="fas fa-trash"></i>    Cancel Full Booking
-                </a>
+<h4>Booking</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Amend">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                    <label asp-for="Booking.DepartureDate" class="control-label"></label>
+                    <input asp-for="Booking.DepartureDate" class="form-control" />
+                    <span asp-validation-for="Booking.DepartureDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Booking.ReturnDate" class="control-label"></label>
+                    <input asp-for="Booking.ReturnDate" class="form-control" />
+                    <span asp-validation-for="Booking.ReturnDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Booking.Servicing" class="control-label"></label>
+                    <input asp-for="Booking.Servicing" class="form-control" />
+                </div>
+                @Html.HiddenFor(Model => Model.Flight)
+            @Html.HiddenFor(Model => Model.Vehicle)
+            @Html.HiddenFor(Model => Model.BookingId)
+            @Html.HiddenFor(Model => Model.VehicleId)
+            @Html.HiddenFor(Model => Model.FlightId)
+            @Html.HiddenFor(Model => Model.Charge)
+            <div class="form-group">
+                <input type="submit" value="Amend" class="btn btn-default" />
             </div>
-            </form>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
 </body>
 </html>

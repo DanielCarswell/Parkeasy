@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Parkeasy.Data;
 using Parkeasy.Models;
+using Parkeasy.Models.BookingViewModels;
 
 namespace Parkeasy.Controllers
 {
@@ -79,6 +80,18 @@ namespace Parkeasy.Controllers
                 return RedirectToAction(nameof(ContinueBooking), flight.Booking);
             }
             return View(flight);
+        }
+
+        [HttpGet]
+        public IActionResult Amend(AmendViewModel amendDetails)
+        {
+            return View(amendDetails);
+        }
+
+        [HttpPost]
+        public IActionResult Amend(int? id, AmendViewModel amendDetails)
+        {
+            return RedirectToAction(nameof(BookingController.Amend), "Booking", amendDetails);
         }
 
         // GET: Flights/Edit/5

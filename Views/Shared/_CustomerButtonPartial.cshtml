@@ -1,0 +1,12 @@
+@model int
+
+<td style="width:150px;">
+    <div class="btn-group" role="group">
+        <a asp-action="AmendBooking" type="button" class="btn btn-warning" asp-route-id="@Model">
+            <i class="fas fa-pencil-alt"></i> Amend
+        </a>
+        <a asp-action="CancelBooking" type="button" class="btn btn-danger" asp-route-id="@Model">
+            <i class="fas fa-trash"></i> Cancel
+        </a>
+    </div>
+</td>

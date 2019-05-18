@@ -44,9 +44,18 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
-            <td>
-                @await Html.PartialAsync("_TableButtonIntPartial", item.Id)
-            </td>
+            @if(item.Status=="Booked")
+            {
+                @await Html.PartialAsync("_CustomerButtonPartial", item.Id)
+            }
+            @if(item.Status=="Provisional")
+            {
+                <td>
+                <a asp-action="Checkout" type="button" class="btn btn-success" asp-route-id="@item.Id">
+            <i class="fas fa-pencil-alt"></i> Continue Booking
+        </a>
+        </td>
+            }
         </tr>
 }
     </tbody>

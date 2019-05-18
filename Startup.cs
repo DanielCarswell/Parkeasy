@@ -76,6 +76,8 @@ namespace Parkeasy
 
             //Initialising MVC service.
             services.AddMvc();
+services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
+services.AddSession();
         }
 
         /// <summary>
@@ -103,6 +105,7 @@ namespace Parkeasy
             //Initialising StaticFiles and Authentication.
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseSession();
 
             //Setting initial startup page.
             app.UseMvc(routes =>

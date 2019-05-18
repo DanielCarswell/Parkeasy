@@ -44,9 +44,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
-            <td>
                 @await Html.PartialAsync("_TableButtonIntPartial", item.Id)
-            </td>
         </tr>
 }
     </tbody>

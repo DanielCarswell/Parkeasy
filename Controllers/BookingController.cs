@@ -56,7 +56,7 @@ namespace Parkeasy.Controllers
         }
 
         [Authorize(Roles = "Invoice Clerk")]
-        public async Task<IActionResult> ValetingStaffIndex()
+        public IActionResult ValetingStaffIndex()
         {
             var slots = _context.Slots.Include(s => s.Bookings.Where(b => b.Status == "Delayed" || b.Status == "Booked" || b.Status == "Parked"));
             return View();
@@ -99,12 +99,13 @@ namespace Parkeasy.Controllers
         public async Task<IActionResult> Create(Booking booking)
         {
             string userId = null;
-            try{
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            try
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
             }
-            catch(Exception){}
-            
+            catch (Exception) { }
+
             if (booking.DepartureDate > DateTime.Now && booking.ReturnDate > booking.DepartureDate)
             {
                 int availableSlot = SlotAvailable(booking.DepartureDate, booking.ReturnDate);
@@ -138,10 +139,10 @@ namespace Parkeasy.Controllers
 
             var slotId = SlotAvailable(booking.DepartureDate, booking.ReturnDate);
 
-            if(slotId == 0)
+            if (slotId == 0)
                 return RedirectToAction(nameof(UnavailableDates));
 
-            if(slotId != booking.SlotId)
+            if (slotId != booking.SlotId)
                 booking.SlotId = slotId;
 
             if (booking == null)
@@ -235,7 +236,7 @@ namespace Parkeasy.Controllers
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> ChangePrice(Pricing prices)
         {
-            if(prices.PerDay != 0 && prices.ServicingCost != 0)
+            if (prices.PerDay != 0 && prices.ServicingCost != 0)
             {
                 _context.Pricing.Update(prices);
                 await _context.SaveChangesAsync();
@@ -254,6 +255,7 @@ namespace Parkeasy.Controllers
         /// </summary>
         /// <param name="booking">Instance of Booking Class</param>
         /// <returns>Checkout View</returns>
+        [AllowAnonymous]
         [Authorize(Roles = "Admin,Manager,Booking Clerk,Customer")]
         public async Task<IActionResult> Checkout(Booking booking)
         {
@@ -309,9 +311,9 @@ namespace Parkeasy.Controllers
                 return RedirectToAction(nameof(VehicleController.Create), "Vehicle", booking);
 
             //Checks if Servicing is added to booking and adds price if so.
-            if(booking.Servicing.Equals(true))
+            if (booking.Servicing.Equals(true))
                 ServicingCost = (double)_context.Pricing.Last().ServicingCost;
-        
+
             //Creates instance of BookingViewModel and assigns the property classes to instances above.
             BookingViewModel bookingDetails = new BookingViewModel
             {
@@ -372,7 +374,7 @@ namespace Parkeasy.Controllers
                     await _emailSender.SendEmailAsync(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email,
                     "Parkeasy - Booking Successful", "Your booking has been made successfully, you are assigned to Slot " + slot.Id.ToString());
 
-                    if(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email != customer.Email)
+                    if (_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email != customer.Email)
                         await _emailSender.SendEmailAsync(customer.Email,
                         "Parkeasy - Booking Successful", "Your booking has been made successfully, you are assigned to Slot " + slot.Id.ToString());
 
@@ -586,6 +588,7 @@ namespace Parkeasy.Controllers
         /// Displays list of Current Users Bookings.
         /// </summary>
         /// <returns>UserBookings View</returns>
+        [Authorize]
         public async Task<IActionResult> UserBookings()
         {
             //Gets all bookings for current user.
@@ -638,6 +641,113 @@ namespace Parkeasy.Controllers
             _context.Bookings.Update(booking);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(ValetingStaffIndex));
+        }
+
+        #endregion
+
+        #region Amend
+
+        public async Task<IActionResult> AmendBooking(int? id)
+        {
+            double servicingCost = 0;
+            if(id == null)
+                return NotFound();
+            
+            Booking booking = await _context.Bookings.FindAsync(id);
+
+            //Checks for a flight specific to the booking.
+            Flight flight = await _context.Flights.FindAsync(id);
+
+            //Checks for a vehicle specific to the booking.
+            Vehicle vehicle = await _context.Vehicles.FindAsync(id);
+
+            //Checks if Servicing is added to booking and adds price if so.
+            if (booking.Servicing.Equals(true))
+                servicingCost = (double)_context.Pricing.Last().ServicingCost;
+
+            //Creates instance of BookingViewModel and assigns the property classes to instances above.
+            AmendViewModel amendDetails = new AmendViewModel
+            {
+                Booking = booking,
+                Flight = flight,
+                Vehicle = vehicle,
+                BookingId = booking.Id,
+                FlightId = (int)flight.Id,
+                VehicleId = (int)vehicle.Id,
+                Charge = (int)(booking.Price + servicingCost)
+            };
+
+            //Returns Checkout View with bookingDetails as model.
+            return View(amendDetails);
+        }
+
+        public async Task<IActionResult> FinishAmending(AmendViewModel amendDetails)
+        {
+            Booking booking = await _context.Bookings.FindAsync(amendDetails.BookingId);
+            Flight flight = await _context.Flights.FindAsync(amendDetails.FlightId);
+            Vehicle vehicle = await _context.Vehicles.FindAsync(amendDetails.VehicleId);
+
+            if (amendDetails == null)
+            {
+                return NotFound();
+            }
+
+            if (booking.Status == "Booked")
+            {
+                if (booking.BookedAt.AddDays(1) < DateTime.Now)
+                {
+                    var options = new RefundCreateOptions
+                    {
+                        Amount = Convert.ToInt32(booking.Price * 100),
+                        Reason = RefundReasons.RequestedByCustomer,
+                        ChargeId = booking.PaymentId
+                    };
+
+                    var service = new RefundService();
+                    Refund refund = service.Create(options);
+
+                    if (refund.Status.ToLower() == "succeeded")
+                    {
+                        _context.Bookings.Remove(booking);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Cancelled), booking);
+                    }
+                }
+                else
+                {
+                    booking.Price = booking.Price * 0.5;
+                    var options = new RefundCreateOptions
+                    {
+                        Amount = Convert.ToInt32(booking.Price * 100),
+                        Reason = RefundReasons.RequestedByCustomer,
+                        ChargeId = booking.PaymentId
+                    };
+
+                    var service = new RefundService();
+                    Refund refund = service.Create(options);
+
+                    if (refund.Status.ToLower() == "succeeded")
+                    {
+                        _context.Bookings.Remove(booking);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Cancelled), booking);
+                    }
+                }
+
+            }
+            return RedirectToAction(nameof(UserBookings));
+        }
+
+        public IActionResult Amend(AmendViewModel amendDetails)
+        {
+            
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Amend(int? id, AmendViewModel amendDetails)
+        {
+            return RedirectToAction(nameof(AmendBooking), amendDetails);
         }
 
         #endregion
