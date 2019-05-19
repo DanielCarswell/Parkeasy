@@ -81,16 +81,18 @@ namespace Parkeasy.Controllers
             return View(vehicle);
         }
 
-        [HttpGet]
-        public IActionResult Amend(AmendViewModel amendDetails)
+        public IActionResult Amend(int? id)
         {
-            return View(amendDetails);
+            Vehicle vehicle = _context.Vehicles.Find(id);
+            return View(vehicle);
         }
 
         [HttpPost]
-        public IActionResult Amend(int? id, AmendViewModel amendDetails)
+        public IActionResult Amend(Vehicle vehicleAmend)
         {
-            return RedirectToAction(nameof(BookingController.Amend), "Booking", amendDetails);
+            int id = (int)vehicleAmend.Id;
+            HttpContext.Session.SetObjectAsJson("AmendVehicle", vehicleAmend);
+            return RedirectToAction(nameof(BookingController.AmendBooking), "Booking", id);
         }
 
         // GET: Vehicles/Edit/5

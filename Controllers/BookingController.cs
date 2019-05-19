@@ -650,10 +650,66 @@ namespace Parkeasy.Controllers
         public async Task<IActionResult> AmendBooking(int? id)
         {
             double servicingCost = 0;
-            if(id == null)
-                return NotFound();
-            
-            Booking booking = await _context.Bookings.FindAsync(id);
+            int complexNotNull = 0;
+            int flightNotNull = 0;
+            int vehicleNotNull = 0;
+            int bookingNotNull = 0;
+            AmendViewModel amendDetails;
+
+            var myComplexObject = HttpContext.Session.GetObjectFromJson<AmendViewModel>("AmendingFull");
+
+            if (myComplexObject != null)
+                complexNotNull = 1;
+
+            if (id == null)
+                id = myComplexObject.BookingId;
+        
+
+            //Creates instance of BookingViewModel and assigns the property classes to instances above.
+            if (complexNotNull == 1)
+            {
+                amendDetails = myComplexObject;
+
+                var bookingInfo = HttpContext.Session.GetObjectFromJson<Booking>("AmendBooking");
+                var flightInfo = HttpContext.Session.GetObjectFromJson<Flight>("AmendFlight");
+                var vehicleInfo = HttpContext.Session.GetObjectFromJson<Vehicle>("AmendVehicle");
+
+                if(bookingInfo != null)
+                    bookingNotNull = 1;
+
+                if(flightInfo != null)
+                    flightNotNull = 1;
+
+                if(vehicleInfo != null)
+                    vehicleNotNull = 1;
+
+                if(flightNotNull == 1)
+                {
+                    amendDetails.Flight.Destination = flightInfo.Destination;
+                    amendDetails.Flight.DepartureNumber = flightInfo.DepartureNumber;
+                    amendDetails.Flight.ReturnNumber = flightInfo.ReturnNumber;
+                }
+
+                if(bookingNotNull == 1)
+                {
+                    amendDetails.Booking.DepartureDate = bookingInfo.DepartureDate;
+                    amendDetails.Booking.ReturnDate = bookingInfo.ReturnDate;
+                    amendDetails.Booking.Servicing = bookingInfo.Servicing;
+                    amendDetails.Booking.Duration = (int)(bookingInfo.ReturnDate - bookingInfo.DepartureDate).TotalDays;
+                }
+
+                if(vehicleNotNull == 1)
+                {
+                    amendDetails.Vehicle.Model = vehicleInfo.Model;
+                    amendDetails.Vehicle.Colour = vehicleInfo.Colour;
+                    amendDetails.Vehicle.Registration = vehicleInfo.Registration;
+                    amendDetails.Vehicle.Travellers = vehicleInfo.Travellers;
+                }
+            }
+            else
+            {
+
+                Booking booking = await _context.Bookings.FindAsync(id);
 
             //Checks for a flight specific to the booking.
             Flight flight = await _context.Flights.FindAsync(id);
@@ -665,18 +721,19 @@ namespace Parkeasy.Controllers
             if (booking.Servicing.Equals(true))
                 servicingCost = (double)_context.Pricing.Last().ServicingCost;
 
-            //Creates instance of BookingViewModel and assigns the property classes to instances above.
-            AmendViewModel amendDetails = new AmendViewModel
-            {
-                Booking = booking,
-                Flight = flight,
-                Vehicle = vehicle,
-                BookingId = booking.Id,
-                FlightId = (int)flight.Id,
-                VehicleId = (int)vehicle.Id,
-                Charge = (int)(booking.Price + servicingCost)
-            };
+                amendDetails = new AmendViewModel
+                {
+                    Booking = booking,
+                    Flight = flight,
+                    Vehicle = vehicle,
+                    BookingId = booking.Id,
+                    FlightId = (int)flight.Id,
+                    VehicleId = (int)vehicle.Id,
+                    Charge = (int)(booking.Price + servicingCost)
+                };
+            }
 
+            HttpContext.Session.SetObjectAsJson("AmendingFull", amendDetails);
             //Returns Checkout View with bookingDetails as model.
             return View(amendDetails);
         }
@@ -736,18 +793,20 @@ namespace Parkeasy.Controllers
 
             }
             return RedirectToAction(nameof(UserBookings));
-        }
+        }   
 
-        public IActionResult Amend(AmendViewModel amendDetails)
+        public IActionResult Amend(int? id)
         {
-            
-            return View();
+            Booking booking = _context.Bookings.Find(id);
+            return View(booking);
         }
 
         [HttpPost]
-        public IActionResult Amend(int? id, AmendViewModel amendDetails)
+        public IActionResult Amend(Booking bookingAmend)
         {
-            return RedirectToAction(nameof(AmendBooking), amendDetails);
+            int id = bookingAmend.Id;
+            HttpContext.Session.SetObjectAsJson("AmendBooking", bookingAmend);
+            return RedirectToAction(nameof(AmendBooking), id);
         }
 
         #endregion

@@ -1,4 +1,4 @@
-@model Parkeasy.Models.BookingViewModels.AmendViewModel
+@model Parkeasy.Models.Booking
 
 <!DOCTYPE html>
 
@@ -16,25 +16,20 @@
         <form asp-action="Amend">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                    <label asp-for="Booking.DepartureDate" class="control-label"></label>
-                    <input asp-for="Booking.DepartureDate" class="form-control" />
-                    <span asp-validation-for="Booking.DepartureDate" class="text-danger"></span>
+                    <label asp-for="DepartureDate" class="control-label"></label>
+                    <input asp-for="DepartureDate" class="form-control" />
+                    <span asp-validation-for="DepartureDate" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Booking.ReturnDate" class="control-label"></label>
-                    <input asp-for="Booking.ReturnDate" class="form-control" />
-                    <span asp-validation-for="Booking.ReturnDate" class="text-danger"></span>
+                    <label asp-for="ReturnDate" class="control-label"></label>
+                    <input asp-for="ReturnDate" class="form-control" />
+                    <span asp-validation-for="ReturnDate" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Booking.Servicing" class="control-label"></label>
-                    <input asp-for="Booking.Servicing" class="form-control" />
+                    <label asp-for="Servicing" class="control-label"></label>
+                    <input asp-for="Servicing" class="form-control" />
                 </div>
-                @Html.HiddenFor(Model => Model.Flight)
-            @Html.HiddenFor(Model => Model.Vehicle)
-            @Html.HiddenFor(Model => Model.BookingId)
-            @Html.HiddenFor(Model => Model.VehicleId)
-            @Html.HiddenFor(Model => Model.FlightId)
-            @Html.HiddenFor(Model => Model.Charge)
+                @Html.HiddenFor(Model => Model.Id)
             <div class="form-group">
                 <input type="submit" value="Amend" class="btn btn-default" />
             </div>
