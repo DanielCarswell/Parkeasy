@@ -4,9 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Parkeasy.Data;
 using Parkeasy.Models;
+using Parkeasy.Services;
 using Parkeasy.Extensions;
 using Parkeasy.Models.AccountViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -22,6 +25,7 @@ namespace Parkeasy.Controllers
         /// UserManager and ApplicationDbContext Global Variables.
         /// </summary>
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailSender _emailSender;
         private readonly ApplicationDbContext _context;
 
         /// <summary>
@@ -29,9 +33,10 @@ namespace Parkeasy.Controllers
         /// </summary>
         /// <param name="userManager">Instance of UserManager with ApplicationUser parameter.</param>
         /// <param name="context">Instance of ApplicationDbContext class.</param>
-        public UserController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public UserController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IEmailSender emailSender)
         {
             _userManager = userManager;
+            _emailSender = emailSender;
             _context = context;
         }
 
@@ -324,6 +329,21 @@ namespace Parkeasy.Controllers
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Customer")]
+        public IActionResult SendEnquiry()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> SendEnquiry(Invoice invoice)
+        {
+            await _emailSender.SendEmailAsync("danielcarswelldrive@gmail.com", invoice.InvoiceType, invoice.InvoiceBody);
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
         private bool UserExists(string id)

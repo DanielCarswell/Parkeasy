@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.NodeServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -52,6 +53,7 @@ namespace Parkeasy
 
             // Add application services.
             services.AddTransient<Seed>();
+            services.AddTransient<Automation>();
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddSingleton<IEmailSender, EmailSender>();
             services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
@@ -78,6 +80,7 @@ namespace Parkeasy
             services.AddMvc();
 services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
 services.AddSession();
+services.AddNodeServices();
         }
 
         /// <summary>
@@ -86,7 +89,7 @@ services.AddSession();
         /// <param name="app">Instance of IApplicationBuilder</param>
         /// <param name="env">Instance of IHostingEnvironment</param>
         /// <param name="seeder">Instance of Seed Class</param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, Seed seeder)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, Seed seeder, Automation automate)
         {
             //If the environment is in Development mode.
             if (env.IsDevelopment())

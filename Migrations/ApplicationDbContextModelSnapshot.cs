@@ -211,6 +211,8 @@ namespace Parkeasy.Migrations
 
                     b.Property<double>("Price");
 
+                    b.Property<bool>("ReminderSent");
+
                     b.Property<DateTime>("ReturnDate");
 
                     b.Property<bool>("Servicing");
@@ -255,7 +257,7 @@ namespace Parkeasy.Migrations
 
                     b.Property<string>("ApplicationUserId");
 
-                    b.Property<int>("CardPartial");
+                    b.Property<string>("Email");
 
                     b.Property<string>("InvoiceBody");
 

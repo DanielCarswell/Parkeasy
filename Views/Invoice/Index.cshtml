@@ -16,9 +16,6 @@
     <thead>
         <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.CardPartial)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.Price)
                 </th>
                 <th>
@@ -33,9 +30,6 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CardPartial)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>

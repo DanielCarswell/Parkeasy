@@ -50,6 +50,7 @@ namespace Parkeasy.Models
         public string PaymentId{ get; set; }
         [Display(Name = "Add Full Wash To Booking")]
         public bool Servicing { get; set; }
+        public bool ReminderSent { get; set; }
 
         //Contains 1:M Relationship with ApplicationUser. (This is the many side)
         /// <summary>

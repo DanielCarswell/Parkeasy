@@ -200,7 +200,7 @@ namespace Parkeasy.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ApplicationUserId = table.Column<string>(nullable: true),
-                    CardPartial = table.Column<int>(nullable: false),
+                    Email = table.Column<string>(nullable: true),
                     InvoiceBody = table.Column<string>(nullable: true),
                     InvoiceType = table.Column<string>(nullable: true),
                     Price = table.Column<double>(nullable: false)
@@ -228,6 +228,7 @@ namespace Parkeasy.Migrations
                     Duration = table.Column<int>(nullable: false),
                     PaymentId = table.Column<string>(nullable: true),
                     Price = table.Column<double>(nullable: false),
+                    ReminderSent = table.Column<bool>(nullable: false),
                     ReturnDate = table.Column<DateTime>(nullable: false),
                     Servicing = table.Column<bool>(nullable: false),
                     SlotId = table.Column<int>(nullable: false),

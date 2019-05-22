@@ -24,6 +24,11 @@ namespace Parkeasy.Services
             return Execute(Options.SendGridKey, subject, message, email);
         }
 
+        public Task SendEnquiryAsync(string email, string subject, string message)
+        {
+            return ExecuteEnquiry(Options.SendGridKey, subject, message, email);
+        }
+
         private Task Execute(string sendGridKey, string subject, string message, string email)
         {
             var client = new SendGridClient(sendGridKey);
@@ -35,6 +40,27 @@ namespace Parkeasy.Services
                 HtmlContent = message
             };
             msg.AddTo(new EmailAddress(email));
+            try
+            {
+                return client.SendEmailAsync(msg);
+            }
+            catch (Exception)
+            {
+            }
+            return null;
+        }
+
+        private Task ExecuteEnquiry(string sendGridKey, string subject, string message, string email)
+        {
+            var client = new SendGridClient(sendGridKey);
+            var msg = new SendGridMessage()
+            {
+                From = new EmailAddress(email, email),
+                Subject = subject,
+                PlainTextContent = message,
+                HtmlContent = message
+            };
+            msg.AddTo(new EmailAddress("danielcarswelldrive@gmail.com"));
             try
             {
                 return client.SendEmailAsync(msg);
