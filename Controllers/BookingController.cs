@@ -55,11 +55,12 @@ namespace Parkeasy.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        [Authorize(Roles = "Invoice Clerk")]
+        [Authorize(Roles = "Invoice Clerk,Admin,Manager")]
         public IActionResult ValetingStaffIndex()
         {
-            var slots = _context.Slots.Include(s => s.Bookings.Where(b => b.Status == "Delayed" || b.Status == "Booked" || b.Status == "Parked"));
-            return View();
+            var slots = _context.Bookings.Where(b => b.Status == "Delayed" || b.Status == "Booked" || b.Status == "Parked");
+            
+            return View(slots);
         }
 
         // GET: Booking/Details/5
@@ -390,7 +391,8 @@ namespace Parkeasy.Controllers
                     {
                         Price = booking.Price,
                         InvoiceBody = "Your booking has been made successfully, you are assigned to Slot " + slot.Id.ToString(),
-                        InvoiceType = "Successful Payment"
+                        InvoiceType = "Successful Payment",
+                        Email = _context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email
                     };
 
                     slot.Status = "Reserved";
@@ -442,9 +444,13 @@ namespace Parkeasy.Controllers
             return dbBooking;
         }
 
+        [Authorize]
         public async Task<IActionResult> CancelBooking(int? id)
         {
             Booking booking = new Booking();
+
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
             if (id == 0)
             {
@@ -476,6 +482,18 @@ namespace Parkeasy.Controllers
 
                     if (refund.Status.ToLower() == "succeeded")
                     {
+                        await _emailSender.SendEmailAsync(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email,
+                    "Parkeasy - Successfully Cancelled", "Your booking has been successfully cancelled and you have been refunded the appropriate amount");
+
+                    Parkeasy.Models.Invoice newInvoice = new Parkeasy.Models.Invoice
+                    {
+                        Price = booking.Price,
+                        InvoiceBody = "Your booking has been successfully cancelled and you have been refunded the appropriate amount",
+                        InvoiceType = "Successfully Cancelled",
+                        Email = _context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email
+                    };
+
+                        _context.Invoices.Add(newInvoice);
                         _context.Bookings.Remove(booking);
                         await _context.SaveChangesAsync();
                         return RedirectToAction(nameof(Cancelled), booking);
@@ -496,6 +514,17 @@ namespace Parkeasy.Controllers
 
                     if (refund.Status.ToLower() == "succeeded")
                     {
+                        await _emailSender.SendEmailAsync(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email,
+                    "Parkeasy - Successfully Cancelled", "Your booking has been successfully cancelled and you have been refunded the appropriate amount");
+
+                    Parkeasy.Models.Invoice newInvoice = new Parkeasy.Models.Invoice
+                    {
+                        Price = booking.Price,
+                        InvoiceBody = "Your booking has been successfully cancelled and you have been refunded the appropriate amount",
+                        InvoiceType = "Successfully Cancelled",
+                        Email = _context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email
+                    };
+                        _context.Invoices.Add(newInvoice);
                         _context.Bookings.Remove(booking);
                         await _context.SaveChangesAsync();
                         return RedirectToAction(nameof(Cancelled), booking);
@@ -629,6 +658,16 @@ namespace Parkeasy.Controllers
             return RedirectToAction(nameof(ValetingStaffIndex));
         }
 
+        public async Task<IActionResult> UndelayBooking(int? id)
+        {
+            Booking booking = _context.Bookings.Find(id);
+
+            booking.Status = "Parked";
+            _context.Bookings.Update(booking);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ValetingStaffIndex));
+        }
+
         public async Task<IActionResult> CompleteBooking(int? id)
         {
             Booking booking = _context.Bookings.Find(id);
@@ -644,16 +683,6 @@ namespace Parkeasy.Controllers
             Booking booking = _context.Bookings.Find(id);
 
             booking.Status = "Parked";
-            _context.Bookings.Update(booking);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(ValetingStaffIndex));
-        }
-
-        public async Task<IActionResult> NoShowBooking(int? id)
-        {
-            Booking booking = _context.Bookings.Find(id);
-
-            booking.Status = "No Arrival";
             _context.Bookings.Update(booking);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(ValetingStaffIndex));

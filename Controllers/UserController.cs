@@ -341,7 +341,7 @@ namespace Parkeasy.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> SendEnquiry(Invoice invoice)
         {
-            await _emailSender.SendEmailAsync("danielcarswelldrive@gmail.com", invoice.InvoiceType, invoice.InvoiceBody);
+            await _emailSender.SendEnquiryAsync("danielcarswelldrive@gmail.com", invoice.InvoiceType, invoice.InvoiceBody);
 
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }

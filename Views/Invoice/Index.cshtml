@@ -10,13 +10,13 @@
 <body>
     <br />
 <p>
-    @await Html.PartialAsync("_CreateNewPartial")
+    <a asp-action="SendInvoice" asp-controller="Invoice" class="btn btn-success"> Send Invoice</a>
 </p>
 <table class="table table-striped table-bordered table-condensed table-responsive table-hover">
     <thead>
         <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Price)
+                    @Html.DisplayNameFor(model => model.Email)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.InvoiceType)
@@ -24,14 +24,16 @@
                 <th>
                     @Html.DisplayNameFor(model => model.InvoiceBody)
                 </th>
-            <th></th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Price)
+                @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.InvoiceType)
@@ -40,7 +42,10 @@
                 @Html.DisplayFor(modelItem => item.InvoiceBody)
             </td>
             <td>
-                @await Html.PartialAsync("_TableButtonIntPartial", item.Id)
+                @if(item.Price != 0)
+                {
+                @Html.DisplayFor(modelItem => item.Price)
+                }
             </td>
         </tr>
 }

@@ -9,9 +9,6 @@
 </head>
 <body>
 <br />
-<p>
-    @await Html.PartialAsync("_CreateNewPartial")
-</p>
 <table class="table table-striped table-bordered table-condensed table-responsive table-hover">
     <thead>
         <tr>
@@ -26,6 +23,9 @@
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SlotId)
                 </th>
         </tr>
     </thead>
@@ -45,24 +45,33 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.SlotId)
+            </td>
+            <td>
             @if(item.Status=="Booked")
             {
-                <a asp-action="Checkout" type="button" class="btn btn-success" asp-route-id="@item.Id">
-            <i class="fas fa-pencil-alt"></i> Check-In
+                <a asp-action="CheckInBooking" type="button" class="btn btn-success" asp-route-id="@item.Id">
+             Check-In
         </a>
             }
             @if(item.Status=="Booked" || item.Status == "Parked")
             {
-                <td>
-                    <a asp-action="Checkout" type="button" class="btn btn-success" asp-route-id="@item.Id">
-            <i class="fas fa-pencil-alt"></i> Delay
+               
+                    <a asp-action="DelayBooking" type="button" class="btn btn-success" asp-route-id="@item.Id">
+             Delay
         </a>
-                </td>
+               
             }
-            @if(item.Status=="Provisional")
+            @if(item.Status == "Delayed")
             {
-                <a asp-action="Checkout" type="button" class="btn btn-success" asp-route-id="@item.Id">
-            <i class="fas fa-pencil-alt"></i> Check Out
+                <a asp-action="DelayBooking" type="button" class="btn btn-success" asp-route-id="@item.Id">
+             Delay
+        </a>
+            }
+            @if(item.Status=="Parked" || item.Status == "Delayed")
+            {
+                <a asp-action="CompleteBooking" type="button" class="btn btn-success" asp-route-id="@item.Id">
+            Complete
         </a>
             }
             </td>

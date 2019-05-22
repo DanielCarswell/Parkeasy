@@ -9,12 +9,17 @@
 </head>
 <body>
 
-<h4>Invoice</h4>
+<h4>Send Invoice</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="SendInvoice">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                @Html.DropDownList("Emails", null, htmlAttributes: new { @class = "form-control" })
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="InvoiceType" class="control-label"></label>
                 <input asp-for="InvoiceType" class="form-control" />
@@ -26,14 +31,10 @@
                 <span asp-validation-for="InvoiceBody" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Send Invoice" class="btn btn-success" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 </body>
