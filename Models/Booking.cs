@@ -64,7 +64,7 @@ namespace Parkeasy.Models
         /// <summary>
         /// Relationship Properties for Booking With ApplicationUser.
         /// </summary>
-        [Display(Name = "Slot Number")]
+        [Display(Name = "Slot")]
         [InverseProperty("Slot")]
         public int SlotId { get; set; }
         public virtual Slot Slot { get; set; }

@@ -8,9 +8,6 @@
     <title>Index</title>
 </head>
 <body>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -21,7 +18,7 @@
                     @Html.DisplayNameFor(model => model.ToBeAvailable)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.LastBookingId)
+                    @Html.DisplayNameFor(model => model.LastBookingsId)
                 </th>
             <th></th>
         </tr>
@@ -36,12 +33,7 @@
                 @Html.DisplayFor(modelItem => item.ToBeAvailable)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LastBookingId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                @Html.DisplayFor(modelItem => item.LastBookingsId)
             </td>
         </tr>
 }

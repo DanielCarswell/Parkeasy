@@ -12,20 +12,25 @@
 <table class="table table-striped table-bordered table-condensed table-responsive table-hover">
     <thead>
         <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.DepartureDate)
+            <th>
+                    <p>Email</p>
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.ReturnDate)
+                    <p>Departure Date</p>
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Duration)
+                    <p>Return Date</p>
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Status)
+                    <p>Duration</p>
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.SlotId)
+                    <p>Status</p>
+                </th>
+                <th>
+                   <p>Slot</p> 
+                </th><th>
+                    <p>Servicing</p>
                 </th>
         </tr>
     </thead>
@@ -33,19 +38,33 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.ApplicationUser.Email)
+            </td>
+    
+            <td>
                 @Html.DisplayFor(modelItem => item.DepartureDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ReturnDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Duration)
+                <p>@Html.DisplayFor(modelItem => item.Duration) Days</p>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SlotId)
+            </td>
+            <td>
+                @if(item.Servicing.Equals(true))
+                {
+                   <p>Required</p>
+                }
+                else
+                {
+                    <p>Not Added</p>
+                }
             </td>
             <td>
             @if(item.Status=="Booked")

@@ -58,8 +58,8 @@ namespace Parkeasy.Controllers
         [Authorize(Roles = "Invoice Clerk,Admin,Manager")]
         public IActionResult ValetingStaffIndex()
         {
-            var slots = _context.Bookings.Where(b => b.Status == "Delayed" || b.Status == "Booked" || b.Status == "Parked");
-            
+            var slots = _context.Bookings.Where(b => b.Status == "Delayed" || b.Status == "Booked" || b.Status == "Parked").Include(b => b.ApplicationUser);
+
             return View(slots);
         }
 
@@ -317,8 +317,8 @@ namespace Parkeasy.Controllers
             if (vehicle == null)
                 return RedirectToAction(nameof(VehicleController.Create), "Vehicle", booking);
 
-            if(user == null)
-                return RedirectToAction(nameof(AccountController.Login), "Account", new{returnUrl = "/Booking/Checkout"});
+            if (user == null)
+                return RedirectToAction(nameof(AccountController.Login), "Account", new { returnUrl = "/Booking/Checkout" });
 
             //Checks if Servicing is added to booking and adds price if so.
             if (booking.Servicing.Equals(true))
@@ -333,7 +333,7 @@ namespace Parkeasy.Controllers
                 Booking = booking,
                 Flight = flight,
                 Vehicle = vehicle,
-                Charge = (int)(booking.Price + ServicingCost) * 100
+                Charge = (int)(booking.Price) * 100
             };
 
             //Returns Checkout View with bookingDetails as model.
@@ -485,13 +485,13 @@ namespace Parkeasy.Controllers
                         await _emailSender.SendEmailAsync(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email,
                     "Parkeasy - Successfully Cancelled", "Your booking has been successfully cancelled and you have been refunded the appropriate amount");
 
-                    Parkeasy.Models.Invoice newInvoice = new Parkeasy.Models.Invoice
-                    {
-                        Price = booking.Price,
-                        InvoiceBody = "Your booking has been successfully cancelled and you have been refunded the appropriate amount",
-                        InvoiceType = "Successfully Cancelled",
-                        Email = _context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email
-                    };
+                        Parkeasy.Models.Invoice newInvoice = new Parkeasy.Models.Invoice
+                        {
+                            Price = booking.Price,
+                            InvoiceBody = "Your booking has been successfully cancelled and you have been refunded the appropriate amount",
+                            InvoiceType = "Successfully Cancelled",
+                            Email = _context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email
+                        };
 
                         _context.Invoices.Add(newInvoice);
                         _context.Bookings.Remove(booking);
@@ -517,13 +517,13 @@ namespace Parkeasy.Controllers
                         await _emailSender.SendEmailAsync(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email,
                     "Parkeasy - Successfully Cancelled", "Your booking has been successfully cancelled and you have been refunded the appropriate amount");
 
-                    Parkeasy.Models.Invoice newInvoice = new Parkeasy.Models.Invoice
-                    {
-                        Price = booking.Price,
-                        InvoiceBody = "Your booking has been successfully cancelled and you have been refunded the appropriate amount",
-                        InvoiceType = "Successfully Cancelled",
-                        Email = _context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email
-                    };
+                        Parkeasy.Models.Invoice newInvoice = new Parkeasy.Models.Invoice
+                        {
+                            Price = booking.Price,
+                            InvoiceBody = "Your booking has been successfully cancelled and you have been refunded the appropriate amount",
+                            InvoiceType = "Successfully Cancelled",
+                            Email = _context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email
+                        };
                         _context.Invoices.Add(newInvoice);
                         _context.Bookings.Remove(booking);
                         await _context.SaveChangesAsync();
@@ -533,6 +533,11 @@ namespace Parkeasy.Controllers
 
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult CancelAmending()
+        {
+            return RedirectToAction(nameof(UserBookings));
         }
 
         public IActionResult Cancelled(Booking booking)
@@ -592,9 +597,9 @@ namespace Parkeasy.Controllers
 
                 foreach (Booking b in s.Bookings)
                 {
-                    if(bookingId != null)
+                    if (bookingId != null)
                     {
-                        if(bookingId == b.Id)
+                        if (bookingId == b.Id)
                         {
                             checkCount++;
                             continue;
@@ -708,7 +713,7 @@ namespace Parkeasy.Controllers
 
             if (id == null)
                 id = myComplexObject.BookingId;
-        
+
 
             //Creates instance of BookingViewModel and assigns the property classes to instances above.
             if (complexNotNull == 1)
@@ -719,23 +724,23 @@ namespace Parkeasy.Controllers
                 var flightInfo = HttpContext.Session.GetObjectFromJson<Flight>("AmendFlight");
                 var vehicleInfo = HttpContext.Session.GetObjectFromJson<Vehicle>("AmendVehicle");
 
-                if(bookingInfo != null)
+                if (bookingInfo != null)
                     bookingNotNull = 1;
 
-                if(flightInfo != null)
+                if (flightInfo != null)
                     flightNotNull = 1;
 
-                if(vehicleInfo != null)
+                if (vehicleInfo != null)
                     vehicleNotNull = 1;
 
-                if(flightNotNull == 1)
+                if (flightNotNull == 1)
                 {
                     amendDetails.Flight.Destination = flightInfo.Destination;
                     amendDetails.Flight.DepartureNumber = flightInfo.DepartureNumber;
                     amendDetails.Flight.ReturnNumber = flightInfo.ReturnNumber;
                 }
 
-                if(bookingNotNull == 1)
+                if (bookingNotNull == 1)
                 {
                     amendDetails.Booking.DepartureDate = bookingInfo.DepartureDate;
                     amendDetails.Booking.ReturnDate = bookingInfo.ReturnDate;
@@ -743,7 +748,7 @@ namespace Parkeasy.Controllers
                     amendDetails.Booking.Duration = (int)(bookingInfo.ReturnDate - bookingInfo.DepartureDate).TotalDays;
                 }
 
-                if(vehicleNotNull == 1)
+                if (vehicleNotNull == 1)
                 {
                     amendDetails.Vehicle.Model = vehicleInfo.Model;
                     amendDetails.Vehicle.Colour = vehicleInfo.Colour;
@@ -756,15 +761,15 @@ namespace Parkeasy.Controllers
 
                 Booking booking = await _context.Bookings.FindAsync(id);
 
-            //Checks for a flight specific to the booking.
-            Flight flight = await _context.Flights.FindAsync(id);
+                //Checks for a flight specific to the booking.
+                Flight flight = await _context.Flights.FindAsync(id);
 
-            //Checks for a vehicle specific to the booking.
-            Vehicle vehicle = await _context.Vehicles.FindAsync(id);
+                //Checks for a vehicle specific to the booking.
+                Vehicle vehicle = await _context.Vehicles.FindAsync(id);
 
-            //Checks if Servicing is added to booking and adds price if so.
-            if (booking.Servicing.Equals(true))
-                servicingCost = (double)_context.Pricing.Last().ServicingCost;
+                //Checks if Servicing is added to booking and adds price if so.
+                if (booking.Servicing.Equals(true))
+                    servicingCost = (double)_context.Pricing.Last().ServicingCost;
 
                 amendDetails = new AmendViewModel
                 {
@@ -774,71 +779,111 @@ namespace Parkeasy.Controllers
                     BookingId = booking.Id,
                     FlightId = (int)flight.Id,
                     VehicleId = (int)vehicle.Id,
-                    Charge = (int)(booking.Price)
+                    Charge = 0
                 };
+
+                if (booking.BookedAt.AddDays(1) < DateTime.Now)
+                {
+                    amendDetails.Charge = (int)(booking.Price / 10) * 100;
+                }
             }
 
             HttpContext.Session.SetObjectAsJson("AmendingFull", amendDetails);
+
             //Returns Checkout View with bookingDetails as model.
             return View(amendDetails);
         }
 
-        public async Task<IActionResult> FinishAmending(AmendViewModel amendDetails)
+        [Authorize(Roles = "Booking Clerk,Admin,Manager,Customer")]
+        [HttpPost, ActionName("AmendBooking")]
+        public async Task<IActionResult> FinishAmending(string stripeEmail, string stripeToken)
         {
-            Booking booking = await _context.Bookings.FindAsync(amendDetails.BookingId);
-            Flight flight = await _context.Flights.FindAsync(amendDetails.FlightId);
-            Vehicle vehicle = await _context.Vehicles.FindAsync(amendDetails.VehicleId);
+            AmendViewModel amendDetails = HttpContext.Session.GetObjectFromJson<AmendViewModel>("AmendingFull");
 
-            if (amendDetails == null)
-            {
-                return NotFound();
-            }
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-            if (booking.Status == "Booked")
+            Slot slot = await _context.Slots.Where(s => s.Id == SlotAvailable(amendDetails.Booking.DepartureDate,
+             amendDetails.Booking.ReturnDate, amendDetails.Booking.Id)).FirstOrDefaultAsync();
+
+            if (slot.Id == 0 || slot == null)
+                return View();
+
+            //Stripe Logic
+            if (stripeToken != null)
             {
-                if (booking.BookedAt.AddDays(1) < DateTime.Now)
+                var customers = new CustomerService();
+                var charges = new ChargeService();
+
+                var customer = customers.Create(new CustomerCreateOptions
                 {
-                    var options = new RefundCreateOptions
-                    {
-                        Amount = Convert.ToInt32(booking.Price * 100),
-                        Reason = RefundReasons.RequestedByCustomer,
-                        ChargeId = booking.PaymentId
-                    };
+                    Email = stripeEmail,
+                    SourceToken = stripeToken
+                });
 
-                    var service = new RefundService();
-                    Refund refund = service.Create(options);
+                if (amendDetails.Booking.BookedAt.AddDays(1) < DateTime.Now)
+                {
+                    Booking b = _context.Bookings.Find(amendDetails.BookingId);
 
-                    if (refund.Status.ToLower() == "succeeded")
+                    if (b.Servicing != amendDetails.Booking.Servicing && amendDetails.Booking.Servicing.Equals(true))
+                        amendDetails.Charge += 1500;
+                    var charge = charges.Create(new ChargeCreateOptions
                     {
-                        _context.Bookings.Remove(booking);
+                        Amount = Convert.ToInt32(amendDetails.Charge),
+                        Description = "Booking Id: " + amendDetails.Booking.Id,
+                        Currency = "gbp",
+                        CustomerId = customer.Id
+                    });
+
+                    if (charge.Status.ToLower() == "succeeded")
+                    {
+                        await _emailSender.SendEmailAsync(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email,
+                        "Parkeasy - Booking Amended Successful", "Your booking has been amended successfully, you are re-assigned to Slot " + slot.Id.ToString());
+
+                        Parkeasy.Models.Invoice invoiceNew = new Parkeasy.Models.Invoice
+                        {
+                            Price = amendDetails.Charge,
+                            InvoiceBody = "Your booking has been amended successfully, you are re-assigned to Slot " + slot.Id.ToString(),
+                            InvoiceType = "Booking Amended Successful",
+                            Email = _context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email
+                        };
+
+                        slot.Bookings.Add(amendDetails.Booking);
+                        HttpContext.Session.SetObjectAsJson("BookingAmend", amendDetails.Booking);
+                        HttpContext.Session.SetObjectAsJson("FlightAmend", amendDetails.Flight);
+                        HttpContext.Session.SetObjectAsJson("VehicleAmend", amendDetails.Vehicle);
+                        HttpContext.Session.SetObjectAsJson("SlotAmend", slot);
+                        _context.Invoices.Add(invoiceNew);
+
                         await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Cancelled), booking);
+
+                        return RedirectToAction(nameof(UpdateBooking));
                     }
                 }
-                else
+                await _emailSender.SendEmailAsync(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email,
+                    "Parkeasy - Booking Amended Successful", "Your booking has been amended successfully, you are re-assigned to Slot " + slot.Id.ToString());
+
+                Parkeasy.Models.Invoice newInvoice = new Parkeasy.Models.Invoice
                 {
-                    booking.Price = booking.Price * 0.5;
-                    var options = new RefundCreateOptions
-                    {
-                        Amount = Convert.ToInt32(booking.Price * 100),
-                        Reason = RefundReasons.RequestedByCustomer,
-                        ChargeId = booking.PaymentId
-                    };
+                    Price = 0,
+                    InvoiceBody = "Your booking has been amended successfully, you are re-assigned to Slot " + slot.Id.ToString(),
+                    InvoiceType = "Booking Amended Successful",
+                    Email = _context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email
+                };
 
-                    var service = new RefundService();
-                    Refund refund = service.Create(options);
+                HttpContext.Session.SetObjectAsJson("BookingAmend", amendDetails.Booking);
+                HttpContext.Session.SetObjectAsJson("FlightAmend", amendDetails.Flight);
+                HttpContext.Session.SetObjectAsJson("VehicleAmend", amendDetails.Vehicle);
+                HttpContext.Session.SetObjectAsJson("SlotAmend", slot);
+                _context.Invoices.Add(newInvoice);
 
-                    if (refund.Status.ToLower() == "succeeded")
-                    {
-                        _context.Bookings.Remove(booking);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Cancelled), booking);
-                    }
-                }
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(UpdateBooking));
 
             }
-            return RedirectToAction(nameof(UserBookings));
-        }   
+            return View();
+        }
 
         public IActionResult Amend(int? id)
         {
@@ -852,6 +897,40 @@ namespace Parkeasy.Controllers
             int id = bookingAmend.Id;
             HttpContext.Session.SetObjectAsJson("AmendBooking", bookingAmend);
             return RedirectToAction(nameof(AmendBooking), id);
+        }
+
+        public IActionResult UpdateBooking()
+        {
+            Booking booking = HttpContext.Session.GetObjectFromJson<Booking>("BookingAmend");
+            _context.Update(booking);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(UpdateFlight));
+        }
+
+        public IActionResult UpdateFlight()
+        {
+            Flight flight = HttpContext.Session.GetObjectFromJson<Flight>("FlightAmend");
+            _context.Update(flight);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(UpdateVehicle));
+        }
+
+        public IActionResult UpdateVehicle()
+        {
+            Vehicle vehicle = HttpContext.Session.GetObjectFromJson<Vehicle>("VehicleAmend");
+            _context.Update(vehicle);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(UpdateSlot));
+        }
+
+        public IActionResult UpdateSlot()
+        {
+            Slot slot = HttpContext.Session.GetObjectFromJson<Slot>("SlotAmend");
+            Booking booking = HttpContext.Session.GetObjectFromJson<Booking>("BookingAmend");
+            slot.Bookings.Add(booking);
+            _context.Update(slot);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(UserBookings));
         }
 
         #endregion
