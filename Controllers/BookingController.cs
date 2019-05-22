@@ -15,6 +15,7 @@ using Parkeasy.Models.BookingViewModels;
 using Stripe;
 using Parkeasy.Services;
 using System.Security.Claims;
+using Rotativa.AspNetCore;
 
 namespace Parkeasy.Controllers
 {
@@ -52,7 +53,7 @@ namespace Parkeasy.Controllers
         {
             var applicationDbContext = _context.Bookings.Include(b => b.ApplicationUser);
 
-            return View(await applicationDbContext.ToListAsync());
+            return new ViewAsPdf(await applicationDbContext.ToListAsync());
         }
 
         [Authorize(Roles = "Invoice Clerk,Admin,Manager")]

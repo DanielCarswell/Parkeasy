@@ -14,6 +14,7 @@ using Parkeasy.Models;
 using Parkeasy.Utility;
 using Parkeasy.Services;
 using Stripe;
+using Rotativa.AspNetCore;
 
 namespace Parkeasy
 {
@@ -117,6 +118,8 @@ services.AddNodeServices();
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            RotativaConfiguration.Setup(env);
+
             
             //Running SeedUsers method to seed database if necessary.
             //This code will have problems if database does not yet exist.
