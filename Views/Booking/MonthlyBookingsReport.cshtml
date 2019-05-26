@@ -1,0 +1,66 @@
+@model IEnumerable<Parkeasy.Models.MonthlyBookingReport>
+
+<style>
+    .right-align{
+        float: right;
+        padding-right: 50px;
+    }
+</style>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+</head>
+<body>
+<br />
+<h2>
+    <strong>Confirm Booking Details</strong>
+</h2>
+<br />
+<table class="table table-striped table-bordered table-condensed table-responsive table-hover">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.NoOfBookings)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TotalAmount)
+                <th>
+                    @Html.DisplayNameFor(model => model.ReportDay)
+                </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(model => item.NoOfBookings)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.TotalAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.ReportDay)
+           </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<br />
+@{
+    var Month = 0;
+    foreach(MonthlyBookingReport r in Model)
+    {
+        Month = (int) r.ReportMonth;
+    }
+}
+<div stlye="float: left;
+        padding-left: 50px; font-size: 100px;">
+        <h4>Month: @Month </h4>
+               
+        </div>
+</body>
+</html>

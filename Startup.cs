@@ -61,7 +61,7 @@ namespace Parkeasy
             services.Configure<SendGridOptions>(Configuration);
 
             //Adding Google+ API External Login Authentication.
-            services.AddAuthentication().AddGoogle(googleOptions => 
+            services.AddAuthentication().AddGoogle(googleOptions =>
             {
                 googleOptions.ClientId = "396877038571-l2td3t3ng1e79boeugdnela4rr1tk898.apps.googleusercontent.com";
                 googleOptions.ClientSecret = "mgUkabIJZi6SuABUK5OaK66X";
@@ -79,9 +79,9 @@ namespace Parkeasy
 
             //Initialising MVC service.
             services.AddMvc();
-services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
-services.AddSession();
-services.AddNodeServices();
+            services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
+            services.AddSession();
+            services.AddNodeServices();
         }
 
         /// <summary>
@@ -120,7 +120,6 @@ services.AddNodeServices();
             });
             RotativaConfiguration.Setup(env);
 
-            
             //Running SeedUsers method to seed database if necessary.
             //This code will have problems if database does not yet exist.
             //To solve this comment line out, Generate Migrations and database then uncomment and run code.

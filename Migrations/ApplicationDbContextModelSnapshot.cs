@@ -231,6 +231,36 @@ namespace Parkeasy.Migrations
                     b.ToTable("Booking");
                 });
 
+            modelBuilder.Entity("Parkeasy.Models.BookingReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("ArrivalTime");
+
+                    b.Property<int>("BookingId");
+
+                    b.Property<string>("ContactDetails");
+
+                    b.Property<DateTime>("DepartureTime");
+
+                    b.Property<string>("Model");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Registration");
+
+                    b.Property<int>("ReportDay");
+
+                    b.Property<int>("ReportMonth");
+
+                    b.Property<int>("ReportYear");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Booking Report");
+                });
+
             modelBuilder.Entity("Parkeasy.Models.Flight", b =>
                 {
                     b.Property<int?>("Id");
@@ -272,6 +302,24 @@ namespace Parkeasy.Migrations
                     b.ToTable("Invoice");
                 });
 
+            modelBuilder.Entity("Parkeasy.Models.MonthlyBookingReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("NoOfBookings");
+
+                    b.Property<int>("ReportMonth");
+
+                    b.Property<int>("ReportYear");
+
+                    b.Property<double>("TotalAmount");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Monthly Booking Report");
+                });
+
             modelBuilder.Entity("Parkeasy.Models.Pricing", b =>
                 {
                     b.Property<int>("Id")
@@ -284,6 +332,32 @@ namespace Parkeasy.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Pricing");
+                });
+
+            modelBuilder.Entity("Parkeasy.Models.ReleaseReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("ArrivalTime");
+
+                    b.Property<string>("ContactDetails");
+
+                    b.Property<string>("Model");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Registration");
+
+                    b.Property<int>("ReportDay");
+
+                    b.Property<int>("ReportMonth");
+
+                    b.Property<int>("ReportYear");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Car Release Report");
                 });
 
             modelBuilder.Entity("Parkeasy.Models.Slot", b =>
@@ -304,6 +378,50 @@ namespace Parkeasy.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Slot");
+                });
+
+            modelBuilder.Entity("Parkeasy.Models.TurnoverReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("BookingDate");
+
+                    b.Property<string>("BookingId");
+
+                    b.Property<double>("Price");
+
+                    b.Property<int>("ReportMonth");
+
+                    b.Property<int>("ReportYear");
+
+                    b.Property<double>("Total");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Turnover Report");
+                });
+
+            modelBuilder.Entity("Parkeasy.Models.ValetingReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Car");
+
+                    b.Property<string>("Model");
+
+                    b.Property<string>("Registration");
+
+                    b.Property<int>("ReportDay");
+
+                    b.Property<int>("ReportMonth");
+
+                    b.Property<int>("ReportYear");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Car Valeting Report");
                 });
 
             modelBuilder.Entity("Parkeasy.Models.Vehicle", b =>

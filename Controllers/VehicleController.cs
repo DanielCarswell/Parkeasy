@@ -76,6 +76,7 @@ namespace Parkeasy.Controllers
             {
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
+                HttpContext.Session.SetObjectAsJson("CurrentId", vehicle.Id);
                 return RedirectToAction(nameof(ContinueBooking), booking);
             }
             return View(vehicle);

@@ -47,5 +47,17 @@ namespace Parkeasy.Data
         /// Initialises Pricing Table in Database.
         /// </summary>
         public DbSet<Pricing> Pricing { get; set; }
+        /// <summary>
+        /// Initialises BookingReport Table in Database.
+        /// </summary>
+        public DbSet<BookingReport> BookingReports { get; set; }
+        /// <summary>
+        /// Initialises ReleaseReport Table in Database.
+        /// </summary>
+        public DbSet<ReleaseReport> ReleaseReports { get; set; }
+        /// <summary>
+        /// Initialises ValetingReport Table in Database.
+        /// </summary>
+        public DbSet<ValetingReport> ValetingReports { get; set; }
     }
 }

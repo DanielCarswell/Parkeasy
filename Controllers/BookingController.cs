@@ -53,7 +53,7 @@ namespace Parkeasy.Controllers
         {
             var applicationDbContext = _context.Bookings.Include(b => b.ApplicationUser);
 
-            return new ViewAsPdf(await applicationDbContext.ToListAsync());
+            return View(await applicationDbContext.ToListAsync());
         }
 
         [Authorize(Roles = "Invoice Clerk,Admin,Manager")]
@@ -270,6 +270,11 @@ namespace Parkeasy.Controllers
             {
                 //Gets instance of Booking from database that a User has started but not finished.
                 booking = GetCurrentUserBooking();
+
+                if (booking == null)
+                {
+                    booking = _context.Bookings.Find(HttpContext.Session.GetObjectFromJson<int>("CurrentId"));
+                }
 
                 //Checks again if booking is null after running method reference above.
                 if (booking == null)
@@ -681,7 +686,9 @@ namespace Parkeasy.Controllers
             booking.Status = "Complete";
             _context.Bookings.Update(booking);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(ValetingStaffIndex));
+
+            HttpContext.Session.SetObjectAsJson("ReleaseBookingId", id);
+            return RedirectToAction(nameof(AddReleaseReport));
         }
 
         public async Task<IActionResult> CheckInBooking(int? id)
@@ -691,7 +698,20 @@ namespace Parkeasy.Controllers
             booking.Status = "Parked";
             _context.Bookings.Update(booking);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(ValetingStaffIndex));
+
+            HttpContext.Session.SetObjectAsJson("BookingId", id);
+            return RedirectToAction(nameof(AddBookingReport));
+        }
+
+        public async Task<IActionResult> ValetingComplete(int? id)
+        {
+            Booking booking = _context.Bookings.Find(id);
+
+            booking.Valeting = false;
+            await _context.SaveChangesAsync();
+
+            HttpContext.Session.SetObjectAsJson("ValetBookingId", id);
+            return RedirectToAction(nameof(AddValetingReport));
         }
 
         #endregion
@@ -932,6 +952,232 @@ namespace Parkeasy.Controllers
             _context.Update(slot);
             _context.SaveChanges();
             return RedirectToAction(nameof(UserBookings));
+        }
+
+        #endregion
+
+        #region reports
+        public async Task<IActionResult> BookingReport()
+        {
+            int nowDay = DateTime.Now.Day;
+            int nowMonth = DateTime.Now.Month;
+            int nowYear = DateTime.Now.Year;
+
+            IEnumerable<BookingReport> bReports = await _context.BookingReports.Where(
+                br => br.ReportDay == nowDay && br.ReportDay == nowMonth && br.ReportDay == nowYear
+                ).ToListAsync();
+
+            return new ViewAsPdf(bReports);
+        }
+
+        public async Task<IActionResult> ReleaseReport()
+        {
+            int nowDay = DateTime.Now.Day;
+            int nowMonth = DateTime.Now.Month;
+            int nowYear = DateTime.Now.Year;
+
+            IEnumerable<ReleaseReport> rReports = await _context.ReleaseReports.Where(
+                br => br.ReportDay == nowDay && br.ReportDay == nowMonth && br.ReportDay == nowYear
+                ).ToListAsync();
+
+            return new ViewAsPdf(rReports);
+        }
+
+        public async Task<IActionResult> ValetingReport()
+        {
+            int nowDay = DateTime.Now.Day;
+            int nowMonth = DateTime.Now.Month;
+            int nowYear = DateTime.Now.Year;
+
+            IEnumerable<ValetingReport> vReports = await _context.ValetingReports.Where(
+                br => br.ReportDay == nowDay && br.ReportDay == nowMonth && br.ReportDay == nowYear
+                ).ToListAsync();
+
+            return new ViewAsPdf(vReports);
+        }
+
+        public async Task<IActionResult> TurnoverReport()
+        {
+            var bookings = await _context.Bookings.ToListAsync();
+            List<TurnoverReport> tReports = new List<TurnoverReport>();
+
+            foreach (Booking booking in bookings)
+            {
+                if (booking.BookedAt.Month == DateTime.Now.Month && booking.BookedAt.Year == DateTime.Now.Year)
+                {
+                    if (booking.Servicing.Equals(true))
+                        booking.Price += 15;
+
+                    tReports.Add(new TurnoverReport
+                    {
+                        BookingId = booking.Id,
+                        BookingDate = booking.BookedAt,
+                        Price = booking.Price,
+                        ReportMonth = DateTime.Now.Month,
+                        ReportYear = DateTime.Now.Year
+                    });
+                }
+            }
+
+            return new ViewAsPdf(tReports);
+        }
+
+        public async Task<IActionResult> MonthlyBookingsReport()
+        {
+            var bookings = await _context.Bookings.ToListAsync();
+            List<MonthlyBookingReport> bReports = new List<MonthlyBookingReport>();
+            int[] noOfBookings = new int[31];
+            double[] total = new double[31];
+
+            for (int i = 1; i <= 31; i++)
+            {
+                foreach (Booking booking in bookings)
+                {
+                    if (booking.BookedAt.Month == DateTime.Now.Month && booking.BookedAt.Year == DateTime.Now.Year)
+                    {
+                        if (booking.Servicing.Equals(true))
+                            booking.Price += 15;
+
+                        if (booking.BookedAt.Day == i)
+                        {
+                            noOfBookings[i]++;
+                            total[i] += booking.Price;
+                        }
+                    }
+                }
+                bReports.Add(new MonthlyBookingReport
+                {
+                    NoOfBookings = noOfBookings[i],
+                    TotalAmount = total[i],
+                    ReportDay = i,
+                    ReportMonth = DateTime.Now.Month,
+                    ReportYear = DateTime.Now.Year
+                });
+            }
+            return new ViewAsPdf(bReports);
+        }
+        #endregion
+
+        #region BuildReport
+
+        public async Task<IActionResult> AddBookingReport()
+        {
+            int id = HttpContext.Session.GetObjectFromJson<int>("BookingId");
+
+            Booking booking = _context.Bookings.Find(id);
+            Vehicle vehicle = _context.Vehicles.Find(id);
+            booking.ApplicationUser = _context.Users.Find(booking.ApplicationUserId);
+
+            List<BookingReport> bReports = await _context.BookingReports.ToListAsync();
+
+            foreach (BookingReport brs in bReports)
+            {
+                if (brs.BookingId == id)
+                    return RedirectToAction(nameof(ValetingStaffIndex));
+            }
+
+            if (booking.ApplicationUser.FirstName == null && booking.ApplicationUser.LastName == null)
+            {
+                booking.ApplicationUser.FirstName = "External Login";
+                booking.ApplicationUser.LastName = "User";
+            }
+
+            if (booking.ApplicationUser.PhoneNumber == null)
+                booking.ApplicationUser.PhoneNumber = "Not Available";
+
+            BookingReport bReport = new BookingReport
+            {
+                Name = booking.ApplicationUser.FirstName + " " + booking.ApplicationUser.LastName,
+                ContactDetails = booking.ApplicationUser.PhoneNumber,
+                Registration = vehicle.Registration,
+                Model = vehicle.Model,
+                ArrivalTime = DateTime.Now,
+                DepartureTime = booking.DepartureDate,
+                ReportDay = DateTime.Now.Day,
+                ReportMonth = DateTime.Now.Month,
+                ReportYear = DateTime.Now.Year,
+                BookingId = booking.Id
+            };
+
+            _context.BookingReports.Add(bReport);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ValetingStaffIndex));
+        }
+
+        public async Task<IActionResult> AddReleaseReport()
+        {
+            int id = HttpContext.Session.GetObjectFromJson<int>("ReleaseBookingId");
+
+            Booking booking = _context.Bookings.Find(id);
+            Vehicle vehicle = _context.Vehicles.Find(id);
+            booking.ApplicationUser = _context.Users.Find(booking.ApplicationUserId);
+
+            List<ReleaseReport> rReports = await _context.ReleaseReports.ToListAsync();
+
+            foreach (var rrs in rReports)
+            {
+                if (rrs.BookingId == id)
+                    return RedirectToAction(nameof(ValetingStaffIndex));
+            }
+
+            if (booking.ApplicationUser.FirstName == null && booking.ApplicationUser.LastName == null)
+            {
+                booking.ApplicationUser.FirstName = "External Login";
+                booking.ApplicationUser.LastName = "User";
+            }
+
+            if (booking.ApplicationUser.PhoneNumber == null)
+                booking.ApplicationUser.PhoneNumber = "Not Available";
+
+            ReleaseReport rReport = new ReleaseReport
+            {
+                Name = booking.ApplicationUser.FirstName + " " + booking.ApplicationUser.LastName,
+                ContactDetails = booking.ApplicationUser.PhoneNumber,
+                Registration = vehicle.Registration,
+                Model = vehicle.Model,
+                ArrivalTime = booking.ReturnDate,
+                ReportDay = DateTime.Now.Day,
+                ReportMonth = DateTime.Now.Month,
+                ReportYear = DateTime.Now.Year,
+                BookingId = booking.Id
+            };
+
+            _context.ReleaseReports.Add(rReport);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ValetingStaffIndex));
+        }
+
+        public async Task<IActionResult> AddValetingReport()
+        {
+            int id = HttpContext.Session.GetObjectFromJson<int>("ValetBookingId");
+
+            Booking booking = _context.Bookings.Find(id);
+            Vehicle vehicle = _context.Vehicles.Find(id);
+
+            List<ValetingReport> vReports = await _context.ValetingReports.ToListAsync();
+
+            foreach (var vrs in vReports)
+            {
+                if (vrs.BookingId == id)
+                    return RedirectToAction(nameof(ValetingStaffIndex));
+            }
+
+            ValetingReport vReport = new ValetingReport
+            {
+                Registration = vehicle.Registration,
+                Model = vehicle.Model,
+                ReportDay = DateTime.Now.Day,
+                ReportMonth = DateTime.Now.Month,
+                ReportYear = DateTime.Now.Year,
+                BookingId = booking.Id
+            };
+
+            _context.ValetingReports.Add(vReport);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ValetingStaffIndex));
         }
 
         #endregion

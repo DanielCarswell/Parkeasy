@@ -1,0 +1,67 @@
+@model IEnumerable<Parkeasy.Models.TurnoverReport>
+
+<style>
+    .right-align{
+        float: right;
+        padding-right: 50px;
+    }
+</style>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+</head>
+<body>
+<br />
+<h2>
+    <strong>Confirm Booking Details</strong>
+</h2>
+<br />
+<table class="table table-striped table-bordered table-condensed table-responsive table-hover">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.BookingId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BookingDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(model => item.BookingId)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.BookingDate)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Price)
+           </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<br />
+@{
+    var Total = 0;
+    foreach(TurnoverReport r in Model)
+    {
+        Total += (int) r.Price;
+    }
+}
+<div stlye="float: left;
+        padding-left: 50px; font-size: 100px;">
+        <h4>Total Earnings For Month: @Total </h4>
+               
+        </div>
+</body>
+</html>
