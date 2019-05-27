@@ -1,0 +1,36 @@
+@model IEnumerable<Parkeasy.Models.Booking>
+    
+<!DOCTYPE html>
+
+<style>
+    .centerthis
+    {
+        align-content: center;
+    }
+</style>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+</head>
+<body>
+<br />
+<div class="btn-group centerthis" role="group">
+        <a asp-action="BookingReport" type="button" class="btn btn-success" asp-controller="Booking">
+            <i class="fas fa-trash"></i>&nbsp;&nbsp;Daily Booking Report
+        </a>
+        <a asp-action="ValetingReport" type="button" class="btn btn-success" asp-controller="Booking">
+            <i class="fas fa-trash"></i>&nbsp;&nbsp;Daily Valeting Report
+        </a>
+        <a asp-action="ReleaseReport" type="button" class="btn btn-success" asp-controller="Booking">
+            <i class="fas fa-trash"></i>&nbsp;&nbsp;Car Release Report
+        </a>
+        <a asp-action="MonthlyBookingsReport" type="button" class="btn btn-success" asp-controller="Booking">
+            <i class="fas fa-trash"></i>&nbsp;&nbsp;Monthly Booking Report
+        </a>
+        <a asp-action="TurnoverReport" type="button" class="btn btn-success" asp-controller="Booking">
+            <i class="fas fa-trash"></i>&nbsp;&nbsp;Monthly Turnover Report
+        </a>
+    </div>
+</body>
+</html>

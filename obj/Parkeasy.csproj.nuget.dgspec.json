@@ -72,6 +72,10 @@
             "Stripe.net": {
               "target": "Package",
               "version": "[21.7.0, )"
+            },
+            "twilio": {
+              "target": "Package",
+              "version": "[5.27.1, )"
             }
           },
           "imports": [

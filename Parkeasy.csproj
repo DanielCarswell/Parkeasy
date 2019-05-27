@@ -17,6 +17,7 @@
     <PackageReference Include="Rotativa.AspNetCore" Version="1.1.1" />
     <PackageReference Include="Stripe.net" Version="21.7.0" />
     <PackageReference Include="Sendgrid" Version="9.10.0" />
+   <PackageReference Include="twilio" Version="5.27.1" />
   </ItemGroup>
   
 </Project>

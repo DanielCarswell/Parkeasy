@@ -85,6 +85,7 @@ namespace Parkeasy.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ArrivalTime = table.Column<DateTime>(nullable: false),
+                    BookingId = table.Column<int>(nullable: false),
                     ContactDetails = table.Column<string>(nullable: true),
                     Model = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
@@ -104,7 +105,7 @@ namespace Parkeasy.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Car = table.Column<string>(nullable: true),
+                    BookingId = table.Column<int>(nullable: false),
                     Model = table.Column<string>(nullable: true),
                     Registration = table.Column<string>(nullable: true),
                     ReportDay = table.Column<int>(nullable: false),
@@ -114,22 +115,6 @@ namespace Parkeasy.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Car Valeting Report", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Monthly Booking Report",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    NoOfBookings = table.Column<int>(nullable: false),
-                    ReportMonth = table.Column<int>(nullable: false),
-                    ReportYear = table.Column<int>(nullable: false),
-                    TotalAmount = table.Column<double>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Monthly Booking Report", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -161,24 +146,6 @@ namespace Parkeasy.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Slot", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Turnover Report",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    BookingDate = table.Column<DateTime>(nullable: false),
-                    BookingId = table.Column<string>(nullable: true),
-                    Price = table.Column<double>(nullable: false),
-                    ReportMonth = table.Column<int>(nullable: false),
-                    ReportYear = table.Column<int>(nullable: false),
-                    Total = table.Column<double>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Turnover Report", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -326,7 +293,8 @@ namespace Parkeasy.Migrations
                     ReturnDate = table.Column<DateTime>(nullable: false),
                     Servicing = table.Column<bool>(nullable: false),
                     SlotId = table.Column<int>(nullable: false),
-                    Status = table.Column<string>(nullable: false)
+                    Status = table.Column<string>(nullable: false),
+                    Valeting = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -474,13 +442,7 @@ namespace Parkeasy.Migrations
                 name: "Invoice");
 
             migrationBuilder.DropTable(
-                name: "Monthly Booking Report");
-
-            migrationBuilder.DropTable(
                 name: "Pricing");
-
-            migrationBuilder.DropTable(
-                name: "Turnover Report");
 
             migrationBuilder.DropTable(
                 name: "Vehicle");

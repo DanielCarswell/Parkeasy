@@ -16,6 +16,9 @@ using Stripe;
 using Parkeasy.Services;
 using System.Security.Claims;
 using Rotativa.AspNetCore;
+using Twilio;
+using Twilio.Types;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace Parkeasy.Controllers
 {
@@ -54,6 +57,11 @@ namespace Parkeasy.Controllers
             var applicationDbContext = _context.Bookings.Include(b => b.ApplicationUser);
 
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        public IActionResult Reports()
+        {
+            return View();
         }
 
         [Authorize(Roles = "Invoice Clerk,Admin,Manager")]
@@ -392,6 +400,19 @@ namespace Parkeasy.Controllers
                 {
                     await _emailSender.SendEmailAsync(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email,
                     "Parkeasy - Booking Successful", "Your booking has been made successfully, you are assigned to Slot " + slot.Id.ToString());
+
+                    /*
+                    const string accountSid = "ACbd58a3f163cd7bae7679006f001fbf55";  
+                    const string authToken = "3df899d9bc91bdf5bc128dace411fe93";  
+                    TwilioClient.Init(accountSid, authToken);  
+   
+                    var to = new PhoneNumber(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().PhoneNumber);  
+                    var message = MessageResource.Create(  
+                        to,  
+                        from: new PhoneNumber("+447723469919"), //  From number, must be an SMS-enabled Twilio number ( This will send sms from ur "To" numbers ).  
+                        body:  "Your booking has been made successfully, you are assigned to Slot " + slot.Id.ToString()); 
+
+                    */
 
                     Parkeasy.Models.Invoice newInvoice = new Parkeasy.Models.Invoice
                     {
