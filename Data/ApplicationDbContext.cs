@@ -59,5 +59,9 @@ namespace Parkeasy.Data
         /// Initialises ValetingReport Table in Database.
         /// </summary>
         public DbSet<ValetingReport> ValetingReports { get; set; }
+        /// <summary>
+        /// Initialises ReportDates Table in Database.
+        /// </summary>
+        public DbSet<ReportDate> ReportDates { get; set; }
     }
 }

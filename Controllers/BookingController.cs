@@ -19,6 +19,9 @@ using Rotativa.AspNetCore;
 using Twilio;
 using Twilio.Types;
 using Twilio.Rest.Api.V2010.Account;
+using DinkToPdf;
+using System.IO;
+using DinkToPdf.Contracts;
 
 namespace Parkeasy.Controllers
 {
@@ -33,18 +36,21 @@ namespace Parkeasy.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConverter _converter;
 
         /// <summary>
         /// Constructor for initialising global variable data.
         /// </summary>
         /// <param name="context">Instance of ApplicationDbContext Class.</param>
         /// <param name="userManager">Instance of UserManager Class with ApplicationUser Type.</param>
-        public BookingController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+        public BookingController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IEmailSender emailSender, IConverter converter)
         {
             //Sets globals equal to passed in instances.
             _context = context;
             _userManager = userManager;
             _emailSender = emailSender;
+            _converter = converter;
+            GenerateReports();
         }
 
         /// <summary>
@@ -61,7 +67,27 @@ namespace Parkeasy.Controllers
 
         public IActionResult Reports()
         {
-            return View();
+            List<ReportViewModel> reports = new List<ReportViewModel>();
+
+            reports.Add(new ReportViewModel{Report = "Booking Report"});
+            reports.Add(new ReportViewModel{Report = "Release Report"});
+            reports.Add(new ReportViewModel{Report = "Valeting Report"});
+            reports.Add(new ReportViewModel{Report = "Monthly Bookings Report"});
+            reports.Add(new ReportViewModel{Report = "Monthly Turnover Report"});
+
+            //Creates ViewData "Name" for displaying Job Titles in View.
+            ViewData["Report"] = new SelectList(reports, "Report", "Report");
+
+            ReportViewModel model = new ReportViewModel{Report = "Booking Report"};
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Reports(ReportViewModel model)
+        {
+            
+            HttpContext.Session.SetObjectAsJson("ReportChoice", model.Report);
+            return RedirectToAction(nameof(BookingController.CreatePDF), "Booking", model.Report);
         }
 
         [Authorize(Roles = "Invoice Clerk,Admin,Manager")]
@@ -985,10 +1011,11 @@ namespace Parkeasy.Controllers
             int nowYear = DateTime.Now.Year;
 
             IEnumerable<BookingReport> bReports = await _context.BookingReports.Where(
-                br => br.ReportDay == nowDay && br.ReportDay == nowMonth && br.ReportDay == nowYear
+                br => br.ReportDay == nowDay && br.ReportMonth == nowMonth && br.ReportYear == nowYear
                 ).ToListAsync();
 
-            return new ViewAsPdf(bReports);
+            //abcdef
+            return View(bReports);
         }
 
         public async Task<IActionResult> ReleaseReport()
@@ -1040,24 +1067,30 @@ namespace Parkeasy.Controllers
                 }
             }
 
-            return new ViewAsPdf(tReports);
+            return View(tReports);
         }
 
         public async Task<IActionResult> MonthlyBookingsReport()
         {
+            int days = 31;
             var bookings = await _context.Bookings.ToListAsync();
             List<MonthlyBookingReport> bReports = new List<MonthlyBookingReport>();
-            int[] noOfBookings = new int[31];
-            double[] total = new double[31];
+            int[] noOfBookings = new int[10000];
+            double[] total = new double[10000];
 
-            for (int i = 1; i <= 31; i++)
+            if(DateTime.Now.Month.Equals("February"))
+                days = 28;
+            else if(DateTime.Now.Month.Equals("November") ||DateTime.Now.Month.Equals("September") ||DateTime.Now.Month.Equals("June") ||DateTime.Now.Month.Equals("April") )
+                days = 30;
+
+            for (int i = 1; i <= days; i++)
             {
                 foreach (Booking booking in bookings)
                 {
                     if (booking.BookedAt.Month == DateTime.Now.Month && booking.BookedAt.Year == DateTime.Now.Year)
                     {
                         if (booking.Servicing.Equals(true))
-                            booking.Price += 15;
+                            booking.Price += _context.Pricing.Last().ServicingCost;
 
                         if (booking.BookedAt.Day == i)
                         {
@@ -1075,7 +1108,7 @@ namespace Parkeasy.Controllers
                     ReportYear = DateTime.Now.Year
                 });
             }
-            return new ViewAsPdf(bReports);
+            return View(bReports);
         }
         #endregion
 
@@ -1202,5 +1235,194 @@ namespace Parkeasy.Controllers
         }
 
         #endregion
+
+        public IActionResult CreatePDF(string reportChoice)
+        {
+            if(reportChoice == null)
+            {
+                reportChoice = HttpContext.Session.GetObjectFromJson<string>("ReportChoice");
+            }
+            ObjectSettings objectSettings = null;
+
+            var globalSettings = new GlobalSettings
+            {
+                ColorMode = ColorMode.Color,
+                Orientation = Orientation.Portrait,
+                PaperSize = PaperKind.A4,
+                Margins = new MarginSettings { Top = 10 },
+                DocumentTitle = "PDF Report"
+            };
+
+            switch (reportChoice)
+            {
+                case "Monthly Turnover Report":
+                    objectSettings = new ObjectSettings
+                    {
+                        PagesCount = true,
+                        Page = "http://localhost:5000/Booking/TurnoverReport"
+                    };
+                    break;
+                case "Booking Report":
+                    objectSettings = new ObjectSettings
+                    {
+                        PagesCount = true,
+                        Page = "http://localhost:5000/Booking/BookingReport"
+                    };
+                    break;
+                case "Monthly Bookings Report":
+                    objectSettings = new ObjectSettings
+                    {
+                        PagesCount = true,
+                        Page = "http://localhost:5000/Booking/MonthlyBookingsReport"
+                    };
+                    break;
+                case "Release Report":
+                    objectSettings = new ObjectSettings
+                    {
+                        PagesCount = true,
+                        Page = "http://localhost:5000/Booking/ReleaseReport"
+                    };
+                    break;
+                case "Valeting Report":
+                    objectSettings = new ObjectSettings
+                    {
+                        PagesCount = true,
+                        Page = "http://localhost:5000/Booking/ValetingReport"
+                    };
+                    break;
+                default:
+                    return RedirectToAction(nameof(Reports));
+                    break;
+            }
+
+            var pdf = new HtmlToPdfDocument()
+            {
+                GlobalSettings = globalSettings,
+                Objects = { objectSettings }
+            };
+
+            var file = _converter.Convert(pdf);
+
+            switch (reportChoice)
+            {
+                case "Monthly Turnover Report":
+                    return File(file, "application/pdf", "TurnoverReport.pdf");
+                case "Booking Report":
+                    return File(file, "application/pdf", "BookingReport.pdf");
+                case "Monthly Bookings Report":
+                    return File(file, "application/pdf", "MonthlyBookingReport.pdf");
+                case "Release Report":
+                    return File(file, "application/pdf", "ReleaseReport.pdf");
+                case "Valeting Report":
+                    return File(file, "application/pdf", "ValetingReport.pdf");
+                default:
+                    return RedirectToAction(nameof(Reports));
+            }
+        }
+        public IActionResult GenerateReports()
+        {
+            try{
+            if(_context.ReportDates.Where(rd => rd.ReportType.Equals("Booking Report")).Last().ReportDay == DateTime.Now.Day && _context.ReportDates.Where(rd => rd.ReportType.Equals("Booking Report")).Last().ReportMonth == DateTime.Now.Month && _context.ReportDates.Where(rd => rd.ReportType.Equals("Booking Report")).Last().ReportYear == DateTime.Now.Year)
+            {}
+            else
+            {
+                ReportDate rDate = new ReportDate{ReportType="Booking Report", ReportDay = DateTime.Now.Day, ReportMonth = DateTime.Now.Month, ReportYear = DateTime.Now.Year};
+                _context.ReportDates.Add(rDate);
+                _context.SaveChanges();
+                
+                HttpContext.Session.SetObjectAsJson("ReportChoice", "Booking Report");
+                return RedirectToAction(nameof(CreatePDF));
+            }
+            } catch(Exception)
+            {
+                ReportDate rDate = new ReportDate{ReportType="Booking Report", ReportDay = DateTime.Now.Day, ReportMonth = DateTime.Now.Month, ReportYear = DateTime.Now.Year};
+                _context.ReportDates.Add(rDate);
+                _context.SaveChanges();
+                
+                HttpContext.Session.SetObjectAsJson("ReportChoice", new ReportViewModel{Report = "Booking Report"}.Report);
+                return RedirectToAction(nameof(CreatePDF));
+            }
+            try{
+            if(_context.ReportDates.Where(rd => rd.ReportType.Equals("Monthly Turnover Report")).Last().ReportDay == DateTime.Now.Day && _context.ReportDates.Where(rd => rd.ReportType.Equals("Booking Report")).Last().ReportMonth == DateTime.Now.Month && _context.ReportDates.Where(rd => rd.ReportType.Equals("Booking Report")).Last().ReportYear == DateTime.Now.Year)
+            {}
+            else
+            {
+                ReportDate rDate = new ReportDate{ReportType="Monthly Turnover Report", ReportDay = DateTime.Now.Day, ReportMonth = DateTime.Now.Month, ReportYear = DateTime.Now.Year};
+                _context.ReportDates.Add(rDate);
+                _context.SaveChanges();
+                
+                HttpContext.Session.SetObjectAsJson("ReportChoice", "Monthly Turnover Report");
+                return RedirectToAction(nameof(CreatePDF));
+            }
+            } catch(Exception)
+            {
+                ReportDate rDate = new ReportDate{ReportType="Monthly Turnover Report", ReportDay = DateTime.Now.Day, ReportMonth = DateTime.Now.Month, ReportYear = DateTime.Now.Year};
+                _context.ReportDates.Add(rDate);
+                _context.SaveChanges();
+                
+                HttpContext.Session.SetObjectAsJson("ReportChoice", "Monthly Turnover Report");
+                return RedirectToAction(nameof(CreatePDF));
+            }
+            try{
+            if(_context.ReportDates.Where(rd => rd.ReportType.Equals("Release Report")).Last().ReportDay == DateTime.Now.Day && _context.ReportDates.Where(rd => rd.ReportType.Equals("Booking Report")).Last().ReportMonth == DateTime.Now.Month && _context.ReportDates.Where(rd => rd.ReportType.Equals("Booking Report")).Last().ReportYear == DateTime.Now.Year)
+            {}
+            else
+            {
+                 ReportDate rDate = new ReportDate{ReportType="Release Report", ReportDay = DateTime.Now.Day, ReportMonth = DateTime.Now.Month, ReportYear = DateTime.Now.Year};
+                _context.ReportDates.Add(rDate);
+                _context.SaveChanges();
+                
+                HttpContext.Session.SetObjectAsJson("ReportChoice", "Release Report");
+                return RedirectToAction(nameof(CreatePDF));
+            }
+            } catch(Exception)
+            {
+                ReportDate rDate = new ReportDate{ReportType="Release Report", ReportDay = DateTime.Now.Day, ReportMonth = DateTime.Now.Month, ReportYear = DateTime.Now.Year};
+                _context.ReportDates.Add(rDate);
+                _context.SaveChanges();
+                
+                HttpContext.Session.SetObjectAsJson("ReportChoice", "Release Report");
+                return RedirectToAction(nameof(CreatePDF));
+            }
+            try{
+            if(_context.ReportDates.Where(rd => rd.ReportType.Equals("Monthly Bookings Report")).Last().ReportDay == DateTime.Now.Day && _context.ReportDates.Where(rd => rd.ReportType.Equals("Booking Report")).Last().ReportMonth == DateTime.Now.Month && _context.ReportDates.Where(rd => rd.ReportType.Equals("Booking Report")).Last().ReportYear == DateTime.Now.Year)
+            {}
+            else
+            {
+                 ReportDate rDate = new ReportDate{ReportType="Monthly Bookings Report", ReportDay = DateTime.Now.Day, ReportMonth = DateTime.Now.Month, ReportYear = DateTime.Now.Year};
+                _context.ReportDates.Add(rDate);
+                _context.SaveChanges();
+                HttpContext.Session.SetObjectAsJson("ReportChoice", "Monthly Bookings Report");
+                return RedirectToAction(nameof(CreatePDF));
+            }
+            } catch(Exception)
+            {
+                 ReportDate rDate = new ReportDate{ReportType="Monthly Bookings Report", ReportDay = DateTime.Now.Day, ReportMonth = DateTime.Now.Month, ReportYear = DateTime.Now.Year};
+                _context.ReportDates.Add(rDate);
+                _context.SaveChanges();
+                HttpContext.Session.SetObjectAsJson("ReportChoice", "Monthly Bookings Report");
+                return RedirectToAction(nameof(CreatePDF));
+            }
+            try{
+            if(_context.ReportDates.Where(rd => rd.ReportType.Equals("Valeting Report")).Last().ReportDay == DateTime.Now.Day && _context.ReportDates.Where(rd => rd.ReportType.Equals("Booking Report")).Last().ReportMonth == DateTime.Now.Month && _context.ReportDates.Where(rd => rd.ReportType.Equals("Booking Report")).Last().ReportYear == DateTime.Now.Year)
+            {}
+            else
+            {
+                 ReportDate rDate = new ReportDate{ReportType="Valeting Report", ReportDay = DateTime.Now.Day, ReportMonth = DateTime.Now.Month, ReportYear = DateTime.Now.Year};
+                _context.ReportDates.Add(rDate);
+                _context.SaveChanges();
+                HttpContext.Session.SetObjectAsJson("ReportChoice", "Valeting Report");
+                return RedirectToAction(nameof(CreatePDF));
+            }
+            } catch(Exception)
+            {
+                 ReportDate rDate = new ReportDate{ReportType="Valeting Report", ReportDay = DateTime.Now.Day, ReportMonth = DateTime.Now.Month, ReportYear = DateTime.Now.Year};
+                _context.ReportDates.Add(rDate);
+                _context.SaveChanges();
+                HttpContext.Session.SetObjectAsJson("ReportChoice", "Valeting Report");
+                return RedirectToAction(nameof(CreatePDF));
+            }
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
     }
 }

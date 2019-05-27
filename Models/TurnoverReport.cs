@@ -27,7 +27,7 @@ namespace Parkeasy.Models
         /// Name Getter and Setter.
         /// </summary>
         public int BookingId { get; set; }
-        [Display(Name="Contact")]
+        [Display(Name="Booking Date")]
         public DateTime BookingDate { get; set; }
         public double Price { get; set; }
         public int ReportMonth { get; set; }

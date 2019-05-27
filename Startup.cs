@@ -15,6 +15,8 @@ using Parkeasy.Utility;
 using Parkeasy.Services;
 using Stripe;
 using Rotativa.AspNetCore;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 
 namespace Parkeasy
 {
@@ -79,6 +81,9 @@ namespace Parkeasy
 
             //Initialising MVC service.
             services.AddMvc();
+
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+
             services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
             services.AddSession();
             services.AddNodeServices();

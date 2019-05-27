@@ -346,6 +346,26 @@ namespace Parkeasy.Migrations
                     b.ToTable("Car Release Report");
                 });
 
+            modelBuilder.Entity("Parkeasy.Models.ReportDate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double>("Price");
+
+                    b.Property<int>("ReportDay");
+
+                    b.Property<int>("ReportMonth");
+
+                    b.Property<string>("ReportType");
+
+                    b.Property<int>("ReportYear");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReportDates");
+                });
+
             modelBuilder.Entity("Parkeasy.Models.Slot", b =>
                 {
                     b.Property<int>("Id")
