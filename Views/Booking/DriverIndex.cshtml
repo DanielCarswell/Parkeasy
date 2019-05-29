@@ -1,0 +1,53 @@
+@model IEnumerable<Parkeasy.Models.Pickup>
+    
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<br />
+<table class="table table-striped table-bordered table-condensed table-responsive table-hover">
+    <thead>
+        <tr>
+            <th>
+                    <p>Pickup Date And Time</p>
+                </th>
+                <th>
+                    <p>Location</p>
+                </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PickupDate)
+            </td>
+    
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
+            </td>
+            <td>
+            @if(item.Status=="NotArrived")
+            {
+                <a asp-action="ConfirmPickup" type="button" class="btn btn-success" asp-route-id="@item.Id">
+                    Check-In
+                </a>
+            }
+            @if(item.Status=="Arrived")
+            {
+               
+                <a asp-action="ConfirmDropOff" type="button" class="btn btn-success" asp-route-id="@item.Id">
+                    Delay
+                </a>
+            }
+    </td>
+        </tr>
+}
+    </tbody>
+</table>
+</body>
+</html>

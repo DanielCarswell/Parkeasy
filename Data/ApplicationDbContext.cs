@@ -9,6 +9,10 @@ using Parkeasy.Models.Reports;
 
 namespace Parkeasy.Data
 {
+    /// <summary>
+    /// ApplicationDbContext class inheriting from IdentityDbContext with ApplicationUser Typeparam.
+    /// </summary>
+    /// <typeparam name="ApplicationUser">ApplicationUser Class</typeparam>
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -48,6 +52,10 @@ namespace Parkeasy.Data
         /// Initialises Pricing Table in Database.
         /// </summary>
         public DbSet<Pricing> Pricing { get; set; }
+        /// <summary>
+        /// Initialises Pickups Table in Database.
+        /// </summary>
+        public DbSet<Pickup> Pickups { get; set; }
         /// <summary>
         /// Initialises BookingReport Table in Database.
         /// </summary>

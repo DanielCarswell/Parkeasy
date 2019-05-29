@@ -118,6 +118,21 @@ namespace Parkeasy.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Pick Ups",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Location = table.Column<string>(nullable: false),
+                    PickupDate = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pick Ups", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Pricing",
                 columns: table => new
                 {
@@ -357,9 +372,9 @@ namespace Parkeasy.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false),
-                    Colour = table.Column<string>(nullable: true),
-                    Model = table.Column<string>(nullable: true),
-                    Registration = table.Column<string>(nullable: true),
+                    Colour = table.Column<string>(nullable: false),
+                    Model = table.Column<string>(nullable: false),
+                    Registration = table.Column<string>(nullable: false),
                     Travellers = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -457,6 +472,9 @@ namespace Parkeasy.Migrations
 
             migrationBuilder.DropTable(
                 name: "Invoice");
+
+            migrationBuilder.DropTable(
+                name: "Pick Ups");
 
             migrationBuilder.DropTable(
                 name: "Pricing");

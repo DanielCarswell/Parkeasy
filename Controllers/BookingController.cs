@@ -1720,5 +1720,99 @@ namespace Parkeasy.Controllers
             }
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }*/
+
+        /// <summary>
+        /// Makes selectlist and returns view.
+        /// </summary>
+        /// <returns>AddPickup View</returns>
+        public IActionResult AddPickup()
+        {
+            //List of Pickup class instances for selectlist.
+            List<Pickup> locations = new List<Pickup>();
+
+            //Add to List of Pickup class instances.
+            locations.Add(new Pickup { Location = "Car Park" });
+            locations.Add(new Pickup { Location = "Airport" });
+
+            //Creates ViewData "Locations" for displaying Location dropdown in View.
+            ViewData["Locations"] = new SelectList(locations, "Location", "Location");
+
+            //Returns AddPickup view.
+            return View();
+        }
+
+        /// <summary>
+        /// Adds pickup date and location to database.
+        /// </summary>
+        /// <param name="model">Instance of Pickup Class.</param>
+        /// <returns>Redirect to Homepage or AddPickup View</returns>
+        public async Task<IActionResult> AddPickup(Pickup model)
+        {
+            try
+            {
+                //Updates model, adds it to database and saves changes.
+                model.Status = "NotArrived";
+                _context.Pickups.Add(model);
+                await _context.SaveChangesAsync();
+
+                //Redirects to homepage.
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
+            catch(Exception)
+            {
+                //Returns AddPickup View.
+                return View(model);
+            }
+        }
+
+        /// <summary>
+        /// Changes status of pickup class instance.
+        /// </summary>
+        /// <param name="id">Nullable integer value.</param>
+        /// <returns>Redirect to DriverIndex action</returns>
+        public async Task<IActionResult> ConfirmPickup(int? id)
+        {
+            Pickup pickup = _context.Pickups.Find(id);
+
+            pickup.Status = "Arrived";
+            _context.Pickups.Update(pickup);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(DriverIndex));
+        }
+
+        /// <summary>
+        /// Changes status of pickup class instance.
+        /// </summary>
+        /// <param name="id">Nullable integer value.</param>
+        /// <returns>Redirect to DriverIndex action</returns>
+        public async Task<IActionResult> ConfirmDropOff(int? id)
+        {
+            Pickup pickup = _context.Pickups.Find(id);
+
+            pickup.Status = "Complete";
+            _context.Pickups.Update(pickup);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(DriverIndex));
+        }
+
+        /// <summary>
+        /// Gets list of pickups due that day and display them on a view with options.
+        /// </summary>
+        /// <returns>DriverIndex View.</returns>
+        public IActionResult DriverIndex()
+        {
+            //Initialising local variable.
+            int day = DateTime.Now.Day;
+            int month = DateTime.Now.Month;
+            int year = DateTime.Now.Year;
+
+            //List of pickups due on that date.
+            IEnumerable<Pickup> pickups = _context.Pickups.Where(p => p.PickupDate.Day == day && p.PickupDate.Month == month && p.PickupDate.Year == year);
+
+            //Returns DriverIndex View.
+            return View(pickups);
+        }
     }
 }

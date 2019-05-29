@@ -11,7 +11,7 @@ using System;
 namespace Parkeasy.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190527225134_SqliteInitial")]
+    [Migration("20190529233349_SqliteInitial")]
     partial class SqliteInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -234,36 +234,6 @@ namespace Parkeasy.Migrations
                     b.ToTable("Booking");
                 });
 
-            modelBuilder.Entity("Parkeasy.Models.BookingReport", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("ArrivalTime");
-
-                    b.Property<int>("BookingId");
-
-                    b.Property<string>("ContactDetails");
-
-                    b.Property<DateTime>("DepartureTime");
-
-                    b.Property<string>("Model");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("Registration");
-
-                    b.Property<int>("ReportDay");
-
-                    b.Property<int>("ReportMonth");
-
-                    b.Property<int>("ReportYear");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Booking Report");
-                });
-
             modelBuilder.Entity("Parkeasy.Models.Flight", b =>
                 {
                     b.Property<int?>("Id");
@@ -305,6 +275,23 @@ namespace Parkeasy.Migrations
                     b.ToTable("Invoice");
                 });
 
+            modelBuilder.Entity("Parkeasy.Models.Pickup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Location")
+                        .IsRequired();
+
+                    b.Property<DateTime>("PickupDate");
+
+                    b.Property<string>("Status");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pick Ups");
+                });
+
             modelBuilder.Entity("Parkeasy.Models.Pricing", b =>
                 {
                     b.Property<int>("Id")
@@ -319,7 +306,37 @@ namespace Parkeasy.Migrations
                     b.ToTable("Pricing");
                 });
 
-            modelBuilder.Entity("Parkeasy.Models.ReleaseReport", b =>
+            modelBuilder.Entity("Parkeasy.Models.Reports.BookingReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("ArrivalTime");
+
+                    b.Property<int>("BookingId");
+
+                    b.Property<string>("ContactDetails");
+
+                    b.Property<DateTime>("DepartureTime");
+
+                    b.Property<string>("Model");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Registration");
+
+                    b.Property<int>("ReportDay");
+
+                    b.Property<int>("ReportMonth");
+
+                    b.Property<int>("ReportYear");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Booking Report");
+                });
+
+            modelBuilder.Entity("Parkeasy.Models.Reports.ReleaseReport", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -347,7 +364,7 @@ namespace Parkeasy.Migrations
                     b.ToTable("Car Release Report");
                 });
 
-            modelBuilder.Entity("Parkeasy.Models.ReportDate", b =>
+            modelBuilder.Entity("Parkeasy.Models.Reports.ReportDate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -365,6 +382,28 @@ namespace Parkeasy.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ReportDates");
+                });
+
+            modelBuilder.Entity("Parkeasy.Models.Reports.ValetingReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BookingId");
+
+                    b.Property<string>("Model");
+
+                    b.Property<string>("Registration");
+
+                    b.Property<int>("ReportDay");
+
+                    b.Property<int>("ReportMonth");
+
+                    b.Property<int>("ReportYear");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Car Valeting Report");
                 });
 
             modelBuilder.Entity("Parkeasy.Models.Slot", b =>
@@ -387,37 +426,18 @@ namespace Parkeasy.Migrations
                     b.ToTable("Slot");
                 });
 
-            modelBuilder.Entity("Parkeasy.Models.ValetingReport", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("BookingId");
-
-                    b.Property<string>("Model");
-
-                    b.Property<string>("Registration");
-
-                    b.Property<int>("ReportDay");
-
-                    b.Property<int>("ReportMonth");
-
-                    b.Property<int>("ReportYear");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Car Valeting Report");
-                });
-
             modelBuilder.Entity("Parkeasy.Models.Vehicle", b =>
                 {
                     b.Property<int?>("Id");
 
-                    b.Property<string>("Colour");
+                    b.Property<string>("Colour")
+                        .IsRequired();
 
-                    b.Property<string>("Model");
+                    b.Property<string>("Model")
+                        .IsRequired();
 
-                    b.Property<string>("Registration");
+                    b.Property<string>("Registration")
+                        .IsRequired();
 
                     b.Property<int>("Travellers");
 
