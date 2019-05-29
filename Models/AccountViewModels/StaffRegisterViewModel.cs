@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Parkeasy.Models.AccountViewModels
 {
+    /// <summary>
+    /// StaffRegisterViewModel Class.
+    /// </summary>
     public class StaffRegisterViewModel
     {
         /// <summary>

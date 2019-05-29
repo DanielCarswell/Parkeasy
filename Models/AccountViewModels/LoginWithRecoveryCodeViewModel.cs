@@ -6,11 +6,17 @@ using System.Threading.Tasks;
 
 namespace Parkeasy.Models.AccountViewModels
 {
+    /// <summary>
+    /// LoginWithRecoveryCodeViewModel class.
+    /// </summary>
     public class LoginWithRecoveryCodeViewModel
     {
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "Recovery Code")]
-            public string RecoveryCode { get; set; }
+        /// <summary>
+        /// RecoveryCode Getter and Setter.
+        /// </summary>
+        [Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "Recovery Code")]
+        public string RecoveryCode { get; set; }
     }
 }

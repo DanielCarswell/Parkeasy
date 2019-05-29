@@ -31,25 +31,6 @@ namespace Parkeasy.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Flights/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var flight = await _context.Flights
-                .Include(f => f.Booking)
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (flight == null)
-            {
-                return NotFound();
-            }
-
-            return View(flight);
-        }
-
         // GET: Flights/Create
         public IActionResult Create(Booking booking)
         {
@@ -85,7 +66,10 @@ namespace Parkeasy.Controllers
         public IActionResult Amend(int? id)
         {
             Flight flight = _context.Flights.Find(id);
-            return View(flight);
+            Flight amendFlight = HttpContext.Session.GetObjectFromJson<Flight>("FlightReAmend");
+            if(amendFlight == null)
+                amendFlight = flight;
+            return View(amendFlight);
         }
 
         [HttpPost]
@@ -93,6 +77,7 @@ namespace Parkeasy.Controllers
         {
             int id = (int)flightAmend.Id;
             HttpContext.Session.SetObjectAsJson("AmendFlight", flightAmend);
+            HttpContext.Session.SetObjectAsJson("FlightReAmend", flightAmend);
             return RedirectToAction(nameof(BookingController.AmendBooking), "Booking", id);
         }
 
@@ -149,44 +134,29 @@ namespace Parkeasy.Controllers
             return View(flight);
         }
 
-        // GET: Flights/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var flight = await _context.Flights
-                .Include(f => f.Booking)
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (flight == null)
-            {
-                return NotFound();
-            }
-
-            return View(flight);
-        }
-
-        // POST: Flights/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
-        {
-            var flight = await _context.Flights.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Flights.Remove(flight);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
+        /// <summary>
+        /// Checks if a Flight exists in database using its Id.
+        /// </summary>
+        /// <param name="id">Nullable Integer Value</param>
+        /// <returns>Boolean Value (True/False)</returns>
         private bool FlightExists(int? id)
         {
             return _context.Flights.Any(e => e.Id == id);
         }
 
         #region PassingControllers
+
+        /// <summary>
+        /// Gets the current user from HttpContext.
+        /// </summary>
+        /// <returns>Instance of ApplicationUser class.</returns>
         public Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
+        /// <summary>
+        /// Passes booking class instance to vehicle booking process.
+        /// </summary>
+        /// <param name="booking">Instance of Booking class</param>
+        /// <returns>Redirect to Vehicle create action</returns>
         [AllowAnonymous]
         public ActionResult ContinueBooking(Booking booking)
         {

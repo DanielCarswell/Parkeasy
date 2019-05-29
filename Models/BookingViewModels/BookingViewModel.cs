@@ -15,9 +15,21 @@ namespace Parkeasy.Models.BookingViewModels
     /// </summary>
     public class BookingViewModel
     {
+        /// <summary>
+        /// Flight Getter and Setter.
+        /// </summary>
         public Flight Flight{ get; set; }
+        /// <summary>
+        /// Vehicle Getter and Setter.
+        /// </summary>
         public Vehicle Vehicle{ get; set; }
+        /// <summary>
+        /// Booking Getter and Setter.
+        /// </summary>
         public Booking Booking{ get; set; }
+        /// <summary>
+        /// Charge Getter and Setter.
+        /// </summary>
         public int Charge{ get; set; }
     }
 }

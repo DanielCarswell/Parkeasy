@@ -16,42 +16,39 @@ namespace Parkeasy.Controllers
 {
     public class VehicleController : Controller
     {
+        /// <summary>
+        /// Global Variables.
+        /// </summary>
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
+        /// <summary>
+        /// Overloaded Constructor for initialising globals.
+        /// </summary>
+        /// <param name="context">ApplicationDbContext Class Instance.</param>
+        /// <param name="userManager">UserManager Class Insance with ApplicationUser param.</param>
         public VehicleController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-        // GET: Vehicles
+        /// <summary>
+        /// Displays all vehicle details.
+        /// </summary>
+        /// <returns>Index View</returns>
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Vehicles.Include(v => v.Booking);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Vehicles/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var vehicle = await _context.Vehicles
-                .Include(v => v.Booking)
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (vehicle == null)
-            {
-                return NotFound();
-            }
-
-            return View(vehicle);
-        }
-
-        // GET: Vehicles/Create
+        /// <summary>
+        /// Method for adding Vehicle to a booking.
+        /// </summary>
+        /// <param name="booking">Booking Class Instance</param>
+        /// <returns>Create View</returns>
         public IActionResult Create(Booking booking)
         {
             Vehicle vehicle = new Vehicle
@@ -85,7 +82,10 @@ namespace Parkeasy.Controllers
         public IActionResult Amend(int? id)
         {
             Vehicle vehicle = _context.Vehicles.Find(id);
-            return View(vehicle);
+            Vehicle amendVehicle = HttpContext.Session.GetObjectFromJson<Vehicle>("VehicleReAmend");
+            if(amendVehicle == null)
+                amendVehicle = vehicle;
+            return View(amendVehicle);
         }
 
         [HttpPost]
@@ -93,6 +93,7 @@ namespace Parkeasy.Controllers
         {
             int id = (int)vehicleAmend.Id;
             HttpContext.Session.SetObjectAsJson("AmendVehicle", vehicleAmend);
+            HttpContext.Session.SetObjectAsJson("VehicleReAmend", vehicleAmend);
             return RedirectToAction(nameof(BookingController.AmendBooking), "Booking", id);
         }
 
@@ -125,6 +126,9 @@ namespace Parkeasy.Controllers
                 return NotFound();
             }
 
+            if(vehicle.Travellers <= 0)
+                return View();
+
             if (ModelState.IsValid)
             {
                 try
@@ -147,36 +151,6 @@ namespace Parkeasy.Controllers
             }
             ViewData["Id"] = new SelectList(_context.Bookings, "Id", "Id", vehicle.Id);
             return View(vehicle);
-        }
-
-        // GET: Vehicles/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var vehicle = await _context.Vehicles
-                .Include(v => v.Booking)
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (vehicle == null)
-            {
-                return NotFound();
-            }
-
-            return View(vehicle);
-        }
-
-        // POST: Vehicles/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
-        {
-            var vehicle = await _context.Vehicles.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Vehicles.Remove(vehicle);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
 
         private bool VehicleExists(int? id)

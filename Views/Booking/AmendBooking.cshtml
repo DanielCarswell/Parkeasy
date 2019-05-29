@@ -35,7 +35,7 @@
                     @Html.DisplayNameFor(model => model.Booking.Duration)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Booking.Price)
+                    Original @Html.DisplayNameFor(model => model.Booking.Price)
                 </th>
         </tr>
     </thead>
@@ -148,7 +148,15 @@
     </tbody>
 </table>
 <br />
+
+        @{var cost = Model.Charge/100;}
+        <div stlye="float: left;
+        padding-left: 50px; font-size: 100px;">
+        <h4>Amending Cost: £@cost</h4>
+               
+        </div>
 <div class="form-group right-align">
+
     <form asp-action="AmendBooking">
     <script
         src="https://checkout.stripe.com/checkout.js" class="stripe-button"
@@ -165,7 +173,7 @@
         >
     </script>
     </form>
-    <a asp-action= "CancelAmend" type= "button" class="btn btn-danger">
+    <a asp-action= "UserBookings" type= "button" class="btn btn-danger">
         <i class="fas fa-trash"></i>    Cancel Amending
     </a>
     </div>

@@ -5,18 +5,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace Parkeasy.Models
+namespace Parkeasy.Models.Reports
 {
     /// <summary>
     /// Booking information with relationships.
     /// </summary>
-    [Table("Car Valeting Report")]
-    public class ValetingReport
+    public class ReportDate
     {
         /// <summary>
         /// Blank Constructor.
         /// </summary>
-        public ValetingReport(){}
+        public ReportDate(){}
 
         /// <summary>
         /// Id Getter And Setter.
@@ -24,11 +23,19 @@ namespace Parkeasy.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string Model { get; set; }
-        public String Registration { get; set; }
-        public int BookingId { get; set; }
+        /// <summary>
+        /// Name Getter and Setter.
+        /// </summary>
+        public string ReportType { get; set; }
+        public double Price { get; set; }
         public int ReportDay { get; set; }
+        /// <summary>
+        /// ReportMonth Getter and Setter.
+        /// </summary>
         public int ReportMonth { get; set; }
+        /// <summary>
+        /// ReportYear Getter and Setter.
+        /// </summary>
         public int ReportYear { get; set; }
     }
 }

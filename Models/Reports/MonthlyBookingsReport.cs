@@ -5,18 +5,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace Parkeasy.Models
+namespace Parkeasy.Models.Reports
 {
     /// <summary>
     /// Booking information with relationships.
     /// </summary>
-    [Table("Booking Report")]
-    public class BookingReport
+    public class MonthlyBookingReport
     {
         /// <summary>
         /// Blank Constructor.
         /// </summary>
-        public BookingReport(){}
+        public MonthlyBookingReport(){}
 
         /// <summary>
         /// Id Getter And Setter.
@@ -25,21 +24,24 @@ namespace Parkeasy.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         /// <summary>
-        /// Name Getter and Setter.
+        /// NoOfBookings Getter and Setter.
         /// </summary>
-        [Display(Name = "Customer")]
-        public string Name { get; set; }
-        [Display(Name="Contact")]
-        public string ContactDetails { get; set; }
-        public string Registration { get; set; }
-        public string Model { get; set; }
-        [Display(Name="Arrival")]
-        public DateTime ArrivalTime { get; set; }
-        [Display(Name="Departure")]
-        public DateTime DepartureTime { get; set; }
-        public int BookingId { get; set; }
+        [Display(Name = "Number Of Bookings")]
+        public int NoOfBookings{ get; set; }
+        [Display(Name="Income")]
+        public double TotalAmount { get; set; }
+        /// <summary>
+        /// ReportDay Getter and Setter.
+        /// </summary>
+        [Display(Name = "Day ")]
         public int ReportDay { get; set; }
+        /// <summary>
+        /// ReportMonth Getter and Setter.
+        /// </summary>
         public int ReportMonth { get; set; }
+        /// <summary>
+        /// ReportYear Getter and Setter.
+        /// </summary>
         public int ReportYear { get; set; }
     }
 }

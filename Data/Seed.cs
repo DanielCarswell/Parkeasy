@@ -115,18 +115,21 @@ namespace Parkeasy.Data
         }
 
         /// <summary>
-        /// 
+        /// Adds prices to database for booking days and servicing cost.
         /// </summary>
         public void SeedPricing()
         {
+            //Checks if any rows exist in database table.
             if(!_context.Pricing.Any())
             {
+                //Creates new class instance.
                 Pricing prices = new Pricing
                 {
                     PerDay = (double) 10,
                     ServicingCost = (double) 15
                 };
 
+                //Adds new prices to database and saves.
                 _context.Pricing.Add(prices);
                 _context.SaveChanges();
             }

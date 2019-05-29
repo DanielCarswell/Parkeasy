@@ -22,18 +22,22 @@ namespace Parkeasy.Models
         /// <summary>
         /// Registration Getter and Setter.
         /// </summary>
+        [Required]
         public string Registration { get; set; }
         /// <summary>
         /// Model Getter and Setter.
         /// </summary>
+        [Required]
         public string Model { get; set; }
         /// <summary>
         /// Colour Getter and Setter.
         /// </summary>
+        [Required]
         public string Colour { get; set; }
         /// <summary>
         /// Travellers Getter and Setter.
         /// </summary>
+        [Required]
         public int Travellers { get; set; }
         /// <summary>
         /// Navigational propertie for Vehicle and Booking Relationship.

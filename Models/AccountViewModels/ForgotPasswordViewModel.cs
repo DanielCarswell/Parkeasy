@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace Parkeasy.Models.AccountViewModels
 {
+    /// <summary>
+    /// ForgotPasswordViewModel Class.
+    /// </summary>
     public class ForgotPasswordViewModel
     {
+        /// <summary>
+        /// Email Getter and Setter.
+        /// </summary>
         [Required]
         [EmailAddress]
         public string Email { get; set; }

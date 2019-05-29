@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Parkeasy.Models;
+using Parkeasy.Models.Reports;
 
 namespace Parkeasy.Data
 {

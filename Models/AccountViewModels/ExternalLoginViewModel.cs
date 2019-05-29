@@ -8,6 +8,9 @@ namespace Parkeasy.Models.AccountViewModels
 {
     public class ExternalLoginViewModel
     {
+        /// <summary>
+        /// Email Getter and Setter.
+        /// </summary>
         [Required]
         [EmailAddress]
         public string Email { get; set; }

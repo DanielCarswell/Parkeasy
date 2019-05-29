@@ -5,17 +5,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace Parkeasy.Models
+namespace Parkeasy.Models.Reports
 {
     /// <summary>
     /// Booking information with relationships.
     /// </summary>
-    public class MonthlyBookingReport
+    public class TurnoverReport
     {
         /// <summary>
         /// Blank Constructor.
         /// </summary>
-        public MonthlyBookingReport(){}
+        public TurnoverReport(){}
 
         /// <summary>
         /// Id Getter And Setter.
@@ -24,15 +24,19 @@ namespace Parkeasy.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         /// <summary>
-        /// NoOfBookings Getter and Setter.
+        /// Name Getter and Setter.
         /// </summary>
-        [Display(Name = "Number Of Bookings")]
-        public int NoOfBookings{ get; set; }
-        [Display(Name="Income")]
-        public double TotalAmount { get; set; }
-        [Display(Name = "Day ")]
-        public int ReportDay { get; set; }
+        public int BookingId { get; set; }
+        [Display(Name="Booking Date")]
+        public DateTime BookingDate { get; set; }
+        public double Price { get; set; }
+        /// <summary>
+        /// ReportMonth Getter and Setter.
+        /// </summary>
         public int ReportMonth { get; set; }
+        /// <summary>
+        /// ReportYear Getter and Setter.
+        /// </summary>
         public int ReportYear { get; set; }
     }
 }

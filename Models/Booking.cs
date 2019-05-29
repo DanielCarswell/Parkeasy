@@ -45,12 +45,27 @@ namespace Parkeasy.Models
         /// </summary>
         [Required]
         public string Status { get; set; }
+        /// <summary>
+        /// Price Getter and Setter.
+        /// </summary>
         [Required]
         public double Price { get; set; }
+        /// <summary>
+        /// PaymentId Getter and Setter.
+        /// </summary>
         public string PaymentId{ get; set; }
+        /// <summary>
+        /// Servicing Getter and Setter.
+        /// </summary>
         [Display(Name = "Add Full Wash To Booking")]
         public bool Servicing { get; set; }
+        /// <summary>
+        /// ReminderSent Getter and Setter.
+        /// </summary>
         public bool ReminderSent { get; set; }
+        /// <summary>
+        /// Valeting Getter and Setter.
+        /// </summary>
         public bool Valeting{ get; set; }
 
         //Contains 1:M Relationship with ApplicationUser. (This is the many side)
@@ -61,9 +76,9 @@ namespace Parkeasy.Models
         public string ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
 
-        //Contains 1:M Relationship with ApplicationUser. (This is the many side)
+        //Contains 1:M Relationship with slot. (This is the many side)
         /// <summary>
-        /// Relationship Properties for Booking With ApplicationUser.
+        /// Relationship Properties for Booking With slot.
         /// </summary>
         [Display(Name = "Slot")]
         [InverseProperty("Slot")]
