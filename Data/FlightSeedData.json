@@ -1,0 +1,38 @@
+[
+    {
+       "DepartureDateTime": "05/30/2019 20:20:00",
+       "ReturnDateTime": "06/15/2019 20:20:00",
+       "DepartureNumber": "YA450",
+       "ReturnNumber": "YB450",
+       "Destination": "London"
+    },
+    {
+        "DepartureDateTime": "05/04/2019 20:20:00",
+        "ReturnDateTime": "05/15/2019 20:20:00",
+        "DepartureNumber": "BA300",
+       "ReturnNumber": "BB300",
+       "Destination": "Canada"
+     },
+     {
+        "DepartureDateTime": "06/05/2019 20:20:00",
+        "ReturnDateTime": "06/15/2019 20:20:00",
+        "DepartureNumber": "YZ450",
+       "ReturnNumber": "YX450",
+       "Destination": "New Zealand"
+     },
+     {
+        "DepartureDateTime": "07/05/2019 20:20:00",
+        "ReturnDateTime": "07/15/2019 20:20:00",
+        "DepartureNumber": "YY450",
+       "ReturnNumber": "YZ450",
+       "Destination": "New York"
+     },
+     {
+        "DepartureDateTime": "05/30/2019 20:20:00",
+        "ReturnDateTime": "06/15/2019 20:20:00",
+        "DepartureNumber": "FG450",
+       "ReturnNumber": "FH450",
+       "Destination": "Glasgow"
+     }
+    ]
+    

@@ -131,6 +131,9 @@ namespace Parkeasy
             seeder.SeedUsers();
             seeder.SeedSlotData();
             seeder.SeedPricing();
+            seeder.SeedBookings();
+            seeder.SeedVehicles();
+            seeder.SeedFlights();
         }
     }
 }

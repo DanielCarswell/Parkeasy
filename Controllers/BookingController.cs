@@ -16,7 +16,6 @@ using Parkeasy.Models.BookingViewModels;
 using Stripe;
 using Parkeasy.Services;
 using System.Security.Claims;
-using Rotativa.AspNetCore;
 using Twilio;
 using Twilio.Types;
 using Twilio.Rest.Api.V2010.Account;
@@ -71,6 +70,7 @@ namespace Parkeasy.Controllers
         /// Makes a SelectList of Report types and passes it to a view for generating report based on chosen dropdown.
         /// </summary>
         /// <returns>Redirect to Reports View passing in model</returns>
+        [Authorize(Roles = "Admin,Manager,Valeting Staff,Booking Clerk,Invoice Clerk")]
         public IActionResult Reports()
         {
             List<ReportViewModel> reports = new List<ReportViewModel>();
@@ -1243,7 +1243,7 @@ namespace Parkeasy.Controllers
 
             //List of ReleaseReports with appropriate property values.
             IEnumerable<ReleaseReport> rReports = await _context.ReleaseReports.Where(
-                br => br.ReportDay == nowDay && br.ReportDay == nowMonth && br.ReportDay == nowYear
+                br => br.ReportDay == nowDay && br.ReportMonth == nowMonth && br.ReportYear == nowYear
                 ).ToListAsync();
 
             //Returns view with ReleaseReports.
@@ -1263,7 +1263,7 @@ namespace Parkeasy.Controllers
 
             //Gets appropriate Valeting Reports from database.
             IEnumerable<ValetingReport> vReports = await _context.ValetingReports.Where(
-                br => br.ReportDay == nowDay && br.ReportDay == nowMonth && br.ReportDay == nowYear
+                br => br.ReportDay == nowDay && br.ReportMonth == nowMonth && br.ReportYear == nowYear
                 ).ToListAsync();
 
             //Returns view passing in list of ValetingReport class instances.
@@ -1287,7 +1287,7 @@ namespace Parkeasy.Controllers
                 if (booking.BookedAt.Month == DateTime.Now.Month && booking.BookedAt.Year == DateTime.Now.Year)
                 {
                     if (booking.Servicing.Equals(true))
-                        booking.Price += 15;
+                        booking.Price += _context.Pricing.Last().ServicingCost;
 
                     tReports.Add(new TurnoverReport
                     {
@@ -1314,7 +1314,7 @@ namespace Parkeasy.Controllers
             int days = 31;
             var bookings = await _context.Bookings.ToListAsync();
             List<MonthlyBookingReport> bReports = new List<MonthlyBookingReport>();
-            int[] noOfBookings = new int[10000];
+            int[] noOfBookings = new int[10000] ;
             double[] total = new double[10000];
 
             //Sets days in a month appropriately.
@@ -1332,13 +1332,13 @@ namespace Parkeasy.Controllers
                     //does checks and changes noOfBookings and total appropriately.
                     if (booking.BookedAt.Month == DateTime.Now.Month && booking.BookedAt.Year == DateTime.Now.Year)
                     {
-                        if (booking.Servicing.Equals(true))
-                            booking.Price += _context.Pricing.Last().ServicingCost;
-
                         if (booking.BookedAt.Day == i)
                         {
                             noOfBookings[i]++;
                             total[i] += booking.Price;
+
+                            if (booking.Servicing.Equals(true))
+                            total[i] += _context.Pricing.Last().ServicingCost;
                         }
                     }
                 }
@@ -1735,7 +1735,7 @@ namespace Parkeasy.Controllers
             locations.Add(new Pickup { Location = "Airport" });
 
             //Creates ViewData "Locations" for displaying Location dropdown in View.
-            ViewData["Locations"] = new SelectList(locations, "Location", "Location");
+            ViewData["Location"] = new SelectList(locations, "Location", "Location");
 
             //Returns AddPickup view.
             return View();
@@ -1746,10 +1746,13 @@ namespace Parkeasy.Controllers
         /// </summary>
         /// <param name="model">Instance of Pickup Class.</param>
         /// <returns>Redirect to Homepage or AddPickup View</returns>
+        [HttpPost]
         public async Task<IActionResult> AddPickup(Pickup model)
         {
             try
             {
+                if(model.PickupDate > DateTime.Now)
+                {
                 //Updates model, adds it to database and saves changes.
                 model.Status = "NotArrived";
                 _context.Pickups.Add(model);
@@ -1757,6 +1760,11 @@ namespace Parkeasy.Controllers
 
                 //Redirects to homepage.
                 return RedirectToAction(nameof(HomeController.Index), "Home");
+                }
+                else
+                {
+                    return View(model);
+                }
             }
             catch(Exception)
             {

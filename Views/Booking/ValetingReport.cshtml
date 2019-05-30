@@ -1,5 +1,5 @@
-@model IEnumerable<Parkeasy.Models.ValetingReport>
-
+@model IEnumerable<Parkeasy.Models.Reports.ValetingReport>
+@using Parkeasy.Models.Reports
 <style>
     .right-align{
         float: right;
@@ -51,6 +51,64 @@
     </tbody>
 </table>
 <br />
+@{
+    var Month = 0;
+    var Day = 0;
+    var Year = 0;
+    string currentMonth = null;
+    foreach(ValetingReport r in Model)
+    {
+        Month = (int) r.ReportMonth;
+        Day = (int) r.ReportDay;
+        Year = (int) r.ReportYear;
+    }
 
+    switch(Month)
+    {
+        case 1:
+        currentMonth = "January";
+        break;
+        case 2:
+        currentMonth = "February";
+        break;
+        case 3:
+        currentMonth = "March";
+        break;
+        case 4:
+        currentMonth = "April";
+        break;
+        case 5:
+        currentMonth = "May";
+        break;
+        case 6:
+        currentMonth = "June";
+        break;
+        case 7:
+        currentMonth = "July";
+        break;
+        case 8:
+        currentMonth = "April";
+        break;
+        case 9:
+        currentMonth = "September";
+        break;
+        case 10:
+        currentMonth = "October";
+        break;
+        case 11:
+        currentMonth = "November";
+        break;
+        case 12:
+        currentMonth = "December";
+        break;
+    }
+}
+<div stlye="float: left;
+        padding-left: 50px; font-size: 100px;">
+        <h4>Current Day: @Day  
+            @currentMonth  
+            @Year </h4>
+               
+        </div>
 </body>
 </html>

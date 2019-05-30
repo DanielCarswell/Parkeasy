@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using Parkeasy.Models;
+using Parkeasy.Controllers;
 
 namespace Parkeasy.Data
 {
@@ -132,6 +134,88 @@ namespace Parkeasy.Data
                 //Adds new prices to database and saves.
                 _context.Pricing.Add(prices);
                 _context.SaveChanges();
+            }
+        }
+
+        public void SeedBookings()
+        {
+            // Checks if Bookings have already been seeded, if NOT runs code inside.
+            if (!_context.Bookings.Any())
+            {
+                //Variable for handling slotid incrementing for each seeded booking.
+                int i = 1;
+
+                //Getting data from JSON file and deserializing.
+                var bookingData = System.IO.File.ReadAllText("Data/BookingSeedData.json");
+                var bookings = JsonConvert.DeserializeObject<List<Booking>>(bookingData);
+
+                //Loops for every booking in the Bookings List.
+                foreach (var booking in bookings)
+                {
+                    //Setups BookedAt and slotid then saves to database.
+                    booking.BookedAt = DateTime.Now;
+                    booking.SlotId = i;
+                    _context.Bookings.Add(booking);
+                    _context.SaveChanges();
+                    
+                    //Increments I.
+                    i++;
+                }
+
+            }
+        }
+
+        public void SeedFlights()
+        {
+            // Checks if Bookings have already been seeded, if NOT runs code inside.
+            if (!_context.Flights.Any())
+            {
+                //Initialising Local Variables.
+                int i = 1;
+
+                //Getting data from JSON file and deserializing.
+                var flightData = System.IO.File.ReadAllText("Data/FlightSeedData.json");
+                var flights = JsonConvert.DeserializeObject<List<Flight>>(flightData);
+
+                //Loops for every flight in the flights List.
+                foreach (var flight in flights)
+                {
+                    flight.Id = i;
+                    flight.Booking = _context.Bookings.Find(i);
+                    _context.Flights.Add(flight);
+                    _context.SaveChanges();
+                    
+                    //Increments I.
+                    i++;
+                }
+
+            }
+        }
+
+        public void SeedVehicles()
+        {
+            // Checks if Vehicles have already been seeded, if NOT runs code inside.
+            if (!_context.Vehicles.Any())
+            {
+                //Initialising Local Variables.
+                int i = 1;
+
+                //Getting data from JSON file and deserializing.
+                var vehicleData = System.IO.File.ReadAllText("Data/VehicleSeedData.json");
+                var vehicles = JsonConvert.DeserializeObject<List<Vehicle>>(vehicleData);
+
+                //Loops for every vehicle in the Vehicles List.
+                foreach (var vehicle in vehicles)
+                {
+                    vehicle.Id = i;
+                    vehicle.Booking = _context.Bookings.Find(i);
+                    _context.Vehicles.Add(vehicle);
+                    _context.SaveChanges();
+                    
+                    //Increments I.
+                    i++;
+                }
+
             }
         }
     }

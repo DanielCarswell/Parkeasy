@@ -1,0 +1,32 @@
+[
+{
+    "Travellers": 3,
+    "Model": "Stepway",
+    "Registration": "AB05 3RS",
+    "Colour": "Blue"
+ },
+ {
+    "Travellers": 2,
+    "Model": "Vauxhall extra",
+    "Registration": "AB55 3RS",
+    "Colour": "Pink"
+ },
+ {
+    "Travellers": 1,
+    "Model": "Viat Multipla",
+    "Registration": "AB05 38S",
+    "Colour": "Red"
+ },
+ {
+    "Travellers": 4,
+    "Model": "Mini Cooper",
+    "Registration": "SJ05 9TW",
+    "Colour": "Green"
+ },
+ {
+    "Travellers": 4,
+    "Model": "Mini Cooper",
+    "Registration": "SR25 9TW",
+    "Colour": "Black"
+ }
+]

@@ -1,4 +1,5 @@
-@model IEnumerable<Parkeasy.Models.MonthlyBookingReport>
+@model IEnumerable<Parkeasy.Models.Reports.MonthlyBookingReport>
+@using Parkeasy.Models.Reports
 
 <style>
     .right-align{
@@ -37,13 +38,13 @@
         {
         @if(item.NoOfBookings != 0)
             {
-                var total = item.TotalAmount /2;
+                var total = (int) item.TotalAmount;
         <tr>
             <td>
                 @Html.DisplayFor(model => item.NoOfBookings)
             </td>
             <td>
-                @total
+                £@total
             </td>
             <td>
                 @Html.DisplayFor(model => item.ReportDay)

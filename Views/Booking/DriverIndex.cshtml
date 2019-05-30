@@ -18,6 +18,9 @@
                 <th>
                     <p>Location</p>
                 </th>
+                <th>
+                    <p>Status</p>
+                </th>
         </tr>
     </thead>
     <tbody>
@@ -31,17 +34,20 @@
                 @Html.DisplayFor(modelItem => item.Location)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
             @if(item.Status=="NotArrived")
             {
                 <a asp-action="ConfirmPickup" type="button" class="btn btn-success" asp-route-id="@item.Id">
-                    Check-In
+                    Confirm Pickup
                 </a>
             }
             @if(item.Status=="Arrived")
             {
                
                 <a asp-action="ConfirmDropOff" type="button" class="btn btn-success" asp-route-id="@item.Id">
-                    Delay
+                    Confirm Dropoff
                 </a>
             }
     </td>
