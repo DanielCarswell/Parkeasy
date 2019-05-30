@@ -38,6 +38,7 @@ namespace Parkeasy.Models
         /// Travellers Getter and Setter.
         /// </summary>
         [Required]
+        [Range(1, 8, ErrorMessage = "Please enter a value bigger than {1} and less than {2}")]
         public int Travellers { get; set; }
         /// <summary>
         /// Navigational propertie for Vehicle and Booking Relationship.

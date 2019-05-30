@@ -27,7 +27,13 @@ namespace Parkeasy.Models.Reports
         /// Name Getter and Setter.
         /// </summary>
         public string ReportType { get; set; }
+        /// <summary>
+        /// Price Getter and Setter.
+        /// </summary>
         public double Price { get; set; }
+        /// <summary>
+        /// ReportDay Getter and Setter.
+        /// </summary>
         public int ReportDay { get; set; }
         /// <summary>
         /// ReportMonth Getter and Setter.

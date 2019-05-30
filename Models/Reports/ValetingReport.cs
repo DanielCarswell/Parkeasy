@@ -24,9 +24,21 @@ namespace Parkeasy.Models.Reports
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        /// <summary>
+        /// Model Getter and Setter.
+        /// </summary>
         public string Model { get; set; }
+        /// <summary>
+        /// Registration Getter and Setter.
+        /// </summary>
         public String Registration { get; set; }
+        /// <summary>
+        /// BookingId Getter and Setter.
+        /// </summary>
         public int BookingId { get; set; }
+        /// <summary>
+        /// ReportDay Getter and Setter.
+        /// </summary>
         public int ReportDay { get; set; }
         /// <summary>
         /// ReportMonth Getter and Setter.

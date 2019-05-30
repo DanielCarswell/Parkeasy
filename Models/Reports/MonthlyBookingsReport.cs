@@ -28,6 +28,9 @@ namespace Parkeasy.Models.Reports
         /// </summary>
         [Display(Name = "Number Of Bookings")]
         public int NoOfBookings{ get; set; }
+        /// <summary>
+        /// TotalAmount Getter and Setter.
+        /// </summary>
         [Display(Name="Income")]
         public double TotalAmount { get; set; }
         /// <summary>

@@ -37,9 +37,21 @@ namespace Parkeasy.Models
         /// </summary>
         /// <value>05/05/2019 00:20:00</value>
         public DateTime? ToBeAvailable { get; set; }
+        /// <summary>
+        /// Arrived Getter and Setter.
+        /// </summary>
         public string Arrived { get; set; }
+        /// <summary>
+        /// DaysOverCheckout Getter and Setter.
+        /// </summary>
         public int DaysOverCheckout { get; set; }
+        /// <summary>
+        /// LastBookingsId Getter and Setter.
+        /// </summary>
         public int LastBookingsId { get; set; }
+        /// <summary>
+        /// Bookings Getter and Setter.
+        /// </summary>
         public virtual ICollection<Booking> Bookings { get; set; }
     }
 }

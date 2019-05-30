@@ -73,6 +73,7 @@ namespace Parkeasy.Controllers
         /// </summary>
         /// <returns>Create View</returns>
         [ActionName("Create")]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateStaff()
         {
             //Creates new roles variable as List of IdentityRoles.
@@ -96,6 +97,7 @@ namespace Parkeasy.Controllers
         /// <returns>Redirect to Index View or Create if adding user to database fails.</returns>
         [HttpPost]
         [ActionName("Create")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateStaff(StaffRegisterViewModel model)
         {

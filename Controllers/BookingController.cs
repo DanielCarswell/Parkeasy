@@ -106,7 +106,7 @@ namespace Parkeasy.Controllers
         /// Displays list of bookings that are due to arrive or are parked/delayed.
         /// </summary>
         /// <returns>View passing in booking data.</returns>
-        [Authorize(Roles = "Invoice Clerk,Admin,Manager")]
+        [Authorize(Roles = "Valeting Staff,Admin,Manager")]
         public IActionResult ValetingStaffIndex()
         {
             var bookings = _context.Bookings.Where(b => b.Status == "Delayed" || b.Status == "Booked" || b.Status == "Parked").Include(b => b.ApplicationUser);
@@ -118,6 +118,7 @@ namespace Parkeasy.Controllers
         /// Redirect to Booking Create View.
         /// </summary>
         /// <returns>Create View or Redirect to Checkout Action</returns>
+        [AllowAnonymous]
         public IActionResult Create()
         {
             var booking = GetCurrentUserBooking();
@@ -133,6 +134,7 @@ namespace Parkeasy.Controllers
         /// <param name="booking">Instance of Booking class.</param>
         /// <returns>Create View if fails, else ContinueBooking action redirect.</returns>
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Booking booking)
         {

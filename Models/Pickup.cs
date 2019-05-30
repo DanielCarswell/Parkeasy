@@ -30,6 +30,9 @@ namespace Parkeasy.Models
         /// </summary>
         [Required]
         public string Location{ get; set; }
+        /// <summary>
+        /// Status Getter and Setter.
+        /// </summary>
         public string Status{ get; set; }
     }
 }
