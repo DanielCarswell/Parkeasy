@@ -1087,7 +1087,8 @@ namespace Parkeasy.Controllers
                         return RedirectToAction(nameof(UpdateBooking));
                     }
                 }
-
+                if(amendDetails.Charge != 0)
+                {
                 //Creates new ChargeCreateOptions class instance.
                 var newCharge = charges.Create(new ChargeCreateOptions
                 {
@@ -1096,6 +1097,7 @@ namespace Parkeasy.Controllers
                     Currency = "gbp",
                     CustomerId = customer.Id
                 });
+                }
 
                 //Sends invoice.
                 await _emailSender.SendEmailAsync(_context.Users.Where(u => u.Id == claim.Value).FirstOrDefault().Email,
@@ -1114,7 +1116,7 @@ namespace Parkeasy.Controllers
                 HttpContext.Session.SetObjectAsJson("BookingAmend", amendDetails.Booking);
                 HttpContext.Session.SetObjectAsJson("FlightAmend", amendDetails.Flight);
                 HttpContext.Session.SetObjectAsJson("VehicleAmend", amendDetails.Vehicle);
-                HttpContext.Session.SetObjectAsJson("SlotAmend", slot);
+                HttpContext.Session.SetObjectAsJson("SlotAmendId", slot.Id);
                 _context.Invoices.Add(newInvoice);
                 await _context.SaveChangesAsync();
 
@@ -1151,7 +1153,8 @@ namespace Parkeasy.Controllers
             //Getting id from parameter, getting booking using it and calculating price.
             int id = bookingAmend.Id;
             Booking booking = _context.Bookings.Find(id);
-            int price = (booking.Duration - bookingAmend.Duration) * (int)_context.Pricing.Last().PerDay;
+            bookingAmend.Duration = (int) (bookingAmend.ReturnDate - bookingAmend.DepartureDate).TotalDays;
+            int price = (bookingAmend.Duration - booking.Duration) * (int)_context.Pricing.Last().PerDay;
 
             //Initialising Object Sessions and redirecting to AmendBooking action passing id.
             HttpContext.Session.SetObjectAsJson("AmendBooking", bookingAmend);
@@ -1202,7 +1205,8 @@ namespace Parkeasy.Controllers
         /// <returns>Redirect to UserBookings action.</returns>
         public IActionResult UpdateSlot()
         {
-            Slot slot = HttpContext.Session.GetObjectFromJson<Slot>("SlotAmend");
+            int slotId = HttpContext.Session.GetObjectFromJson<int>("SlotAmendId");
+            Slot slot = _context.Slots.Find(slotId);
             Booking booking = HttpContext.Session.GetObjectFromJson<Booking>("BookingAmend");
             slot.Bookings.Add(booking);
             _context.Update(slot);

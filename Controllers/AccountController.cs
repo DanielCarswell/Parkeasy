@@ -78,6 +78,12 @@ namespace Parkeasy.Controllers
             return View();
         }
         
+        /// <summary>
+        /// Handles loginning in using normal login email and password.
+        /// </summary>
+        /// <param name="model">LoginViewModel Class Instance</param>
+        /// <param name="returnUrl">String Value</param>
+        /// <returns>Returns view or redirect to url/loginwithf2a/lockout</returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -114,6 +120,12 @@ namespace Parkeasy.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Redirects the user to LoginWith2fa view.
+        /// </summary>
+        /// <param name="rememberMe">boolean value</param>
+        /// <param name="returnUrl">string value</param>
+        /// <returns>loginWith2fa View.</returns>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> LoginWith2fa(bool rememberMe, string returnUrl = null)
@@ -132,6 +144,13 @@ namespace Parkeasy.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Attempts to login the user using 2fa.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="rememberMe"></param>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
