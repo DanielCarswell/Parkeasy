@@ -59,9 +59,11 @@ namespace Parkeasy.Controllers
             return View(vehicle);
         }
 
-        // POST: Vehicles/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Adds a new Vehicle class instance to the database.
+        /// </summary>
+        /// <param name="vehicle">Vehicle Class Instance</param>
+        /// <returns>Redirect to ContinueBooking action</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Registration,Model,Colour,Travellers")] Vehicle vehicle)
@@ -153,14 +155,28 @@ namespace Parkeasy.Controllers
             return View(vehicle);
         }
 
+        /// <summary>
+        /// Checks if a vehicle exists in the database.
+        /// </summary>
+        /// <param name="id">Nullable integer value</param>
+        /// <returns>True or false</returns>
         private bool VehicleExists(int? id)
         {
             return _context.Vehicles.Any(e => e.Id == id);
         }
 
         #region PassingControllers
+        /// <summary>
+        /// Gets current logged in user using the HttpContext.
+        /// </summary>
+        /// <returns>ApplicationUser Class Instance</returns>
         public Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
+        /// <summary>
+        /// Redirects method to Checkout action on Booking Controller.
+        /// </summary>
+        /// <param name="booking">Booking Class Instance</param>
+        /// <returns>Checkout Action</returns>
         [AllowAnonymous]
         public ActionResult ContinueBooking(Booking booking)
         {

@@ -73,6 +73,7 @@ namespace Parkeasy.Controllers
         [Authorize(Roles = "Admin,Manager,Valeting Staff,Booking Clerk,Invoice Clerk")]
         public IActionResult Reports()
         {
+            Response.WriteAsync("<script>alert('" + "Big boy message" + "')</script>");
             List<ReportViewModel> reports = new List<ReportViewModel>();
 
             //Add to List of ReportViewModel class instances.
@@ -1731,6 +1732,7 @@ namespace Parkeasy.Controllers
         /// Makes selectlist and returns view.
         /// </summary>
         /// <returns>AddPickup View</returns>
+        [Authorize(Roles = "Admin,Manager,Booking Clerk")]
         public IActionResult AddPickup()
         {
             //List of Pickup class instances for selectlist.
@@ -1765,7 +1767,7 @@ namespace Parkeasy.Controllers
                 await _context.SaveChangesAsync();
 
                 //Redirects to homepage.
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(HomeController.Home), "Home");
                 }
                 else
                 {

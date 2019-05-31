@@ -30,7 +30,7 @@ namespace Parkeasy.Controllers
             return View(await _context.Invoices.ToListAsync());
         }
 
-        [Authorize(Roles = "Invoice Clerk,Admin,Manager,Customer")]
+        [Authorize(Roles = "Invoice Clerk,Admin,Manager")]
         public IActionResult SendInvoice()
         {
             var users = _context.Users;
@@ -46,7 +46,7 @@ namespace Parkeasy.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Invoice Clerk,Admin,Manager,Customer")]
+        [Authorize(Roles = "Invoice Clerk,Admin,Manager")]
         public async Task<IActionResult> SendInvoice(SendInvoiceModel invoice)
         {
             await _emailSender.SendEmailAsync(invoice.Emails.First(), invoice.InvoiceType, invoice.InvoiceBody);
@@ -58,7 +58,7 @@ namespace Parkeasy.Controllers
                 
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(HomeController.Home), "Home");
         }
 
         private bool InvoiceExists(int id)

@@ -295,7 +295,7 @@ namespace Parkeasy.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(HomeController.Home), "Home");
         }
 
         [HttpPost]
@@ -387,7 +387,7 @@ namespace Parkeasy.Controllers
         {
             if (userId == null || code == null)
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(HomeController.Home), "Home");
             }
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
@@ -507,7 +507,7 @@ namespace Parkeasy.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(HomeController.Home), "Home");
             }
         }
 

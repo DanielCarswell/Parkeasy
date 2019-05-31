@@ -44,6 +44,7 @@ namespace Parkeasy.Controllers
         /// Displays list of Users.
         /// </summary>
         /// <returns>Index View with users as model.</returns>
+        [Authorize(Roles = "Admin,Manager,Booking Clerk,Invoice Clerk")]
         public async Task<IActionResult> Index()
         {
             //Gets all users from database using _context parameter.
@@ -58,6 +59,7 @@ namespace Parkeasy.Controllers
         /// Displays list of Customers.
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Admin,Manager,Booking Clerk,Invoice Clerk")]
         public async Task<IActionResult> CustomerIndex()
         {
             //Gets all customers from database using _context parameter.
@@ -144,6 +146,7 @@ namespace Parkeasy.Controllers
         /// </summary>
         /// <param name="id">String Variable.</param>
         /// <returns>ChangeRole View.</returns>
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangeRole(string id)
         {
             //Creates new roles variable as List of IdentityRoles.
@@ -172,6 +175,7 @@ namespace Parkeasy.Controllers
         /// <returns>Redirect to Index Action or displays ChangeRole view with a model.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangeRole(ChangeRoleViewModel model)
         {
             //Creating new Instance of ApplicationUser class.
@@ -204,80 +208,8 @@ namespace Parkeasy.Controllers
             return View(model);
         }
 
-        // GET: User/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users.SingleOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            EditViewModel model = new EditViewModel
-            {
-                Id = user.Id,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Address = user.Address,
-                PostCode = user.PostCode
-            };
-
-            return View(model);
-        }
-
-        // POST: User/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditViewModel model)
-        {
-            if (model.Id == null)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                ApplicationUser user = new ApplicationUser
-                {
-                    Id = model.Id,
-                    Email = model.Email,
-                    UserName = model.Email,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Address = model.Address,
-                    PostCode = model.PostCode
-                };
-                try
-                {
-
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(model);
-        }
-
         // GET: User/Details/5
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -287,6 +219,36 @@ namespace Parkeasy.Controllers
 
             var user = await _context.Users
                 .SingleOrDefaultAsync(m => m.Id == id);
+            
+            RegisterViewModel model = new RegisterViewModel
+            {
+                PostCode = user.PostCode,
+                Address = user.Address,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Telephone = user.Telephone
+                
+            };
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(model);
+        }
+
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> StaffDetails(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users
+                .SingleOrDefaultAsync(m => m.Id == id);
+            
             if (user == null)
             {
                 return NotFound();
@@ -296,6 +258,7 @@ namespace Parkeasy.Controllers
         }
 
         // GET: User/Delete/5
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -306,24 +269,17 @@ namespace Parkeasy.Controllers
             var userData = await _context.Users
                 .SingleOrDefaultAsync(u => u.Id == id);
 
-            var user = new EditViewModel
-            {
-                Email = userData.Email,
-                FirstName = userData.FirstName,
-                LastName = userData.LastName,
-                Address = userData.Address,
-                PostCode = userData.PostCode
-            };
-            if (user == null)
+            if (userData == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(userData);
         }
 
         // POST: User/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin,Manager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
@@ -345,7 +301,7 @@ namespace Parkeasy.Controllers
         {
             await _emailSender.SendEnquiryAsync("danielcarswelldrive@gmail.com", invoice.InvoiceType, invoice.InvoiceBody);
 
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(HomeController.Home), "Home");
         }
 
         private bool UserExists(string id)

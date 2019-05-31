@@ -9,9 +9,6 @@
 </head>
 <body>
 <br />
-<p>
-    <a asp-action="CreateStaff" class="btn btn-success"><span class="fas fa-plus"></span>  Create New Staff Account</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -40,11 +37,17 @@
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
-                @await Html.PartialAsync("_TableButtonPartial", item.Id)
+                @if(User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                @await Html.PartialAsync("_CustomerUserIndex", item.Id)
+                }
             </td>
         </tr>
 }
     </tbody>
 </table>
+<div>
+    <a asp-action="CustomerIndex" asp-controller="User" class="btn btn-success">Back To List</a>
+</div>
 </body>
 </html>

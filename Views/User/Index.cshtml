@@ -46,17 +46,20 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Role)
             </td>
-            @if(!item.Role.Equals("Customer"))
+            @if(User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+            if(!item.Role.Equals("Customer"))
             {
             <td>
-                @await Html.PartialAsync("_TableButtonPartial", item.Id)
+                @await Html.PartialAsync("_StaffUserIndex", item.Id)
             </td>
             }
             else
             {
                 <td>
-                @await Html.PartialAsync("_NoRoleChangeTablePartial", item.Id)
+                @await Html.PartialAsync("_CustomerUserIndex", item.Id)
         </td>
+            }
             }
         </tr>
 }

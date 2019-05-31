@@ -7,7 +7,9 @@
      "Address": "4 Bonanza Road",
      "Telephone": "01234 305232",
      "FirstName": "Daniel",
-     "LastName": "Carswell"
+     "LastName": "Carswell",
+     "CurrentQualification": "Honours",
+     "JobTitle": "Admin"
   },
   {
     "UserName": "Manager@Parkeasy.com",
@@ -17,7 +19,9 @@
     "Address": "4 Library Road",
     "Telephone": "01234 307632",
     "FirstName": "Euan",
-    "LastName": "Carswell"
+    "LastName": "Carswell",
+    "CurrentQualification": "Honours",
+    "JobTitle": "Manager"
  },
  {
   "UserName": "BookingClerk@Parkeasy.com",
@@ -27,7 +31,9 @@
   "Address": "8 Alcatraz Road",
   "Telephone": "01234 607232",
   "FirstName": "Aidan",
-  "LastName": "Rooney"
+  "LastName": "Rooney",
+  "CurrentQualification": "Honours",
+  "JobTitle": "Booking Clerk"
 },
 {
   "UserName": "InvoiceClerk@Parkeasy.com",
@@ -37,7 +43,9 @@
   "Address": "43 Honest Road",
   "Telephone": "01234 305232",
   "FirstName": "Ewan",
-  "LastName": "MacPherson"
+  "LastName": "MacPherson",
+  "CurrentQualification": "Honours",
+  "JobTitle": "Invoice Clerk"
 },
 {
   "UserName": "Driver@Parkeasy.com",
@@ -47,7 +55,9 @@
   "Address": "72 Bonanza Street",
   "Telephone": "01234 305232",
   "FirstName": "Mark",
-  "LastName": "McNulty"
+  "LastName": "McNulty",
+  "CurrentQualification": "Honours",
+  "JobTitle": "Driver"
 },
 {
   "UserName": "ValetingStaff@Parkeasy.com",
@@ -57,7 +67,9 @@
   "Address": "4 Bonanza Street",
   "Telephone": "01234 305232",
   "FirstName": "Jamie",
-  "LastName": "Lawn"
+  "LastName": "Lawn",
+  "CurrentQualification": "Honours",
+  "JobTitle": "Valeting Staff"
 },
 {
   "UserName": "Customer1@Parkeasy.com",

@@ -1,4 +1,4 @@
-@model Parkeasy.Models.UserViewModel
+@model Parkeasy.Models.AccountViewModels.RegisterViewModel
 
 <!DOCTYPE html>
 
@@ -10,7 +10,7 @@
 <body>
 
 <div>
-    <h4>UserViewModel</h4>
+    <h4>User Details</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -32,16 +32,27 @@
             @Html.DisplayFor(model => model.LastName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Password)
+            @Html.DisplayNameFor(model => model.Address)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Password)
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PostCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PostCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Telephone)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Telephone)
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div>|
+    <a asp-action="Index" class="btn btn-success">Back to List</a>
 </div>
 </body>
 </html>

@@ -1,0 +1,15 @@
+@model string
+
+<td style="width:150px;">
+    <div class="btn-group" role="group">
+        <a asp-action="ChangeRole" type="button" class="btn btn-warning" asp-route-id="@Model">
+            <i class="fas fa-star"></i>
+        </a>
+        <a asp-action="StaffDetails" type="button" class="btn btn-success" asp-route-id="@Model">
+            <i class="fas fa-list-alt"></i>
+        </a>
+        <a asp-action="Delete" type="button" class="btn btn-danger" asp-route-id="@Model">
+            <i class="fas fa-trash"></i>
+        </a>
+    </div>
+</td>
