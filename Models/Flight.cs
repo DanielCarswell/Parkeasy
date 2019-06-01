@@ -23,10 +23,14 @@ namespace Parkeasy.Models
         /// <summary>
         /// DepartureNumber Getter and Setter.
         /// </summary>
+        [Required]
+        [StringLength(10, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
         public string DepartureNumber { get; set; }
         /// <summary>
         /// ReturnNumber Getter and Setter.
         /// </summary>
+        [Required]
+        [StringLength(10, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
         public string ReturnNumber { get; set; }
         /// <summary>
         /// DepartureDateTime Getter and Setter.
@@ -39,6 +43,8 @@ namespace Parkeasy.Models
         /// <summary>
         /// Destination Getter and Setter.
         /// </summary>
+        [Required]
+        [StringLength(20, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
         public string Destination { get; set; }
 
         //Navigational propertie for Flight and Booking Relationship.

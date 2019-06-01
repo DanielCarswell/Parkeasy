@@ -73,7 +73,6 @@ namespace Parkeasy.Controllers
         [Authorize(Roles = "Admin,Manager,Valeting Staff,Booking Clerk,Invoice Clerk")]
         public IActionResult Reports()
         {
-            Response.WriteAsync("<script>alert('" + "Big boy message" + "')</script>");
             List<ReportViewModel> reports = new List<ReportViewModel>();
 
             //Add to List of ReportViewModel class instances.
@@ -1154,7 +1153,10 @@ namespace Parkeasy.Controllers
             //Getting id from parameter, getting booking using it and calculating price.
             int id = bookingAmend.Id;
             Booking booking = _context.Bookings.Find(id);
-            bookingAmend.Duration = (int) (bookingAmend.ReturnDate - bookingAmend.DepartureDate).TotalDays;
+            
+            if (bookingAmend.DepartureDate > DateTime.Now && bookingAmend.ReturnDate > bookingAmend.DepartureDate)
+            {
+            bookingAmend.Duration = (int) (bookingAmend.ReturnDate - bookingAmend.DepartureDate).Days;
             int price = (bookingAmend.Duration - booking.Duration) * (int)_context.Pricing.Last().PerDay;
 
             //Initialising Object Sessions and redirecting to AmendBooking action passing id.
@@ -1162,6 +1164,9 @@ namespace Parkeasy.Controllers
             HttpContext.Session.SetObjectAsJson("BookingReAmend", bookingAmend);
             HttpContext.Session.SetObjectAsJson("AmendCost", price);
             return RedirectToAction(nameof(AmendBooking), id);
+            }
+            else
+                return View(bookingAmend);
         }
 
         /// <summary>

@@ -75,13 +75,6 @@
                     <li><a href="/" style="color:#FFF;">Home</a></li>
                     <li><a href="/Home/Contact" style="color:#FFF;">Contact</a></li>
                 </ul>
-                <a class="navbar-form navbar-left colouring">
-                    @using (Html.BeginForm("SearchResults", "Home"))
-                    {
-                        <input type="text" id="search" name="search" />
-                        <input type="submit" value="Submit" />
-                    }
-                </a>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>

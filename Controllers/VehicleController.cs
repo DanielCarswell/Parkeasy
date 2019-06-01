@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Parkeasy.Data;
 using Parkeasy.Models;
 using Parkeasy.Models.BookingViewModels;
+using Microsoft.AspNetCore.Http;
 
 namespace Parkeasy.Controllers
 {
@@ -93,6 +94,10 @@ namespace Parkeasy.Controllers
         [HttpPost]
         public IActionResult Amend(Vehicle vehicleAmend)
         {
+            //if(vehicleAmend.Colour == null || vehicleAmend.Model == null || vehicleAmend.Registration == null || vehicleAmend.Travellers <= 0)
+            //{
+                //return View(vehicleAmend);
+            //}
             int id = (int)vehicleAmend.Id;
             HttpContext.Session.SetObjectAsJson("AmendVehicle", vehicleAmend);
             HttpContext.Session.SetObjectAsJson("VehicleReAmend", vehicleAmend);
