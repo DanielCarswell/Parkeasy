@@ -7,7 +7,6 @@
        "Price": "160.00",
        "Servicing": true,
        "ReminderSent": false,
-       "ApplicationUserId": "7b9b9b38-f116-4765-83fb-40af4437a3b9",
        "Valeting": true
     },
     {
@@ -18,7 +17,6 @@
         "Price": "110.00",
         "Servicing": false,
         "ReminderSent": false,
-        "ApplicationUserId": "7b9b9b38-f116-4765-83fb-40af4437a3b9",
         "Valeting": true
      },
      {
@@ -29,7 +27,6 @@
         "Price": "160.00",
         "Servicing": true,
         "ReminderSent": false,
-        "ApplicationUserId": "b9490eac-2924-470c-b691-b054a2ad2c35",
         "Valeting": true
      },
      {
@@ -40,7 +37,6 @@
         "Price": "100.00",
         "Servicing": true,
         "ReminderSent": false,
-        "ApplicationUserId": "5bd50ac4-db8d-42d0-923f-66c93b01379c",
         "Valeting": true
      },
      {
@@ -51,7 +47,6 @@
         "Price": "160.00",
         "Servicing": true,
         "ReminderSent": false,
-        "ApplicationUserId": "fac99589-10cb-4497-8c48-ec340689a11b",
         "Valeting": true
      }
     ]

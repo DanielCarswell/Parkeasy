@@ -239,13 +239,21 @@ namespace Parkeasy.Migrations
 
                     b.Property<DateTime>("DepartureDateTime");
 
-                    b.Property<string>("DepartureNumber");
+                    b.Property<string>("DepartureNumber")
+                        .IsRequired()
+                        .HasMaxLength(10);
 
-                    b.Property<string>("Destination");
+                    b.Property<string>("Destination")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.Property<string>("ErrorMessage");
 
                     b.Property<DateTime>("ReturnDateTime");
 
-                    b.Property<string>("ReturnNumber");
+                    b.Property<string>("ReturnNumber")
+                        .IsRequired()
+                        .HasMaxLength(10);
 
                     b.HasKey("Id");
 
@@ -431,6 +439,8 @@ namespace Parkeasy.Migrations
 
                     b.Property<string>("Colour")
                         .IsRequired();
+
+                    b.Property<string>("ErrorMessage");
 
                     b.Property<string>("Model")
                         .IsRequired();

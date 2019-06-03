@@ -67,13 +67,13 @@
                 }
             </td>
             <td>
-            @if(item.Status=="Booked" && (item.DepartureDate.Day >= DateTime.Now.Day))
+            @if(item.Status=="Booked" && (item.DepartureDate.Day == DateTime.Now.Day))
             {
                 <a asp-action="CheckInBooking" type="button" class="btn btn-success" asp-route-id="@item.Id">
                     Check-In
                 </a>
             }
-            @if((item.Status=="Booked" && (item.DepartureDate.Day >= DateTime.Now.Day) || item.Status == "Parked" ))
+            @if((item.Status=="Booked" && (item.DepartureDate.Day == DateTime.Now.Day) || item.Status == "Parked" ))
             {
                
                 <a asp-action="DelayBooking" type="button" class="btn btn-success" asp-route-id="@item.Id">

@@ -11,7 +11,7 @@ using System;
 namespace Parkeasy.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190529233349_SqliteInitial")]
+    [Migration("20190601193618_SqliteInitial")]
     partial class SqliteInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -240,13 +240,21 @@ namespace Parkeasy.Migrations
 
                     b.Property<DateTime>("DepartureDateTime");
 
-                    b.Property<string>("DepartureNumber");
+                    b.Property<string>("DepartureNumber")
+                        .IsRequired()
+                        .HasMaxLength(10);
 
-                    b.Property<string>("Destination");
+                    b.Property<string>("Destination")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.Property<string>("ErrorMessage");
 
                     b.Property<DateTime>("ReturnDateTime");
 
-                    b.Property<string>("ReturnNumber");
+                    b.Property<string>("ReturnNumber")
+                        .IsRequired()
+                        .HasMaxLength(10);
 
                     b.HasKey("Id");
 
@@ -432,6 +440,8 @@ namespace Parkeasy.Migrations
 
                     b.Property<string>("Colour")
                         .IsRequired();
+
+                    b.Property<string>("ErrorMessage");
 
                     b.Property<string>("Model")
                         .IsRequired();

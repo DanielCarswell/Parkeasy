@@ -35,6 +35,10 @@ namespace Parkeasy.Models
         [Required]
         public string Colour { get; set; }
         /// <summary>
+        /// ErrorMessage Getter and Setter.
+        /// </summary>
+        public string ErrorMessage{ get; set; }
+        /// <summary>
         /// Travellers Getter and Setter.
         /// </summary>
         [Required]

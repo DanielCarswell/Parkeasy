@@ -351,10 +351,11 @@ namespace Parkeasy.Migrations
                 {
                     Id = table.Column<int>(nullable: false),
                     DepartureDateTime = table.Column<DateTime>(nullable: false),
-                    DepartureNumber = table.Column<string>(nullable: true),
-                    Destination = table.Column<string>(nullable: true),
+                    DepartureNumber = table.Column<string>(maxLength: 10, nullable: false),
+                    Destination = table.Column<string>(maxLength: 20, nullable: false),
+                    ErrorMessage = table.Column<string>(nullable: true),
                     ReturnDateTime = table.Column<DateTime>(nullable: false),
-                    ReturnNumber = table.Column<string>(nullable: true)
+                    ReturnNumber = table.Column<string>(maxLength: 10, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -373,6 +374,7 @@ namespace Parkeasy.Migrations
                 {
                     Id = table.Column<int>(nullable: false),
                     Colour = table.Column<string>(nullable: false),
+                    ErrorMessage = table.Column<string>(nullable: true),
                     Model = table.Column<string>(nullable: false),
                     Registration = table.Column<string>(nullable: false),
                     Travellers = table.Column<int>(nullable: false)

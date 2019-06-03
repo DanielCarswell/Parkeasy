@@ -153,6 +153,7 @@ namespace Parkeasy.Data
                 foreach (var booking in bookings)
                 {
                     //Setups BookedAt and slotid then saves to database.
+                    booking.Id = i;
                     booking.BookedAt = DateTime.Now;
                     booking.SlotId = i;
                     _context.Bookings.Add(booking);

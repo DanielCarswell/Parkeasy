@@ -70,7 +70,7 @@ namespace Parkeasy.Controllers
         /// Makes a SelectList of Report types and passes it to a view for generating report based on chosen dropdown.
         /// </summary>
         /// <returns>Redirect to Reports View passing in model</returns>
-        [Authorize(Roles = "Admin,Manager,Valeting Staff,Booking Clerk,Invoice Clerk")]
+        [Authorize(Roles = "Admin,Manager,Valeting Staff,Booking Clerk,Invoice Clerk,Driver")]
         public IActionResult Reports()
         {
             List<ReportViewModel> reports = new List<ReportViewModel>();
@@ -821,7 +821,7 @@ namespace Parkeasy.Controllers
             booking.Status = "Parked";
             _context.Bookings.Update(booking);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(ValetingStaffIndex));
+            return RedirectToAction(nameof(AddBookingReport));
         }
 
         /// <summary>
@@ -867,6 +867,7 @@ namespace Parkeasy.Controllers
             Booking booking = _context.Bookings.Find(id);
 
             booking.Valeting = false;
+            _context.Bookings.Update(booking);
             await _context.SaveChangesAsync();
 
             HttpContext.Session.SetObjectAsJson("ValetBookingId", id);
@@ -879,6 +880,12 @@ namespace Parkeasy.Controllers
 
         public async Task<IActionResult> AmendBooking(int? id)
         {
+            //Clears session to stop self referencing loop occuring if amending process hasnt started.
+            if( HttpContext.Session.GetObjectFromJson<Booking>("AmendBooking") == null
+                && HttpContext.Session.GetObjectFromJson<Flight>("AmendFlight") == null
+                && HttpContext.Session.GetObjectFromJson<Vehicle>("AmendVehicle") == null)
+                HttpContext.Session.Clear();
+
             //Initialising local variables.
             double servicingCost = 0;
             int complexNotNull = 0;
@@ -1115,6 +1122,7 @@ namespace Parkeasy.Controllers
                 //Creates sessions and adds invoice to database and saves changes to database.
                 HttpContext.Session.SetObjectAsJson("BookingAmend", amendDetails.Booking);
                 HttpContext.Session.SetObjectAsJson("FlightAmend", amendDetails.Flight);
+                HttpContext.Session.SetObjectAsJson("FlightAmendId", amendDetails.Flight.Id);
                 HttpContext.Session.SetObjectAsJson("VehicleAmend", amendDetails.Vehicle);
                 HttpContext.Session.SetObjectAsJson("SlotAmendId", slot.Id);
                 _context.Invoices.Add(newInvoice);
@@ -1153,7 +1161,7 @@ namespace Parkeasy.Controllers
             //Getting id from parameter, getting booking using it and calculating price.
             int id = bookingAmend.Id;
             Booking booking = _context.Bookings.Find(id);
-            
+
             if (bookingAmend.DepartureDate > DateTime.Now && bookingAmend.ReturnDate > bookingAmend.DepartureDate)
             {
             bookingAmend.Duration = (int) (bookingAmend.ReturnDate - bookingAmend.DepartureDate).Days;
@@ -1173,11 +1181,39 @@ namespace Parkeasy.Controllers
         /// Updates Booking info received from a session.
         /// </summary>
         /// <returns>Redirect to UpdateFlight action.</returns>
-        public IActionResult UpdateBooking()
+        public async Task<IActionResult> UpdateBooking()
         {
+            var exists = false;
             Booking booking = HttpContext.Session.GetObjectFromJson<Booking>("BookingAmend");
-            _context.Update(booking);
-            _context.SaveChanges();
+            int slotId = HttpContext.Session.GetObjectFromJson<int>("SlotAmendId");
+            Slot slot = await _context.Slots.Where(s => s.Id == slotId).FirstOrDefaultAsync();
+            var slots = _context.Slots.Where(s => s.Id == slotId).Include(s => s.Bookings);
+
+            foreach(var s in slots)
+            {
+                foreach(var b in s.Bookings)
+                {
+                    if(b.Id == booking.Id)
+                    {
+                        exists = true;
+                    }
+                }
+            }
+            if(exists.Equals(true))
+            {
+                slot.Bookings.Remove(booking);
+                slot.Bookings.Add(booking);
+            }
+            else
+                slot.Bookings.Add(booking);
+
+            if(ModelState.IsValid)
+            {
+                _context.Update(booking);
+            await _context.SaveChangesAsync();
+            _context.Update(slot);
+            await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(UpdateFlight));
         }
 
@@ -1187,7 +1223,11 @@ namespace Parkeasy.Controllers
         /// <returns>Redirect to UpdateVehicle action.</returns>
         public IActionResult UpdateFlight()
         {
-            Flight flight = HttpContext.Session.GetObjectFromJson<Flight>("FlightAmend");
+            int flightId = HttpContext.Session.GetObjectFromJson<int>("FlightAmendId");
+            Flight amendFlight = HttpContext.Session.GetObjectFromJson<Flight>("FlightAmend");
+            Flight flight = _context.Flights.Find(flightId);
+            amendFlight.Id = 0;
+            flight.Destination = amendFlight.Destination;
             _context.Update(flight);
             _context.SaveChanges();
             return RedirectToAction(nameof(UpdateVehicle));
@@ -1200,23 +1240,16 @@ namespace Parkeasy.Controllers
         public IActionResult UpdateVehicle()
         {
             Vehicle vehicle = HttpContext.Session.GetObjectFromJson<Vehicle>("VehicleAmend");
+            vehicle.Booking = _context.Bookings.Find(vehicle.Id);
             _context.Update(vehicle);
             _context.SaveChanges();
-            return RedirectToAction(nameof(UpdateSlot));
+            HttpContext.Session.Clear();
+            return RedirectToAction(nameof(UserBookings));
         }
 
-        /// <summary>
-        /// Updates slot info received from a session.
-        /// </summary>
-        /// <returns>Redirect to UserBookings action.</returns>
-        public IActionResult UpdateSlot()
+        public IActionResult CancelAmending()
         {
-            int slotId = HttpContext.Session.GetObjectFromJson<int>("SlotAmendId");
-            Slot slot = _context.Slots.Find(slotId);
-            Booking booking = HttpContext.Session.GetObjectFromJson<Booking>("BookingAmend");
-            slot.Bookings.Add(booking);
-            _context.Update(slot);
-            _context.SaveChanges();
+            HttpContext.Session.Clear();
             return RedirectToAction(nameof(UserBookings));
         }
 

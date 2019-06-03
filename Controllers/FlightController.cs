@@ -75,7 +75,13 @@ namespace Parkeasy.Controllers
         [HttpPost]
         public IActionResult Amend(Flight flightAmend)
         {
+            if(flightAmend.Destination == null || flightAmend.ReturnNumber == null || flightAmend.DepartureNumber == null)
+            {
+                flightAmend.ErrorMessage = "All fields must be populated";
+                return View(flightAmend);
+            }
             int id = (int)flightAmend.Id;
+            flightAmend.ErrorMessage = null;
             HttpContext.Session.SetObjectAsJson("AmendFlight", flightAmend);
             HttpContext.Session.SetObjectAsJson("FlightReAmend", flightAmend);
             return RedirectToAction(nameof(BookingController.AmendBooking), "Booking", id);

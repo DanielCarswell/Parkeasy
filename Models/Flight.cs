@@ -41,6 +41,10 @@ namespace Parkeasy.Models
         /// </summary>
         public DateTime ReturnDateTime { get; set; }
         /// <summary>
+        /// ErrorMessage Getter and Setter.
+        /// </summary>
+        public string ErrorMessage{ get; set; }
+        /// <summary>
         /// Destination Getter and Setter.
         /// </summary>
         [Required]
